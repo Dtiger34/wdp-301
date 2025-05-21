@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const dotenv = require("dotenv");
-dotenv.config(); // Cho phép đọc các biến môi trường từ .env
+dotenv.config(); 
 
 const connectionDB = async () => {
     try {
