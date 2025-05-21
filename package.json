@@ -4,9 +4,22 @@
   "private": true,
   "workspaces": ["frontend", "backend"],
   "scripts": {
-    "dev": "concurrently \"npm run start --workspace=backend\" \"npm run start --workspace=frontend\""
+    "dev": "concurrently --kill-others-on-fail \"npm run start --workspace=backend\" \"npm run start --workspace=frontend\""
   },
-  "devDependencies": {
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.10.1",
+    "morgan": "^1.10.0",
     "concurrently": "^8.0.0"
   }
+
 }
