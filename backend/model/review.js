@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
 
-const reservationSchema = new mongoose.Schema({
+const reviewSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     bookId: { type: mongoose.Schema.Types.ObjectId, ref: 'Book', required: true },
-    reservedAt: { type: Date, default: Date.now },
-    status: { type: String, enum: ['active', 'cancelled', 'fulfilled'], default: 'active' },
+    rating: { type: Number, min: 1, max: 5, required: true },
+    comment: String,
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });
 
-reservationSchema.pre('save', function (next) {
+reviewSchema.pre('save', function (next) {
     this.updatedAt = Date.now();
     next();
 });
 
-module.exports = mongoose.model('Reservation', reservationSchema);
+module.exports = mongoose.model('Review', reviewSchema);
