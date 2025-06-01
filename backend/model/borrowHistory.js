@@ -36,7 +36,6 @@ const borrowRecordSchema = new mongoose.Schema({
         enum: [
             'pending',    // chờ duyệt
             'declined',   // system từ chối
-            'rejected',   // staff từ chối
             'borrowed',   // đã mượn
             'returned',   // đã trả
             'overdue',    // quá hạn
