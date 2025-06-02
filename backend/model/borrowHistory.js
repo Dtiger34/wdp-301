@@ -12,11 +12,6 @@ const borrowRecordSchema = new mongoose.Schema({
         ref: 'Book',
         required: true
     },
-    borrowRecordId: {
-        type: String,
-        unique: true,
-        required: true
-    },
     fineId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Fine'
