@@ -3,14 +3,16 @@ const bcrypt = require('bcryptjs');
 
 
 const userSchema = new mongoose.Schema({
-  username: {
+  studentId: {
     type: String,
     required: true,
     unique: true,
   },
+  name: {
+    type: String,
+  },
   password: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
@@ -25,6 +27,10 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     type: String,
+  },
+  mustChangePassword: {
+    type: Boolean,
+    default: true, // bắt buộc đổi mật khẩu sau lần đăng nhập đầu
   },
   createdAt: {
     type: Date,
@@ -48,4 +54,4 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', userSchema, 'users');

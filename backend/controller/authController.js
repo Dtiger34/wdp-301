@@ -1,42 +1,72 @@
 const User = require('../model/user');
-
+const XLSX = require('xlsx');
+const jwtConfig = require('../config/jwtconfig');
 
 exports.login = async (req, res) => {
-    const { username, password } = req.body;
+    const { studentId, password } = req.body;
     try {
-        // Check if user exists
-        const user = await User.findOne
-            ({ username });
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid username or password' });
+        const user = await User.findOne({ studentId });
+
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        console.log('Đăng nhập studentId:', user.studentId);
+        // const isMatch = await user.comparePassword(password);
+        // if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
+
+        const token = jwtConfig.generateToken({ id: user._id, role: user.role });
+
+        if (user.mustChangePassword) {
+            return res.status(200).json({
+                message: 'Password change required',
+                mustChangePassword: true,
+                token,
+                user: { id: user._id, name: user.name, studentId: user.studentId }
+            });
         }
-        // Check if password is correct
-        const isMatch = await user.comparePassword(password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid username or password' });
-        }
-        res.status(200).json({ message: 'Login successful' });
+
+        res.status(200).json({
+            message: 'Login successful',
+            token,
+            user: { id: user._id, name: user.name, studentId: user.studentId, role: user.role }
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
-    }
-}
-exports.register = async (req, res) => {
-    const { username, password } = req.body;
+};
+
+exports.importUsersFromExcel = async (req, res) => {
     try {
-        // Check if user already exists
-        const existingUser = await User.findOne({ username });
-        if (existingUser) {
-            return res.status(400).json({ message: 'User already exists' });
+        const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const users = XLSX.utils.sheet_to_json(sheet);
+
+        const inserted = [];
+        const skipped = [];
+
+        for (const item of users) {
+            const exists = await User.findOne({ studentId: item.studentId });
+            if (exists) {
+                skipped.push({ studentId: item.studentId, reason: 'Already exists' });
+                continue;
+            }
+
+            const user = new User({
+                studentId: item.studentId,
+                name: item.name,
+                password: item.password || item.studentId,
+                email: item.email,
+                phone: item.phone,
+                address: item.address,
+                mustChangePassword: true
+            });
+
+            await user.save();
+            inserted.push(user.studentId);
         }
-        // Create new user
-        const newUser = new User({ username, password });
-        await newUser.save();
-        res.status(201).json({ message: 'User registered successfully' });
+
+        res.status(200).json({
+            message: 'Import completed'
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Import failed', error: err.message });
     }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
-    }
-}
+};

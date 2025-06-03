@@ -13,7 +13,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(cors());
-app.use(urlencoded({extended:true}));
+app.use(urlencoded({ extended: true }));
 
 
 app.use('/api/v1', require('./routes/authRoute'));
