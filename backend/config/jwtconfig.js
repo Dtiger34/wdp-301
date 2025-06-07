@@ -18,6 +18,23 @@ const jwtConfig = {
         }
     },
 
+    requireAuth(req, res, next) {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: 'No token provided' });
+        }
+
+        const token = authHeader.split(' ')[1];
+        const decoded = jwtConfig.verifyJwt(token);
+
+        if (!decoded) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+
+        req.user = decoded;
+        next();
+    },
+
     requireAdmin(req, res, next) {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -25,7 +42,7 @@ const jwtConfig = {
         }
 
         const token = authHeader.split(' ')[1];
-        const decoded = jwtConfig.verifyJwt(token); // ❗ Dùng đúng tên object
+        const decoded = jwtConfig.verifyJwt(token);
 
         if (!decoded || decoded.role !== 'admin') {
             return res.status(403).json({ message: 'Forbidden: Admins only' });

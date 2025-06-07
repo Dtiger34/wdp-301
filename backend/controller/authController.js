@@ -70,3 +70,46 @@ exports.importUsersFromExcel = async (req, res) => {
         res.status(500).json({ message: 'Import failed', error: err.message });
     }
 };
+
+exports.changePassword = async (req, res) => {
+    const { studentId, newPassword } = req.body;
+    try {
+        const user = await User
+            .findOneAndUpdate(
+                { studentId },
+                { password: newPassword, mustChangePassword: false },
+                { new: true }
+            );
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        const token = jwtConfig.generateToken({ id: user._id, role: user.role });
+        res.status(200).json({
+            message: 'Password changed successfully',
+            token,
+            user: { id: user._id, name: user.name, studentId: user.studentId, role: user.role }
+        });
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+}
+
+exports.getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password'); // Ẩn mật khẩu
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        res.status(200).json({
+            id: user._id,
+            name: user.name,
+            studentId: user.studentId,
+            email: user.email,
+            phone: user.phone,
+            address: user.address,
+            role: user.role,
+            mustChangePassword: user.mustChangePassword
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
