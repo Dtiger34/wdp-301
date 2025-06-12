@@ -1,6 +1,6 @@
-const User = require('../model/user'); // Import model User để thao tác với dữ liệu người dùng trong MongoDB
+const User = require('../model/user'); 
 const XLSX = require('xlsx'); // Thư viện để xử lý file Excel
-const jwtConfig = require('../config/jwtconfig'); // Import cấu hình JWT để tạo và xác thực token
+const jwtConfig = require('../config/jwtconfig'); 
 
 // Đăng nhập người dùng
 exports.login = async (req, res) => {
@@ -36,7 +36,7 @@ exports.login = async (req, res) => {
             user: { id: user._id, name: user.name, studentId: user.studentId, role: user.role }
         });
     } catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message }); // Lỗi server
+        res.status(500).json({ message: 'Server error', error: err.message }); 
     }
 };
 

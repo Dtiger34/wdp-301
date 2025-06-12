@@ -13,7 +13,7 @@ exports.getAllBooks = async (req, res) => {
 // Hàm lấy thông tin 1 sách dựa vào ID truyền trong URL
 exports.getBookById = async (req, res) => {
     try {
-        const book = await Book.findById(req.params.id); // Tìm sách theo _id
+        const book = await Book.findById(req.params.id); 
         if (!book) {
             return res.status(404).json({ message: "Book not found" }); // Nếu không tìm thấy thì trả mã lỗi 404
         }

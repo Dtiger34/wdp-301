@@ -1,10 +1,9 @@
-const dotenv = require("dotenv"); // Dùng để đọc biến môi trường từ file .env
+const dotenv = require("dotenv"); 
 dotenv.config();
 
-const jwt = require('jsonwebtoken'); // Thư viện xử lý JWT (tạo, xác thực token)
+const jwt = require('jsonwebtoken'); 
 
 const jwtConfig = {
-    // Khóa bí mật dùng để ký và xác thực token, đọc từ biến môi trường hoặc dùng mặc định
     secret: process.env.JWT_SECRET || 'secret_key',
 
     // Thời gian token hết hạn: 1 ngày
@@ -62,4 +61,4 @@ const jwtConfig = {
     }
 };
 
-module.exports = jwtConfig; // Export đối tượng jwtConfig để dùng ở controller hoặc middleware khác
+module.exports = jwtConfig; 
