@@ -16,7 +16,7 @@ app.use(cors());
 app.use(urlencoded({ extended: true }));
 
 
-app.use('/api/v1', require('./routes/authRoute'));
+app.use('/api/v1', require('./routes/AuthRoute'));
 
 
 

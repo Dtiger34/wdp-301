@@ -21,4 +21,3 @@ export const loginUser = async (studentId, password) => {
         console.error('Login failed:', error);
         throw error;
     }
-};

@@ -8,9 +8,9 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ studentId });
 
         if (!user) return res.status(404).json({ message: 'User not found' });
-        console.log('Đăng nhập studentId:', user.studentId);
-        // const isMatch = await user.comparePassword(password);
-        // if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
+
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
 
         const token = jwtConfig.generateToken({ id: user._id, role: user.role });
 
