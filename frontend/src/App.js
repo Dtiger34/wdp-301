@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { checkUserAuth } from './utils/auth';
 import Login from './components/Login';
+import HomePage from './components/HomePage';
+import ViewUserProfile from './pages/user/ViewUserProfile';
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -24,9 +27,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
-      {/* <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} /> */}
-      {/* <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} /> */}
-      <Route path="*" element={<Navigate to="/login" />} />
+      <Route path="/home" element={<HomePage />} />
+      <Route path="/profile" element={user ? <ViewUserProfile /> : <Navigate to="/login" />} />
     </Routes>
   );
 }

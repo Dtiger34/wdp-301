@@ -53,3 +53,4 @@ export const checkUserAuth = (token) => {
         return decodeToken(token);
     }
     return null;
+};
