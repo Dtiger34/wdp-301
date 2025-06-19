@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const bookshelfController = require('../controller/bookshelfController');
 
-// Bookshelf routes
 router.post('/', bookshelfController.createBookshelf);
 router.get('/', bookshelfController.getAllBookshelves);
 router.get('/:id', bookshelfController.getBookshelfById);
