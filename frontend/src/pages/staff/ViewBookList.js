@@ -32,78 +32,84 @@ const ViewBookList = () => {
   };
 
   return (
-    <div className="p-8 bg-white min-h-screen">
-      <h1 className="text-center text-lg text-teal-600 font-semibold mb-6">Trang danh sách sách</h1>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold text-teal-700">Quản lý Sách</h1>
+          <button
+            onClick={() => navigate('/staff/add-book')}
+            className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg shadow"
+          >
+            + Thêm sách
+          </button>
+        </div>
 
-      <div className="mb-4 flex justify-start">
-        <button
-          onClick={() => navigate('/staff/add-book')}
-          className="bg-green-500 hover:bg-green-600 text-white font-medium px-4 py-2 rounded shadow"
-        >
-          + Thêm sách
-        </button>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse border">
-          <thead className="bg-gray-800 text-white text-sm">
-            <tr>
-              <th className="px-3 py-2 border">Mã</th>
-              <th className="px-3 py-2 border">Tên sách</th>
-              <th className="px-3 py-2 border">Giá</th>
-              <th className="px-3 py-2 border">Thể loại</th>
-              <th className="px-3 py-2 border">Hình ảnh</th>
-              <th className="px-3 py-2 border">Hành động</th>
-            </tr>
-          </thead>
-          <tbody className="text-sm text-gray-700">
-            {books.length === 0 ? (
+        <div className="overflow-x-auto shadow rounded-lg bg-white">
+          <table className="min-w-full text-sm text-left text-gray-700">
+            <thead className="bg-teal-600 text-white">
               <tr>
-                <td colSpan="6" className="text-center py-5 text-gray-500">
-                  Không có sách nào.
-                </td>
+                <th className="px-4 py-3">#</th>
+                <th className="px-4 py-3">Tiêu đề</th>
+                <th className="px-4 py-3">Tác giả</th>
+                <th className="px-4 py-3">Giá</th>
+                <th className="px-4 py-3">Thể loại</th>
+                <th className="px-4 py-3">Kệ sách</th>
+                <th className="px-4 py-3">Ảnh</th>
+                <th className="px-4 py-3 text-center">Hành động</th>
               </tr>
-            ) : (
-              books.map((book, index) => (
-                <tr key={book._id} className="hover:bg-gray-100">
-                  <td className="border px-3 py-2 text-center">{index + 1}</td>
-                  <td className="border px-3 py-2">{book.title}</td>
-                  <td className="border px-3 py-2">{book.price?.toLocaleString()}đ</td>
-                  <td className="border px-3 py-2">
-                    {book.categories?.map((c) => c.name).join(', ')}
-                  </td>
-                  <td className="border px-3 py-2 text-center">
-                    {book.image ? (
-                      <img
-                        src={book.image}
-                        alt={book.title}
-                        className="h-12 w-auto mx-auto rounded shadow"
-                      />
-                    ) : (
-                      <span className="text-gray-400 italic">Không có ảnh</span>
-                    )}
-                  </td>
-                  <td className="border px-3 py-2 text-center space-x-2">
-                    <button
-                      onClick={() => navigate(`/staff/update-book/${book._id}`)}
-                      className="text-yellow-500 hover:text-yellow-600"
-                      title="Sửa"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(book._id)}
-                      className="text-red-500 hover:text-red-600"
-                      title="Xóa"
-                    >
-                      <FaTrash />
-                    </button>
+            </thead>
+            <tbody>
+              {books.length === 0 ? (
+                <tr>
+                  <td colSpan="8" className="px-4 py-6 text-center text-gray-500">
+                    Không có sách nào được tìm thấy.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                books.map((book, index) => (
+                  <tr
+                    key={book._id}
+                    className="hover:bg-gray-50 border-b"
+                  >
+                    <td className="px-4 py-3 font-medium text-center">{index + 1}</td>
+                    <td className="px-4 py-3">{book.title}</td>
+                    <td className="px-4 py-3">{book.author || '-'}</td>
+                    <td className="px-4 py-3">{book.price?.toLocaleString()} đ</td>
+                    <td className="px-4 py-3">{book.categories?.map((c) => c.name).join(', ')}</td>
+                    <td className="px-4 py-3">{book.bookshelf?.name || '-'}</td>
+                    <td className="px-4 py-3">
+                      {book.image ? (
+                        <img
+                          src={book.image}
+                          alt={book.title}
+                          className="w-16 h-20 object-cover rounded shadow"
+                        />
+                      ) : (
+                        <span className="text-gray-400 italic">Không có ảnh</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-center space-x-3">
+                      <button
+                        onClick={() => navigate(`/staff/update-book/${book._id}`)}
+                        className="text-blue-500 hover:text-blue-700"
+                        title="Sửa"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(book._id)}
+                        className="text-red-500 hover:text-red-700"
+                        title="Xóa"
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
