@@ -1,30 +1,29 @@
 const express = require('express');
-const { json, urlencoded } = require('body-parser');
 const morgan = require('morgan');
-const app = express();
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const User = require('./model/user');
+const app = express();
 const connectionDB = require('./config/db');
 const { swaggerUi, specs } = require('./config/swagger');
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-
-app.use(bodyParser.json());
+// Middleware
 app.use(morgan('dev'));
 app.use(cors());
-app.use(urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-app.use('/api/v1', require('./routes/authRoute'));
+// Routes
+app.use('/api/v1/auth', require('./routes/authRoute'));
+app.use('/api/v1/books', require('./routes/BookRoute'));
 
-
-
-
-app.use((req, res, next) => {
+// 404 fallback
+app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
+// DB + Server start
 connectionDB();
 const PORT = process.env.PORT || 9999;
 app.listen(PORT, () => {

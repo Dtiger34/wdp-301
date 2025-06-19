@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const BookController = require('../controller/BookController');
 const jwtConfig = require('../config/jwtconfig');
+const book = require('../model/book');
 
 /**
  * @swagger
@@ -91,6 +92,9 @@ router.get('/', BookController.getAllBooks);
  *         description: Book not found
  */
 router.get('/:id', BookController.getBookById);
+router.put('/:id', BookController.updateBook);
+router.delete('/:id', BookController.deleteBook);
+router.post('/', BookController.createBook);
 
 /**
  * @swagger
