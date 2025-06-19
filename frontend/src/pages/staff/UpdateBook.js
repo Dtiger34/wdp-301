@@ -16,6 +16,8 @@ const UpdateBook = () => {
     description: '',
     price: '',
     image: '',
+    imageFile: null,
+    imagePreview: '',
     categories: [],
     bookshelf: '',
   });
@@ -38,7 +40,8 @@ const UpdateBook = () => {
           publishYear: book.publishYear || '',
           price: book.price || '',
           bookshelf: book.bookshelf?._id || '',
-          categories: book.categories?.map(c => c._id) || [],
+          categories: book.categories?.map((c) => c._id) || [],
+          imagePreview: book.image || '',
         });
 
         setCategories(catRes.data);
@@ -64,11 +67,23 @@ const UpdateBook = () => {
     });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setForm((prev) => ({
+        ...prev,
+        imageFile: file,
+        imagePreview: URL.createObjectURL(file),
+      }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await updateBook(id, {
         ...form,
+        image: form.imagePreview,
         publishYear: parseInt(form.publishYear),
         price: parseFloat(form.price),
       });
@@ -81,46 +96,44 @@ const UpdateBook = () => {
   };
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">Cập nhật sách</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {[
-          { name: 'title', label: 'Tiêu đề' },
-          { name: 'isbn', label: 'ISBN' },
-          { name: 'author', label: 'Tác giả' },
-          { name: 'publisher', label: 'Nhà xuất bản' },
-          { name: 'publishYear', label: 'Năm xuất bản', type: 'number' },
-          { name: 'price', label: 'Giá tiền', type: 'number' },
-          { name: 'image', label: 'Ảnh (link URL)' },
-        ].map((field) => (
-          <div key={field.name}>
-            <label className="block font-medium">{field.label}</label>
+    <div style={{ maxWidth: '700px', margin: '0 auto', padding: '24px', background: '#f9f9f9', border: '1px solid #ddd', borderRadius: '10px' }}>
+      <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>Cập nhật sách</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {[{ name: 'title', label: 'Tiêu đề' }, { name: 'isbn', label: 'ISBN' }, { name: 'author', label: 'Tác giả' }, { name: 'publisher', label: 'Nhà xuất bản' }, { name: 'publishYear', label: 'Năm xuất bản', type: 'number' }, { name: 'price', label: 'Giá tiền', type: 'number' }].map((field) => (
+          <div key={field.name} style={{ display: 'flex', flexDirection: 'column' }}>
+            <label style={{ marginBottom: '6px', fontWeight: 'bold' }}>{field.label}</label>
             <input
               type={field.type || 'text'}
               name={field.name}
               value={form[field.name]}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              style={{ padding: '8px', fontSize: '16px', borderRadius: '6px', border: '1px solid #ccc' }}
               required
             />
           </div>
         ))}
 
-        <div>
-          <label className="block font-medium">Mô tả</label>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label style={{ marginBottom: '6px', fontWeight: 'bold' }}>Ảnh bìa sách (chọn tệp từ máy)</label>
+          <input type="file" accept="image/*" onChange={handleImageChange} />
+          {form.imagePreview && <img src={form.imagePreview} alt="Preview" style={{ marginTop: '10px', width: '120px', height: '160px', objectFit: 'cover', border: '1px solid #ddd', borderRadius: '4px' }} />}
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label style={{ marginBottom: '6px', fontWeight: 'bold' }}>Mô tả</label>
           <textarea
             name="description"
             value={form.description}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            style={{ padding: '8px', fontSize: '16px', borderRadius: '6px', border: '1px solid #ccc', minHeight: '100px', resize: 'vertical' }}
           />
         </div>
 
-        <div>
-          <label className="block font-medium">Thể loại</label>
-          <div className="flex flex-wrap gap-2">
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label style={{ marginBottom: '6px', fontWeight: 'bold' }}>Thể loại</label>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
             {categories.map((cat) => (
-              <label key={cat._id} className="flex items-center gap-1">
+              <label key={cat._id} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <input
                   type="checkbox"
                   checked={form.categories.includes(cat._id)}
@@ -132,14 +145,14 @@ const UpdateBook = () => {
           </div>
         </div>
 
-        <div>
-          <label className="block font-medium">Kệ sách</label>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label style={{ marginBottom: '6px', fontWeight: 'bold' }}>Kệ sách</label>
           <select
             name="bookshelf"
             value={form.bookshelf}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
             required
+            style={{ padding: '8px', fontSize: '16px', borderRadius: '6px', border: '1px solid #ccc' }}
           >
             <option value="">-- Chọn kệ sách --</option>
             {bookshelves.map((shelf) => (
@@ -150,10 +163,7 @@ const UpdateBook = () => {
           </select>
         </div>
 
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
+        <button type="submit" style={{ padding: '10px 18px', fontSize: '16px', backgroundColor: '#1d72c2', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
           Lưu thay đổi
         </button>
       </form>
