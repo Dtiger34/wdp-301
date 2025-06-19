@@ -23,11 +23,11 @@ const seedData = async () => {
 		console.log('Cleared existing data');
 
 		// 1. Create Admin User
-		const hashedAdminPassword = await bcrypt.hash('admin123', 10);
+		// const hashedAdminPassword = await bcrypt.hash('admin123', 10);
 		const admin = new User({
 			studentId: 'ADMIN001',
-			name: 'Admin User',
-			password: hashedAdminPassword,
+			name: 'Admin Dương Đẹp Trai',
+			password: 'admin123',
 			email: 'admin@library.com',
 			role: 'admin',
 			phone: '0123456789',
@@ -35,7 +35,21 @@ const seedData = async () => {
 			mustChangePassword: false,
 		});
 		await admin.save();
+
 		console.log('✅ Admin user created: ADMIN001/admin123');
+
+		const staff = new User({
+			studentId: 'STAFF001',
+			name: 'Staff Dương Đẹp Trai',
+			password: 'staff123',
+			email: 'staff@library.com',
+			role: 'staff',
+			phone: '0123456789',
+			address: 'Staff Office',
+			mustChangePassword: false,
+		});
+		await staff.save();
+		console.log('✅ Staff user created: STAFF001/staff123');
 
 		// 2. Create Sample Students
 		const students = [
@@ -63,10 +77,8 @@ const seedData = async () => {
 		];
 
 		for (const student of students) {
-			const hashedPassword = await bcrypt.hash(student.studentId, 10); // Password = studentId
 			const user = new User({
 				...student,
-				password: hashedPassword,
 				role: 'user',
 				mustChangePassword: true,
 			});
