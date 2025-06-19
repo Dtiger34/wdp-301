@@ -21,7 +21,7 @@ exports.getAllBookshelves = async (req, res) => {
   }
 };
 
-// Get a single bookshelf
+// Get a single bookshelf by ID
 exports.getBookshelfById = async (req, res) => {
   try {
     const shelf = await Bookshelf.findById(req.params.id);
@@ -37,7 +37,10 @@ exports.updateBookshelf = async (req, res) => {
   try {
     const shelf = await Bookshelf.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      {
+        ...req.body,
+        updatedAt: Date.now()
+      },
       { new: true }
     );
     if (!shelf) return res.status(404).json({ error: 'Bookshelf not found' });
@@ -52,7 +55,7 @@ exports.deleteBookshelf = async (req, res) => {
   try {
     const shelf = await Bookshelf.findByIdAndDelete(req.params.id);
     if (!shelf) return res.status(404).json({ error: 'Bookshelf not found' });
-    res.json({ message: 'Bookshelf deleted' });
+    res.json({ message: 'Bookshelf deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

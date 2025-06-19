@@ -47,6 +47,37 @@ exports.getBookById = async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 };
+exports.updateBook = async (req, res) => {
+	try {
+		const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+			new: true,
+			runValidators: true,
+		}).populate('categories', 'name').populate('bookshelf', 'code name location');
+
+		if (!book) {
+			return res.status(404).json({ message: 'Book not found' });
+		}
+
+		res.status(200).json(book);
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+exports.deleteBook = async (req, res) => {
+	try {
+		const book = await Book.findByIdAndDelete(req.params.id);
+		if (!book) {
+			return res.status(404).json({ message: 'Book not found' });
+		}
+
+		// Xoá cả inventory nếu có
+		await Inventory.findOneAndDelete({ book: req.params.id });
+
+		res.status(200).json({ message: 'Book deleted successfully' });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
 
 exports.createBook = async (req, res) => {
 	try {
