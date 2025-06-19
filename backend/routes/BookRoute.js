@@ -311,3 +311,4 @@ router.put('/review/:id', jwtConfig.requireAuth, BookController.updateReview);
  *         description: Review not found or permission denied
  */
 router.delete('/review/:id', jwtConfig.requireAuth, BookController.deleteReview);
+module.exports = router;

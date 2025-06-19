@@ -1,8 +1,5 @@
-
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
 import { checkUserAuth } from './utils/auth';
 import Login from './components/Login';
 import HomePage from './components/HomePage';
@@ -42,14 +39,14 @@ function App() {
         <Route path="/staff/bookshelf" element={<BookShelf />} />
         <Route path="/staff/add-bookshelf" element={<AddBookshelf />} />
         <Route path="/staff/update-bookshelf/:id" element={<UpdateBookshelf />} />
+
+        {/* User Routes */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/profile" element={user ? <ViewUserProfile /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/home" element={<HomePage />} />
-      <Route path="/profile" element={user ? <ViewUserProfile /> : <Navigate to="/login" />} />
-    </Routes>
   );
 }
 
