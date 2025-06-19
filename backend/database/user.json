@@ -1,0 +1,62 @@
+[
+  {
+    "studentId": "SV0001",
+    "name": "Nguyễn Văn A",
+    "password": "$2a$10$1YzmiIVoQRbtszhPQ6X6eulbZ5HkQb9sNFzkUYyfD2LtY1Az4pWLi",
+    "email": "a@example.com",
+    "role": "user",
+    "phone": "0123450001",
+    "address": "123 Đường A, Hà Nội",
+    "mustChangePassword": true,
+    "createdAt": { "$date": "2025-06-19T00:00:00.000Z" },
+    "updatedAt": { "$date": "2025-06-19T00:00:00.000Z" }
+  },
+  {
+    "studentId": "SV0002",
+    "name": "Trần Thị B",
+    "password": "$2a$10$1YzmiIVoQRbtszhPQ6X6eulbZ5HkQb9sNFzkUYyfD2LtY1Az4pWLi",
+    "email": "b@example.com",
+    "role": "staff",
+    "phone": "0123450002",
+    "address": "456 Đường B, TP.HCM",
+    "mustChangePassword": true,
+    "createdAt": { "$date": "2025-06-19T00:00:00.000Z" },
+    "updatedAt": { "$date": "2025-06-19T00:00:00.000Z" }
+  },
+  {
+    "studentId": "SV0003",
+    "name": "Lê Văn C",
+    "password": "$2a$10$1YzmiIVoQRbtszhPQ6X6eulbZ5HkQb9sNFzkUYyfD2LtY1Az4pWLi",
+    "email": "c@example.com",
+    "role": "user",
+    "phone": "0123450003",
+    "address": "789 Đường C, Đà Nẵng",
+    "mustChangePassword": true,
+    "createdAt": { "$date": "2025-06-19T00:00:00.000Z" },
+    "updatedAt": { "$date": "2025-06-19T00:00:00.000Z" }
+  },
+  {
+    "studentId": "SV0004",
+    "name": "Phạm Thị D",
+    "password": "$2a$10$1YzmiIVoQRbtszhPQ6X6eulbZ5HkQb9sNFzkUYyfD2LtY1Az4pWLi",
+    "email": "d@example.com",
+    "role": "admin",
+    "phone": "0123450004",
+    "address": "101 Đường D, Cần Thơ",
+    "mustChangePassword": true,
+    "createdAt": { "$date": "2025-06-19T00:00:00.000Z" },
+    "updatedAt": { "$date": "2025-06-19T00:00:00.000Z" }
+  },
+  {
+    "studentId": "SV0005",
+    "name": "Đỗ Văn E",
+    "password": "$2a$10$1YzmiIVoQRbtszhPQ6X6eulbZ5HkQb9sNFzkUYyfD2LtY1Az4pWLi",
+    "email": "e@example.com",
+    "role": "user",
+    "phone": "0123450005",
+    "address": "202 Đường E, Hải Phòng",
+    "mustChangePassword": true,
+    "createdAt": { "$date": "2025-06-19T00:00:00.000Z" },
+    "updatedAt": { "$date": "2025-06-19T00:00:00.000Z" }
+  }
+]
