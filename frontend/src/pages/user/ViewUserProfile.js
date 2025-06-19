@@ -3,7 +3,7 @@ import { getUserProfile } from '../../services/api';
 import { getToken, checkUserAuth } from '../../utils/auth';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
-import { Button } from 'react-bootstrap';
+import { Button, ButtonToolbar } from 'react-bootstrap';
 import '../../css/ProfilePage.css'; // Import file CSS cho ProfilePage
 
 const ProfilePage = () => {
@@ -41,6 +41,9 @@ const ProfilePage = () => {
     return (
         <div>
             <Header />
+            <ButtonToolbar className="profile-toolbar">
+                <Button variant="secondary" onClick={() => window.history.back()}>Back</Button>
+            </ButtonToolbar>
             <div className="profile-container">
 
                 <h1 className="profile-title">User Profile</h1>
