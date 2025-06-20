@@ -7,6 +7,8 @@ const authController = require('../controller/authController');
 router.post('/login', authController.login);
 router.get('/getUserById/:id', jwtConfig.requireAuth, authController.getUserById);
 router.post('/import', jwtConfig.requireAdmin, upload.single('file'), authController.importUsersFromExcel);
+router.post('/changePassword', jwtConfig.requireAuth, authController.changePassword);
+
 
 
 module.exports = router;
