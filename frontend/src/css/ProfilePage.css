@@ -1,0 +1,88 @@
+/* Căn giữa container */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Tiêu đề Profile */
+.profile-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Thông tin người dùng */
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 1rem;
+    color: #333;
+    width: 100%;
+}
+
+/* Bảng dọc có kẻ các dòng */
+.profile-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.profile-table .row {
+    display: flex;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.profile-table .row:last-child {
+    border-bottom: none;
+}
+
+.profile-table .col-sm-4 {
+    font-weight: bold;
+}
+
+.profile-table .col-sm-8 {
+    padding-left: 10px;
+}
+
+/* Loading state */
+.loading {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #555;
+}
+
+/* Error state */
+.error {
+    text-align: center;
+    font-size: 1.5rem;
+    color: red;
+}
+
+/* Đặt style cho nút */
+button {
+    margin-top: 20px;
+}
+
+/* Responsive layout */
+@media (max-width: 600px) {
+    .profile-container {
+        width: 90%;
+    }
+
+    .profile-title {
+        font-size: 1.5rem;
+    }
+}
