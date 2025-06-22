@@ -1,85 +1,122 @@
 import React, { useEffect, useState } from 'react';
+import { getBookshelves, deleteBookshelf } from '../../services/bookShelfService';
 import { useNavigate } from 'react-router-dom';
-import {
-  getBookshelves,
-  deleteBookshelf
-} from '../../services/bookShelfService';
+import { FaTrash, FaEdit } from 'react-icons/fa';
 
-export default function BookShelf() {
+const BookShelf = () => {
   const [bookshelves, setBookshelves] = useState([]);
   const navigate = useNavigate();
-
-  const fetchBookshelves = async () => {
-    try {
-      const data = await getBookshelves();
-      setBookshelves(data);
-    } catch (err) {
-      alert('Error fetching bookshelves');
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this bookshelf?')) {
-      try {
-        await deleteBookshelf(id);
-        fetchBookshelves();
-      } catch (err) {
-        alert('Delete failed');
-      }
-    }
-  };
 
   useEffect(() => {
     fetchBookshelves();
   }, []);
 
+  const fetchBookshelves = async () => {
+    try {
+      const data = await getBookshelves();
+      setBookshelves(data);
+    } catch (error) {
+      console.error('Lỗi khi tải danh sách kệ sách:', error);
+      alert('Không thể tải danh sách kệ sách!');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa kệ sách này không?')) {
+      try {
+        await deleteBookshelf(id);
+        alert('Đã xóa kệ sách!');
+        fetchBookshelves();
+      } catch (error) {
+        console.error('Lỗi khi xóa:', error);
+        alert('Xóa thất bại!');
+      }
+    }
+  };
+
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Bookshelf List</h2>
-      <button
-        onClick={() => navigate('/staff/add-bookshelf')}
-        className="bg-green-600 text-white px-4 py-2 rounded mb-4"
-      >
-        + Add Bookshelf
-      </button>
-      <table className="w-full border">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="p-2 text-left">Name</th>
-            <th className="p-2 text-left">Location</th>
-            <th className="p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bookshelves.map((shelf) => (
-            <tr key={shelf._id} className="border-t">
-              <td className="p-2">{shelf.name}</td>
-              <td className="p-2">{shelf.location}</td>
-              <td className="p-2 text-center">
-                <button
-                  onClick={() => navigate(`/staff/update-bookshelf/${shelf._id}`)}
-                  className="text-blue-600 hover:underline mr-2"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(shelf._id)}
-                  className="text-red-600 hover:underline"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-          {bookshelves.length === 0 && (
-            <tr>
-              <td colSpan="3" className="p-4 text-center text-gray-500">
-                No bookshelves found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+    <div style={{ padding: '40px', backgroundColor: '#f9fafb', minHeight: '100vh' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#374151' }}>Danh sách kệ sách</h2>
+          <button
+            onClick={() => navigate('/staff/add-bookshelf')}
+            style={{
+              backgroundColor: '#319795',
+              color: 'white',
+              padding: '10px 20px',
+              borderRadius: '6px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              cursor: 'pointer'
+            }}
+          >
+            + Thêm kệ sách
+          </button>
+        </div>
+
+        <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead style={{ backgroundColor: '#f3f4f6', borderBottom: '1px solid #e5e7eb' }}>
+              <tr>
+                <th style={thStyle}>Mã kệ</th>
+                <th style={thStyle}>Tên kệ</th>
+                <th style={thStyle}>Vị trí</th>
+                <th style={thStyle}>Mô tả</th>
+                <th style={{ ...thStyle, textAlign: 'center' }}>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bookshelves.length === 0 ? (
+                <tr>
+                  <td colSpan="5" style={{ textAlign: 'center', padding: '24px', color: '#9ca3af' }}>
+                    Không có kệ sách nào được tìm thấy.
+                  </td>
+                </tr>
+              ) : (
+                bookshelves.map((shelf) => (
+                  <tr key={shelf._id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                    <td style={tdStyle}>{shelf.code}</td>
+                    <td style={tdStyle}>{shelf.name}</td>
+                    <td style={tdStyle}>{shelf.location}</td>
+                    <td style={tdStyle}>{shelf.description}</td>
+                    <td style={{ ...tdStyle, textAlign: 'center' }}>
+                      <button
+                        onClick={() => navigate(`/staff/update-bookshelf/${shelf._id}`)}
+                        style={{ color: '#3b82f6', marginRight: '8px', cursor: 'pointer' }}
+                        title="Sửa"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(shelf._id)}
+                        style={{ color: '#ef4444', cursor: 'pointer' }}
+                        title="Xóa"
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+const thStyle = {
+  padding: '16px',
+  textAlign: 'left',
+  fontWeight: '600',
+  color: '#374151'
+};
+
+const tdStyle = {
+  padding: '16px',
+  fontSize: '14px',
+  color: '#374151'
+};
+
+export default BookShelf;
