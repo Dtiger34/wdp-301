@@ -70,7 +70,7 @@ const book = require('../model/book');
  *               items:
  *                 $ref: '#/components/schemas/Book'
  */
-router.get('/', BookController.getAllBooks);
+router.get('/', jwtConfig.requireAuth, BookController.getAllBooks);
 
 /**
  * @swagger
@@ -91,10 +91,10 @@ router.get('/', BookController.getAllBooks);
  *       404:
  *         description: Book not found
  */
-router.get('/:id', BookController.getBookById);
-router.put('/:id', BookController.updateBook);
-router.delete('/:id', BookController.deleteBook);
-router.post('/', BookController.createBook);
+router.get('/:id', jwtConfig.requireAuth, BookController.getBookById);
+router.put('/:id', jwtConfig.requireAuth, BookController.updateBook);
+router.delete('/:id', jwtConfig.requireAuth, BookController.deleteBook);
+router.post('/', jwtConfig.requireAuth, BookController.createBook);
 
 /**
  * @swagger
