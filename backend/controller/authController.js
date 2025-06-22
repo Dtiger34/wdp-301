@@ -122,6 +122,7 @@ exports.getUserById = async (req, res) => {
     }
 };
 
+
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find().select('-password');
@@ -150,3 +151,4 @@ exports.createAccount = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
+
