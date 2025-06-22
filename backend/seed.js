@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Import all models
-const User = require('./model/user');
+const User = require('./model/User');
 const Book = require('./model/book');
 const Category = require('./model/categories');
 const Bookshelf = require('./model/bookshelf');
@@ -55,6 +55,7 @@ const seedData = async () => {
 		const students = [
 			{
 				studentId: 'SV001',
+				password: 'SV001',
 				name: 'Nguyen Van A',
 				email: 'a@student.com',
 				phone: '0123456001',
@@ -62,6 +63,7 @@ const seedData = async () => {
 			},
 			{
 				studentId: 'SV002',
+				password: 'SV002',
 				name: 'Tran Thi B',
 				email: 'b@student.com',
 				phone: '0123456002',
@@ -69,6 +71,7 @@ const seedData = async () => {
 			},
 			{
 				studentId: 'SV003',
+				password: 'SV003',
 				name: 'Le Van C',
 				email: 'c@student.com',
 				phone: '0123456003',

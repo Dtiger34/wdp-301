@@ -1,0 +1,40 @@
+import api from './api';
+
+export const requestBorrowBook = async ({ bookId, isReadOnSite = false, notes = '' }) => {
+    try {
+        const response = await api.post(
+            '/books/borrow/request',
+            { bookId, isReadOnSite, notes },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error requesting borrow:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+export const getBorrowRequests = async () => {
+    try {
+        const response = await api.get('/borrows');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching borrow requests:', error);
+        throw error;
+    }
+}
+
+export const acceptBorrowRequest = async (borrowId) => {
+    try {
+        const response = await api.put(`/borrows/accept/${borrowId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error accepting borrow request:', error);
+        throw error;
+    }
+}
+

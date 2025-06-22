@@ -3,14 +3,14 @@ import { getUserProfile } from '../../services/api';
 import { getToken, checkUserAuth } from '../../utils/auth';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
-import { Button } from 'react-bootstrap';
-import '../../css/ProfilePage.css'; // Import file CSS cho ProfilePage
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const navigate = useNavigate();
     const token = getToken();
     const userId = token ? checkUserAuth(token)?.id : null;
 
@@ -35,46 +35,76 @@ const ProfilePage = () => {
         fetchUserProfile();
     }, [userId]);
 
-    if (loading) return <div className="loading">Loading...</div>;
-    if (error) return <div className="error">{error}</div>;
+    if (loading) return <div style={{ textAlign: 'center', marginTop: '100px' }}>Loading...</div>;
+    if (error) return <div style={{ textAlign: 'center', color: 'red', marginTop: '100px' }}>{error}</div>;
 
     return (
-        <div>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Header />
-            <div className="profile-container">
 
-                <h1 className="profile-title">User Profile</h1>
-                {user ? (
-                    <div className="profile-info">
-                        <div className="profile-table">
-                            <div className="row">
-                                <div className="col-sm-4"><strong>Name:</strong></div>
-                                <div className="col-sm-8">{user.name}</div>
-                            </div>
-                            <div className="row">
-                                <div className="col-sm-4"><strong>Student ID:</strong></div>
-                                <div className="col-sm-8">{user.studentId}</div>
-                            </div>
-                            <div className="row">
-                                <div className="col-sm-4"><strong>Email:</strong></div>
-                                <div className="col-sm-8">{user.email}</div>
-                            </div>
-                            <div className="row">
-                                <div className="col-sm-4"><strong>Phone:</strong></div>
-                                <div className="col-sm-8">{user.phone}</div>
-                            </div>
-                            <div className="row">
-                                <div className="col-sm-4"><strong>Address:</strong></div>
-                                <div className="col-sm-8">{user.address}</div>
-                            </div>
-                        </div>
-                        <Button variant="primary" onClick={() => alert('Change Password')}>Change Password</Button>
-                    </div>
-                ) : (
-                    <p>No user data available</p>
-                )}
-
+            {/* Nút quay lại ở góc trên trái */}
+            <div style={{ position: 'absolute', top: '140px', left: '30px' }}>
+                <button
+                    onClick={() => navigate(-1)}
+                    style={{
+                        backgroundColor: '#6c757d',
+                        color: '#fff',
+                        padding: '8px 16px',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    ← Quay lại
+                </button>
             </div>
+            <h2 style={{ marginBottom: '30px', color: '#2c3e50', textAlign: 'center', marginTop: '50px' }}>
+                📄 Thông tin người dùng
+            </h2>
+            <div style={{ flex: 1, padding: '30px', maxWidth: '800px', margin: '50px auto' }}>
+                {user ? (
+                    <>
+                        <div style={{
+                            backgroundColor: '#f9f9f9',
+                            padding: '100px',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                        }}>
+                            {[
+                                { label: '👤 Họ tên', value: user.name },
+                                { label: '🎓 Mã sinh viên', value: user.studentId },
+                                { label: '📧 Email', value: user.email },
+                                { label: '📱 Số điện thoại', value: user.phone },
+                                { label: '🏠 Địa chỉ', value: user.address },
+                            ].map((item, index) => (
+                                <div key={index} style={{ marginBottom: '15px' }}>
+                                    <strong style={{ width: '300px', display: 'inline-block' }}>{item.label}:</strong>
+                                    <span>{item.value}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Nút đổi mật khẩu bên ngoài */}
+                        <div style={{ textAlign: 'center', marginTop: '30px' }}>
+                            <a
+                                href="/change-password"
+                                style={{
+                                    padding: '10px 20px',
+                                    backgroundColor: '#2980b9',
+                                    color: '#fff',
+                                    borderRadius: '5px',
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                Đổi mật khẩu
+                            </a>
+                        </div>
+                    </>
+                ) : (
+                    <p>Không tìm thấy thông tin người dùng</p>
+                )}
+            </div>
+
             <Footer />
         </div>
     );
