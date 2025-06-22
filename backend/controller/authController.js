@@ -72,26 +72,34 @@ exports.importUsersFromExcel = async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
-    const { studentId, newPassword } = req.body;
+    const { newPassword } = req.body;
+    const userId = req.params.id;
+
     try {
-        const user = await User
-            .findOneAndUpdate(
-                { studentId },
-                { password: newPassword, mustChangePassword: false },
-                { new: true }
-            );
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { password: newPassword },
+            { new: true }
+        );
+
         if (!user) return res.status(404).json({ message: 'User not found' });
+
+        if (user.mustChangePassword) {
+            user.mustChangePassword = false;
+            await user.save();
+        }
+
         const token = jwtConfig.generateToken({ id: user._id, role: user.role });
         res.status(200).json({
             message: 'Password changed successfully',
             token,
             user: { id: user._id, name: user.name, studentId: user.studentId, role: user.role }
         });
-    }
-    catch (err) {
+    } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
-}
+};
+
 
 exports.getUserById = async (req, res) => {
     try {
@@ -108,6 +116,36 @@ exports.getUserById = async (req, res) => {
             role: user.role,
             mustChangePassword: user.mustChangePassword
         });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        res.status(200).json(users);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+exports.createAccount = async (req, res) => {
+    const { studentId, name, password, email, phone, address, role } = req.body;
+
+    try {
+        const existingUser = await User.findOne({ studentId });
+        if (existingUser) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        const user = new User({ studentId, name, password, email, phone, address, role });
+        await user.save();
+
+        res.status(201).json({ message: 'User created successfully' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error', error: err.message });

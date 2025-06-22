@@ -10,12 +10,22 @@ const api = axios.create({
   },
 });
 
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 export default api;
 
 
 export const loginUser = async (studentId, password) => {
   try {
-    const response = await api.post('/login', { studentId, password });
+    const response = await api.post('/auth/login', { studentId, password });
     return response.data.token;
   } catch (error) {
     console.error('Login failed:', error);
@@ -23,10 +33,14 @@ export const loginUser = async (studentId, password) => {
   }
 };
 
+export const logoutUser = () => {
+  localStorage.removeItem('jwt');
+};
+
 export const getUserProfile = async (userId) => {
   try {
     const token = getToken();
-    const response = await api.get(`/getUserById/${userId}`, {
+    const response = await api.get(`/auth/getUserById/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -34,6 +48,40 @@ export const getUserProfile = async (userId) => {
     return response.data;
   } catch (error) {
     console.error('Failed to fetch user profile:', error);
+    throw error;
+  }
+};
+
+export const getAllUsers = async () => {
+  try {
+    const token = getToken();
+    const response = await api.get('/auth/getAllUsers', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+    throw error;
+  }
+};
+
+export const changePassword = async (userId, oldPassword, newPassword) => {
+  try {
+    const token = getToken();
+    const response = await api.patch(
+      `/auth/changepassword/${userId}`,
+      { oldPassword, newPassword },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Failed to change password:', error);
     throw error;
   }
 };
