@@ -22,6 +22,7 @@ app.use('/api/v1/bookshelves', require('./routes/bookshelfRoute'));
 app.use('/api/v1/categories', require('./routes/categoryRoute'));
 app.use('/api/v1/inventory', require('./routes/InventoryRoute'));
 
+
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Route not found' });
 });

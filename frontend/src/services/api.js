@@ -10,6 +10,7 @@ const api = axios.create({
   },
 });
 
+
 api.interceptors.request.use(
   (config) => {
     const token = getToken();
@@ -20,6 +21,7 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
 export default api;
 
 

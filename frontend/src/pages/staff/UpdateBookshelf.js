@@ -1,82 +1,82 @@
-import React, { useState, useEffect } from 'react';
+// ✅ UpdateBookshelf.js
+import React, { useEffect, useState } from 'react';
+import { getBookshelf, updateBookshelf } from '../../services/bookShelfService';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  getBookshelf,
-  updateBookshelf
-} from '../../services/bookShelfService';
 
-export default function UpdateBookshelf() {
-  const { id } = useParams();
-  const [formData, setFormData] = useState({ name: '', location: '' });
-  const [errors, setErrors] = useState({});
+const UpdateBookshelf = () => {
+  const [form, setForm] = useState({ code: '', name: '', description: '', location: '' });
   const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
-    const fetchShelf = async () => {
+    const fetchData = async () => {
       try {
         const data = await getBookshelf(id);
-        setFormData({ name: data.name, location: data.location });
+        setForm({
+          code: data.code || '',
+          name: data.name || '',
+          description: data.description || '',
+          location: data.location || ''
+        });
       } catch (err) {
-        alert('Shelf not found');
+        console.error(err);
+        alert('Không thể tải dữ liệu kệ sách!');
       }
     };
-    fetchShelf();
+    fetchData();
   }, [id]);
 
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.location.trim()) newErrors.location = 'Location is required';
-    return newErrors;
-  };
-
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
     try {
-      await updateBookshelf(id, formData);
+      await updateBookshelf(id, form);
+      alert('Cập nhật kệ sách thành công!');
       navigate('/staff/bookshelf');
     } catch (err) {
-      alert('Update failed');
+      console.error(err);
+      alert('Cập nhật thất bại!');
     }
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h2 className="text-xl font-bold mb-4">Update Bookshelf</h2>
-      <form onSubmit={handleSubmit} className="bg-white shadow p-4 rounded">
-        <div className="mb-2">
-          <label className="block">Name:</label>
-          <input
-            name="name"
-            value={formData.name}
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '24px', background: '#f9f9f9', border: '1px solid #ddd', borderRadius: '10px' }}>
+      <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>Cập nhật kệ sách</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {[{ label: 'Mã kệ sách', name: 'code' }, { label: 'Tên kệ sách', name: 'name' }, { label: 'Vị trí', name: 'location' }].map((field) => (
+          <div key={field.name} style={{ display: 'flex', flexDirection: 'column' }}>
+            <label style={{ marginBottom: '6px', fontWeight: 'bold' }}>{field.label}</label>
+            <input
+              type="text"
+              name={field.name}
+              value={form[field.name]}
+              onChange={handleChange}
+              required
+              style={{ padding: '8px', fontSize: '16px', borderRadius: '6px', border: '1px solid #ccc' }}
+            />
+          </div>
+        ))}
+
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label style={{ marginBottom: '6px', fontWeight: 'bold' }}>Mô tả</label>
+          <textarea
+            name="description"
+            value={form.description}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            style={{ padding: '8px', fontSize: '16px', borderRadius: '6px', border: '1px solid #ccc', minHeight: '100px', resize: 'vertical' }}
           />
-          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </div>
-        <div className="mb-2">
-          <label className="block">Location:</label>
-          <input
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-          {errors.location && <p className="text-red-500 text-sm">{errors.location}</p>}
-        </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded">
-          Update
+
+        <button type="submit" style={{ padding: '10px 18px', fontSize: '16px', backgroundColor: '#1d72c2', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+          Lưu thay đổi
         </button>
       </form>
     </div>
   );
-}
+};
+
+export default UpdateBookshelf;
