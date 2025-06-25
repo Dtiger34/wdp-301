@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const BookController = require('../controller/BookController');
-const jwtConfig = require('../config/jwtconfig');
-const book = require('../model/book');
+const BookController = require("../controller/BookController");
+const jwtConfig = require("../config/jwtconfig");
+const book = require("../model/book");
 
 /**
  * @swagger
@@ -70,7 +70,7 @@ const book = require('../model/book');
  *               items:
  *                 $ref: '#/components/schemas/Book'
  */
-router.get('/', jwtConfig.requireAuth, BookController.getAllBooks);
+router.get("/", jwtConfig.requireAuth, BookController.getAllBooks);
 
 /**
  * @swagger
@@ -91,10 +91,13 @@ router.get('/', jwtConfig.requireAuth, BookController.getAllBooks);
  *       404:
  *         description: Book not found
  */
-router.get('/:id', jwtConfig.requireAuth, BookController.getBookById);
-router.put('/:id', jwtConfig.requireAuth, BookController.updateBook);
-router.delete('/:id', jwtConfig.requireAuth, BookController.deleteBook);
-router.post('/', jwtConfig.requireAuth, BookController.createBook);
+router.get("/filter", jwtConfig.requireAuth, BookController.getBookFilter);
+
+router.get("/:id", jwtConfig.requireAuth, BookController.getBookById);
+
+router.put("/:id", jwtConfig.requireAuth, BookController.updateBook);
+router.delete("/:id", jwtConfig.requireAuth, BookController.deleteBook);
+router.post("/", jwtConfig.requireAuth, BookController.createBook);
 
 /**
  * @swagger
@@ -116,7 +119,7 @@ router.post('/', jwtConfig.requireAuth, BookController.createBook);
  *       403:
  *         description: Admin access required
  */
-router.post('/', jwtConfig.requireAdmin, BookController.createBook);
+router.post("/", jwtConfig.requireAdmin, BookController.createBook);
 
 /**
  * @swagger
@@ -140,7 +143,11 @@ router.post('/', jwtConfig.requireAdmin, BookController.createBook);
  *       404:
  *         description: Book not found
  */
-router.post('/borrow/request', jwtConfig.requireAuth, BookController.createBorrowRequest);
+router.post(
+  "/borrow/request",
+  jwtConfig.requireAuth,
+  BookController.createBorrowRequest
+);
 
 /**
  * @swagger
@@ -167,7 +174,11 @@ router.post('/borrow/request', jwtConfig.requireAuth, BookController.createBorro
  *       404:
  *         description: Borrow request not found
  */
-router.delete('/borrow/cancel/:id', jwtConfig.requireAuth, BookController.cancelBorrowRequest);
+router.delete(
+  "/borrow/cancel/:id",
+  jwtConfig.requireAuth,
+  BookController.cancelBorrowRequest
+);
 
 /**
  * @swagger
@@ -181,7 +192,11 @@ router.delete('/borrow/cancel/:id', jwtConfig.requireAuth, BookController.cancel
  *       200:
  *         description: List of user's borrow requests
  */
-router.get('/borrow/requests', jwtConfig.requireAuth, BookController.getUserBorrowRequests);
+router.get(
+  "/borrow/requests",
+  jwtConfig.requireAuth,
+  BookController.getUserBorrowRequests
+);
 
 /**
  * @swagger
@@ -214,7 +229,11 @@ router.get('/borrow/requests', jwtConfig.requireAuth, BookController.getUserBorr
  *       200:
  *         description: User's borrow history and reviews
  */
-router.get('/history/user', jwtConfig.requireAuth, BookController.getBorrowHistory);
+router.get(
+  "/history/user",
+  jwtConfig.requireAuth,
+  BookController.getBorrowHistory
+);
 
 /**
  * @swagger
@@ -251,7 +270,7 @@ router.get('/history/user', jwtConfig.requireAuth, BookController.getBorrowHisto
  *       400:
  *         description: You can only review books you have borrowed and returned
  */
-router.post('/review', jwtConfig.requireAuth, BookController.createReview);
+router.post("/review", jwtConfig.requireAuth, BookController.createReview);
 
 /**
  * @swagger
@@ -287,7 +306,7 @@ router.post('/review', jwtConfig.requireAuth, BookController.createReview);
  *       404:
  *         description: Review not found or permission denied
  */
-router.put('/review/:id', jwtConfig.requireAuth, BookController.updateReview);
+router.put("/review/:id", jwtConfig.requireAuth, BookController.updateReview);
 
 /**
  * @swagger
@@ -310,7 +329,10 @@ router.put('/review/:id', jwtConfig.requireAuth, BookController.updateReview);
  *       404:
  *         description: Review not found or permission denied
  */
-router.delete('/review/:id', jwtConfig.requireAuth, BookController.deleteReview);
+router.delete(
+  "/review/:id",
+  jwtConfig.requireAuth,
+  BookController.deleteReview
+);
 
 module.exports = router;
-

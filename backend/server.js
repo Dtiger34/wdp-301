@@ -1,32 +1,29 @@
-const express = require('express');
-const { json, urlencoded } = require('body-parser');
-const morgan = require('morgan');
+const express = require("express");
+const { json, urlencoded } = require("body-parser");
+const morgan = require("morgan");
 const app = express();
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const User = require('./model/user');
-const connectionDB = require('./config/db');
-const { swaggerUi, specs } = require('./config/swagger');
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const User = require("./model/user");
+const connectionDB = require("./config/db");
+const { swaggerUi, specs } = require("./config/swagger");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(bodyParser.json());
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 app.use(cors());
 app.use(urlencoded({ extended: true }));
+app.use("/images/book", express.static("public/images/book"));
 
-
-app.use('/api/v1/auth', require('./routes/AuthRoute'));
-app.use('/api/v1/books', require('./routes/BookRoute'));
-app.use('/api/v1/bookshelves', require('./routes/bookshelfRoute'));
-app.use('/api/v1/categories', require('./routes/categoryRoute'));
-app.use('/api/v1/inventory', require('./routes/InventoryRoute'));
-
+app.use("/api/v1/auth", require("./routes/AuthRoute"));
+app.use("/api/v1/books", require("./routes/BookRoute"));
+app.use("/api/v1/bookshelves", require("./routes/bookshelfRoute"));
+app.use("/api/v1/categories", require("./routes/categoryRoute"));
+app.use("/api/v1/inventory", require("./routes/InventoryRoute"));
 
 app.use((req, res, next) => {
-  res.status(404).json({ message: 'Route not found' });
+  res.status(404).json({ message: "Route not found" });
 });
-
 
 connectionDB();
 const PORT = process.env.PORT || 9999;
