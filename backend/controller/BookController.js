@@ -131,7 +131,7 @@ exports.createBorrowRequest = async (req, res) => {
 
     if (existingRequest) {
       return res.status(400).json({
-        message: 'You already have a pending or active borrow request for this book',
+        message: 'Bạn đã có yêu cầu mượn đang chờ xử lý hoặc đang hoạt động cho cuốn sách này',
       });
     }
 
