@@ -2,11 +2,13 @@ import api from "./api";
 import { getToken } from "../utils/auth"; // điều chỉnh đường dẫn nếu khác
 
 // Get all books
-export const getBooks = async () => {
+// Get books with optional filters
+export const getBooks = async (params = {}) => {
   try {
     const token = getToken();
     const response = await api.get("/books", {
       headers: { Authorization: `Bearer ${token}` },
+      params, // 👈 truyền các query params ở đây
     });
     return response.data;
   } catch (error) {
@@ -14,6 +16,7 @@ export const getBooks = async () => {
     throw error;
   }
 };
+
 
 // Get a single book by ID
 export const getBook = async (id) => {

@@ -38,3 +38,12 @@ export const acceptBorrowRequest = async (borrowId) => {
     }
 }
 
+export const getPendingBorrowRequests = async () => {
+    try {
+        const response = await api.get('/books/borrow-requests/pending');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching pending borrow requests:', error);
+        throw error;
+    }
+};

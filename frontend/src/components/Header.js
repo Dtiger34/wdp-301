@@ -15,7 +15,7 @@ const Header = () => {
   const token = getToken();
   const user = token ? checkUserAuth(token) : null;
   const isAdmin = user?.role === "admin";
-
+  const isStaff = user?.role === "staff";
   const handleLogout = async () => {
     try {
       await logoutUser();
@@ -49,8 +49,12 @@ const Header = () => {
       label: <Link to="/admin-dashboard">Admin Dashboard</Link>,
       key: "admin",
     });
+  } else if (isStaff) {
+    items.unshift({
+      label: <Link to="/staff-dashboard">Staff Dashboard</Link>,
+      key: "staff",
+    });
   }
-
   return (
     <div className="header-wrapper">
       <div className="page-header">

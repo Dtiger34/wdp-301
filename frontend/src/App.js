@@ -12,7 +12,7 @@ import ViewUserProfile from "./pages/user/ViewUserProfile";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserListPage from "./pages/admin/UserListPage";
 import AddAccountPage from "./pages/admin/AddAccountPage";
-
+import StaffDashboard from "./pages/staff/StaffDashboard";
 // Staff - Book
 import ViewBookList from "./pages/staff/ViewBookList";
 import AddBook from "./pages/staff/AddBook";
@@ -27,6 +27,9 @@ import UpdateBookshelf from "./pages/staff/UpdateBookshelf";
 import ViewCategoryList from "./pages/staff/ViewCategoryList";
 import AddCategory from "./pages/staff/AddCategory";
 import UpdateCategory from "./pages/staff/UpdateCategory";
+
+// Staff - Request
+import ViewListRequest from "./pages/staff/ViewListRequest";
 
 // User - Book Detail
 import ViewBookDetail from "./pages/user/ViewBookDetail";
@@ -50,35 +53,21 @@ function App() {
       <Route path="/" element={<Navigate to={user ? "/home" : "/login"} />} />
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={<HomePage />} />
-      <Route
-        path="/profile"
-        element={user ? <ViewUserProfile /> : <Navigate to="/login" />}
+      <Route path="/profile" element={user ? <ViewUserProfile /> : <Navigate to="/login" />} />
+      <Route path="/change-password" element={user ? <ChangePassword /> : <Navigate to="/login" />}
       />
-      <Route
-        path="/change-password"
-        element={user ? <ChangePassword /> : <Navigate to="/login" />}
-      />
-
       {/* Admin */}
-      <Route
-        path="/admin-dashboard"
-        element={
-          user?.role === "admin" ? <AdminDashboard /> : <Navigate to="/login" />
-        }
+      <Route path="/admin-dashboard" element={user?.role === "admin" ? <AdminDashboard /> : <Navigate to="/login" />
+      }
       />
-      <Route
-        path="/admin/users"
-        element={
-          user?.role === "admin" ? <UserListPage /> : <Navigate to="/login" />
-        }
+      <Route path="/admin/users" element={user?.role === "admin" ? <UserListPage /> : <Navigate to="/login" />}
       />
-      <Route
-        path="/admin/add-account"
-        element={
-          user?.role === "admin" ? <AddAccountPage /> : <Navigate to="/login" />
-        }
+      <Route path="/admin/add-account" element={user?.role === "admin" ? <AddAccountPage /> : <Navigate to="/login" />
+      }
       />
 
+      {/* Redirect if not logged in */}
+      <Route path="/staff-dashboard" element={user?.role === "staff" ? <StaffDashboard /> : <Navigate to="/login" />} />
       {/* Staff - Book CRUD */}
       <Route path="/staff/view-books" element={<ViewBookList />} />
       <Route path="/staff/add-book" element={<AddBook />} />
@@ -93,6 +82,9 @@ function App() {
       <Route path="/staff/ViewCategoryList" element={<ViewCategoryList />} />
       <Route path="/staff/AddCategory" element={<AddCategory />} />
       <Route path="/staff/UpdateCategory" element={<UpdateCategory />} />
+
+      {/* Staff - Request */}
+      <Route path="/staff/ViewListRequest" element={<ViewListRequest />} />
 
       {/* User - Book Detail */}
       <Route path="/detail-book/:id" element={<ViewBookDetail />} />

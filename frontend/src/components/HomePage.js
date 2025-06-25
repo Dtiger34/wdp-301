@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getBooks, getBooksFilter } from "../services/bookService";
+import { getBooksFilter } from "../services/bookService";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,6 @@ import {
 import { FilterTwoTone, ReloadOutlined } from "@ant-design/icons";
 
 import "../css/HomePage.css";
-import axios from "axios";
 import { getCategoryOptions } from "../services/categoryService";
 import { useSearch } from "../searchContext";
 const HomePage = () => {
