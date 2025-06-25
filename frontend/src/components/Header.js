@@ -1,103 +1,87 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { logoutUser } from '../services/api';
-import { removeToken, getToken, checkUserAuth } from '../utils/auth';
+import React from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { logoutUser } from "../services/api";
+import { removeToken, getToken, checkUserAuth } from "../utils/auth";
+import { Avatar, Dropdown, Space } from "antd";
+import { VscSearchFuzzy } from "react-icons/vsc";
+import { FaReact } from "react-icons/fa";
+import "../css/Header.css";
+import { useSearch } from "../searchContext";
 
 const Header = () => {
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { searchTerm, setSearchTerm } = useSearch();
 
-    const token = getToken();
-    const user = token ? checkUserAuth(token) : null;
-    const isAdmin = user?.role === 'admin';
+  const token = getToken();
+  const user = token ? checkUserAuth(token) : null;
+  const isAdmin = user?.role === "admin";
 
-    const handleLogout = async () => {
-        setLoading(true);
-        try {
-            await logoutUser();
-            removeToken();
-            navigate('/login');
-        } catch (error) {
-            console.error('Logout failed:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      removeToken();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
-    return (
-        <header
-            style={{
-                backgroundColor: '#282c34',
-                color: '#fff',
-                padding: '10px 20px',
-                position: 'relative',
-            }}
-        >
-            <h1 style={{ textAlign: 'center' }}>Management Library</h1>
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); // 👈 cập nhật context
+  };
 
-            <div
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    position: 'relative',
-                    height: '40px',
-                }}
-            >
-                {/* Menu giữa */}
-                <ul
-                    style={{
-                        display: 'flex',
-                        listStyleType: 'none',
-                        padding: 0,
-                        margin: 0,
-                        gap: '20px',
-                        position: 'absolute',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                    }}
-                >
-                    <li>
-                        <Link to="/home" style={{ color: '#fff', textDecoration: 'none' }}>
-                            Trang chủ
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/profile" style={{ color: '#fff', textDecoration: 'none' }}>
-                            Hồ sơ
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/staff/view-books" style={{ color: '#fff', textDecoration: 'none' }}>
-                            Sách
-                        </Link>
-                    </li>
-                    {isAdmin && (
-                        <li>
-                            <Link to="/admin-dashboard" style={{ color: '#fff', textDecoration: 'none' }}>
-                                Admin
-                            </Link>
-                        </li>
-                    )}
-                </ul>
+  const items = [
+    {
+      label: <Link to="/profile">Quản lý tài khoản</Link>,
+      key: "account",
+    },
+    {
+      label: (
+        <label style={{ cursor: "pointer" }} onClick={handleLogout}>
+          Đăng xuất
+        </label>
+      ),
+      key: "logout",
+    },
+  ];
+  if (isAdmin) {
+    items.unshift({
+      label: <Link to="/admin-dashboard">Admin Dashboard</Link>,
+      key: "admin",
+    });
+  }
 
-                {/* Logout bên phải */}
-                <button
-                    onClick={handleLogout}
-                    disabled={loading}
-                    style={{
-                        marginLeft: 'auto',
-                        backgroundColor: 'transparent',
-                        border: '1px solid #fff',
-                        color: '#fff',
-                        padding: '5px 10px',
-                        cursor: 'pointer',
-                    }}
-                >
-                    {loading ? 'Đang đăng xuất...' : 'Logout'}
-                </button>
-            </div>
-        </header>
-    );
+  return (
+    <div className="header-wrapper">
+      <div className="page-header">
+        {/* Logo bên trái */}
+        <div className="page-header__left" onClick={() => navigate("/")}>
+          <FaReact className="icon-react rotate" />
+          <span className="logo-text">Book Realm</span>
+        </div>
+
+        {/* Thanh tìm kiếm ở giữa */}
+        <div className="page-header__center">
+          <VscSearchFuzzy className="icon-search" />
+          <input
+            type="text"
+            className="input-search"
+            placeholder="Nhập tên sách"
+            value={searchTerm}
+            onChange={handleSearchChange} // 👈
+          />
+        </div>
+        <div>
+          <Dropdown menu={{ items }} trigger={["click"]}>
+            <Space>
+              <Avatar>{user?.fullName?.charAt(0) || "U"}</Avatar>
+              {user?.fullName}
+            </Space>
+          </Dropdown>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Header;
