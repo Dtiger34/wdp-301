@@ -28,6 +28,7 @@ import ViewCategoryList from './pages/staff/ViewCategoryList';
 import AddCategory from './pages/staff/AddCategory';
 import UpdateCategory from './pages/staff/UpdateCategory';
 
+import ViewListRequest from './pages/staff/ViewListRequest';
 // User - Book Detail
 import ViewBookDetail from './pages/user/ViewBookDetail';
 
@@ -73,8 +74,11 @@ function App() {
       <Route path="/staff/AddCategory" element={<AddCategory />} />
       <Route path="/staff/UpdateCategory" element={<UpdateCategory />} />
 
+      {/* Staff - Request */}
+      <Route path="/staff/ViewListRequest" element={<ViewListRequest />} />
       {/* User - Book Detail */}
       <Route path="/detail-book/:id" element={<ViewBookDetail />} />
+
     </Routes>
   );
 }

@@ -1,24 +1,22 @@
 import api from './api';
 
-export const requestBorrowBook = async ({ bookId, isReadOnSite, notes = '', dueDate }) => {
+export const requestBorrowBook = async ({ bookId, isReadOnSite = false, notes = '' }) => {
     try {
         const response = await api.post(
             '/books/borrow/request',
-            { bookId, isReadOnSite, notes, dueDate },
+            { bookId, isReadOnSite, notes },
             {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             }
         );
-        console.log('Borrow request successful:', response.data);
         return response.data;
     } catch (error) {
         console.error('Error requesting borrow:', error.response?.data || error.message);
         throw error;
     }
 };
-
 
 export const getBorrowRequests = async () => {
     try {
@@ -40,3 +38,12 @@ export const acceptBorrowRequest = async (borrowId) => {
     }
 }
 
+export const getPendingBorrowRequests = async () => {
+    try {
+        const response = await api.get('/books/borrow-requests/pending');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching pending borrow requests:', error);
+        throw error;
+    }
+};

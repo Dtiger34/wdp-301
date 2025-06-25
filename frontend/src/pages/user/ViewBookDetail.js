@@ -114,7 +114,6 @@ const ViewBookDetail = () => {
             <p><strong>Mô tả:</strong> {book.description || 'Chưa có mô tả'}</p>
             <p><strong>Số lượng còn lại:</strong> {available}</p>
 
-            {isUser && (
               <div style={{ marginTop: '20px' }}>
                 <label><strong>Số lượng mượn:</strong></label><br />
                 <input
@@ -150,7 +149,7 @@ const ViewBookDetail = () => {
                   {loading ? 'Đang gửi...' : '📚 Mượn sách'}
                 </button>
               </div>
-            )}
+            
 
             {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
             {success && <p style={{ color: 'green', marginTop: '10px' }}>{success}</p>}
