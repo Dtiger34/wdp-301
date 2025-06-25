@@ -51,21 +51,48 @@ exports.getBookById = async (req, res) => {
 };
 
 exports.updateBook = async (req, res) => {
-	try {
-		const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
-			new: true,
-			runValidators: true,
-		}).populate('categories', 'name').populate('bookshelf', 'code name location');
+  try {
+    const id = req.params.id;
+    const {
+      title,
+      isbn,
+      author,
+      publisher,
+      publishYear,
+      description,
+      price,
+      bookshelf,
+    } = req.body;
 
-		if (!book) {
-			return res.status(404).json({ message: 'Book not found' });
-		}
+    const categories = req.body.categories || [];
 
-		res.status(200).json(book);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
+    const updatedData = {
+      title,
+      isbn,
+      author,
+      publisher,
+      publishYear,
+      description,
+      price,
+      bookshelf,
+      categories: Array.isArray(categories) ? categories : [categories],
+    };
+
+    if (req.file) {
+      updatedData.image = `/uploads/${req.file.filename}`; // ✅ nếu có ảnh mới
+    }
+
+    const updatedBook = await Book.findByIdAndUpdate(id, updatedData, { new: true })
+      .populate('categories', 'name')
+      .populate('bookshelf', 'name code location');
+
+    res.json(updatedBook);
+  } catch (err) {
+    console.error('Update book failed:', err);
+    res.status(500).json({ error: 'Failed to update book' });
+  }
 };
+
 
 exports.deleteBook = async (req, res) => {
 	try {
@@ -84,23 +111,52 @@ exports.deleteBook = async (req, res) => {
 };
 
 exports.createBook = async (req, res) => {
-	try {
-		const book = await Book.create(req.body);
+  try {
+    const {
+      title,
+      isbn,
+      author,
+      publisher,
+      publishYear,
+      description,
+      price,
+      categories,
+      bookshelf,
+      quantity
+    } = req.body;
 
-		// Create inventory record for the new book
-		await Inventory.create({
-			book: book._id,
-			total: req.body.quantity || 0,
-			available: req.body.quantity || 0,
-			borrowed: 0,
-			damaged: 0,
-			lost: 0,
-		});
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
 
-		res.status(201).json(book);
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
+    const newBook = new Book({
+      title,
+      isbn,
+      author,
+      publisher,
+      publishYear: parseInt(publishYear),
+      description,
+      price: parseFloat(price),
+      image: imagePath,
+      categories: Array.isArray(categories) ? categories : [categories],
+      bookshelf
+    });
+
+    const book = await newBook.save();
+
+    // Tạo inventory
+    await Inventory.create({
+      book: book._id,
+      total: quantity || 0,
+      available: quantity || 0,
+      borrowed: 0,
+      damaged: 0,
+      lost: 0,
+    });
+
+    res.status(201).json(book);
+  } catch (error) {
+    console.error('Error creating book:', error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 /////////// borrow

@@ -15,7 +15,6 @@ const UpdateBook = () => {
     publishYear: '',
     description: '',
     price: '',
-    image: '',
     imageFile: null,
     imagePreview: '',
     categories: [],
@@ -36,12 +35,17 @@ const UpdateBook = () => {
 
         const book = bookRes;
         setForm({
-          ...book,
+          title: book.title || '',
+          isbn: book.isbn || '',
+          author: book.author || '',
+          publisher: book.publisher || '',
           publishYear: book.publishYear || '',
+          description: book.description || '',
           price: book.price || '',
           bookshelf: book.bookshelf?._id || '',
           categories: book.categories?.map((c) => c._id) || [],
           imagePreview: book.image || '',
+          imageFile: null, // reset file
         });
 
         setCategories(catRes.data);
@@ -82,10 +86,16 @@ const UpdateBook = () => {
     e.preventDefault();
     try {
       await updateBook(id, {
-        ...form,
-        image: form.imagePreview,
+        title: form.title,
+        isbn: form.isbn,
+        author: form.author,
+        publisher: form.publisher,
         publishYear: parseInt(form.publishYear),
+        description: form.description,
         price: parseFloat(form.price),
+        bookshelf: form.bookshelf,
+        categories: form.categories,
+        imageFile: form.imageFile, // chỉ gửi file, backend xử lý path
       });
       alert('Cập nhật thành công!');
       navigate('/staff/view-books');

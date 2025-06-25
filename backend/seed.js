@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Import all models
-const User = require('./model/User');
+const User = require('./model/user');
 const Book = require('./model/book');
 const Category = require('./model/categories');
 const Bookshelf = require('./model/bookshelf');

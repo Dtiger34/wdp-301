@@ -1,0 +1,46 @@
+digraph UseCaseDiagram {
+	rankdir=LR size=12
+	node [color=lightblue shape=ellipse style=filled]
+	edge [arrowhead=vee]
+	node [color=black shape=actor style=""]
+	Staff [label=Staff]
+	Doctor [label=Doctor]
+	Admin [label=Admin]
+	node [color=lightyellow shape=ellipse style=filled]
+	CreatePatientRecord [label="Quản lý hồ sơ bệnh nhân"]
+	ScheduleAppointments [label="Đặt khám cho bệnh nhân"]
+	ReportAdmissions [label="Báo cáo xuất nhập viện"]
+	ManageBeds [label="Quản lý giường bệnh"]
+	ManageER [label="Quản lý phòng cấp cứu"]
+	ManageStaff [label="Quản lý nhân viên"]
+	ManageMedicine [label="Quản lý thuốc"]
+	StockMonitoring [label="Theo dõi tồn kho thuốc"]
+	ManagePatientRequests [label="Yêu cầu nhập viện"]
+	ManageTestResults [label="Quản lý kết quả xét nghiệm"]
+	UpdateHealthStatus [label="Theo dõi tình trạng khám bệnh"]
+	Billing [label="Quản lý thanh toán dịch vụ"]
+	Feedback [label="Đánh giá chất lượng khám chữa bệnh"]
+	Promotions [label="Quản lý khuyến mãi dịch vụ"]
+	Analytics [label="Phân tích hiệu suất dịch vụ"]
+	Staff -> CreatePatientRecord
+	Staff -> ScheduleAppointments
+	Staff -> ReportAdmissions
+	Staff -> ManageBeds
+	Staff -> ManageER
+	Staff -> ManageStaff
+	Staff -> ManageMedicine
+	Staff -> StockMonitoring
+	Staff -> ManagePatientRequests
+	Staff -> Billing
+	Staff -> Feedback
+	Staff -> Promotions
+	Doctor -> ManageTestResults
+	Doctor -> UpdateHealthStatus
+	Doctor -> Feedback
+	Admin -> Analytics
+	Admin -> Promotions
+	Admin -> ManageStaff
+	Admin -> ManageMedicine
+	Admin -> StockMonitoring
+	Admin -> Billing
+}

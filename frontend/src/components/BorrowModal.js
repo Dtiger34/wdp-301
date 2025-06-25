@@ -3,18 +3,18 @@ import React, { useState } from 'react';
 const BorrowModal = ({ open, onClose, onConfirm, maxQuantity }) => {
     const [quantity, setQuantity] = useState(1);
     const [isReadOnSite, setIsReadOnSite] = useState(false);
-    const [returnDate, setReturnDate] = useState('');
+    const [dueDate, setDueDate] = useState('');
     const [error, setError] = useState('');
 
     const handleSubmit = () => {
-        if (!returnDate) {
+        if (!dueDate) {
             return setError('Vui lòng chọn ngày trả.');
         }
         if (quantity < 1 || quantity > maxQuantity) {
             return setError(`Số lượng mượn phải từ 1 đến ${maxQuantity}`);
         }
 
-        onConfirm({ quantity, isReadOnSite, returnDate });
+        onConfirm({ quantity, isReadOnSite, dueDate });
         setError('');
     };
 
@@ -55,8 +55,8 @@ const BorrowModal = ({ open, onClose, onConfirm, maxQuantity }) => {
                 <label>Ngày trả:</label>
                 <input
                     type="date"
-                    value={returnDate}
-                    onChange={(e) => setReturnDate(e.target.value)}
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
                     style={styles.input}
                 />
 

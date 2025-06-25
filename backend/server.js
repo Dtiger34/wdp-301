@@ -8,6 +8,7 @@ const User = require('./model/user');
 const connectionDB = require('./config/db');
 const { swaggerUi, specs } = require('./config/swagger');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use('/uploads', express.static('uploads'));
 
 
 app.use(bodyParser.json());
@@ -21,7 +22,7 @@ app.use('/api/v1/books', require('./routes/BookRoute'));
 app.use('/api/v1/bookshelves', require('./routes/bookshelfRoute'));
 app.use('/api/v1/categories', require('./routes/categoryRoute'));
 app.use('/api/v1/inventory', require('./routes/InventoryRoute'));
-// app.use('/api/v1/borrows', require('./routes/BorrowRoute'))
+// app.use('/api/v1/borrows', require('./routes/BorrowRoute'));
 
 
 app.use((req, res, next) => {

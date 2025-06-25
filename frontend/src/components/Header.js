@@ -10,7 +10,7 @@ const Header = () => {
     const token = getToken();
     const user = token ? checkUserAuth(token) : null;
     const isAdmin = user?.role === 'admin';
-
+    const isStaff = user?.role === 'staff';
     const handleLogout = async () => {
         setLoading(true);
         try {
@@ -66,6 +66,20 @@ const Header = () => {
                             Hồ sơ
                         </Link>
                     </li>
+                    {isStaff && (
+                        <li>
+                            <Link to="/staff/bookshelf" style={{ color: '#fff', textDecoration: 'none' }}>
+                                BookShelf
+                            </Link>
+                        </li>
+                    )}
+                    {isStaff && (
+                        <li>
+                            <Link to="/staff/ViewCategoryList" style={{ color: '#fff', textDecoration: 'none' }}>
+                                Category
+                            </Link>
+                        </li>
+                    )}
                     <li>
                         <Link to="/staff/view-books" style={{ color: '#fff', textDecoration: 'none' }}>
                             Sách

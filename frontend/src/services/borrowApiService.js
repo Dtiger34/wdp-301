@@ -1,22 +1,24 @@
 import api from './api';
 
-export const requestBorrowBook = async ({ bookId, isReadOnSite = false, notes = '' }) => {
+export const requestBorrowBook = async ({ bookId, isReadOnSite, notes = '', dueDate }) => {
     try {
         const response = await api.post(
             '/books/borrow/request',
-            { bookId, isReadOnSite, notes },
+            { bookId, isReadOnSite, notes, dueDate },
             {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             }
         );
+        console.log('Borrow request successful:', response.data);
         return response.data;
     } catch (error) {
         console.error('Error requesting borrow:', error.response?.data || error.message);
         throw error;
     }
 };
+
 
 export const getBorrowRequests = async () => {
     try {

@@ -3,7 +3,7 @@ const router = express.Router();
 const BookController = require('../controller/BookController');
 const jwtConfig = require('../config/jwtconfig');
 const book = require('../model/book');
-
+const uploadImage = require('../middlewares/uploadImage');
 /**
  * @swagger
  * components:
@@ -92,9 +92,9 @@ router.get('/', jwtConfig.requireAuth, BookController.getAllBooks);
  *         description: Book not found
  */
 router.get('/:id', jwtConfig.requireAuth, BookController.getBookById);
-router.put('/:id', jwtConfig.requireAuth, BookController.updateBook);
+router.put('/:id', jwtConfig.requireAuth, uploadImage.single('image'), BookController.updateBook);
 router.delete('/:id', jwtConfig.requireAuth, BookController.deleteBook);
-router.post('/', jwtConfig.requireAuth, BookController.createBook);
+router.post('/', jwtConfig.requireAuth,uploadImage.single('image'), BookController.createBook);
 
 /**
  * @swagger
