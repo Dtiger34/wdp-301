@@ -6,9 +6,11 @@ import { Avatar, Dropdown, Space } from "antd";
 import { VscSearchFuzzy } from "react-icons/vsc";
 import { FaReact } from "react-icons/fa";
 import "../css/Header.css";
+import { useSearch } from "../searchContext";
 
 const Header = () => {
   const navigate = useNavigate();
+  const { searchTerm, setSearchTerm } = useSearch();
 
   const token = getToken();
   const user = token ? checkUserAuth(token) : null;
@@ -22,6 +24,10 @@ const Header = () => {
     } catch (error) {
       console.error("Logout failed:", error);
     }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); // 👈 cập nhật context
   };
 
   const items = [
@@ -60,7 +66,9 @@ const Header = () => {
           <input
             type="text"
             className="input-search"
-            placeholder="Bạn tìm gì hôm nay"
+            placeholder="Nhập tên sách"
+            value={searchTerm}
+            onChange={handleSearchChange} // 👈
           />
         </div>
         <div>

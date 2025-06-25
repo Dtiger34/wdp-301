@@ -21,13 +21,13 @@ import { FilterTwoTone, ReloadOutlined } from "@ant-design/icons";
 import "../css/HomePage.css";
 import axios from "axios";
 import { getCategoryOptions } from "../services/categoryService";
+import { useSearch } from "../searchContext";
 const HomePage = () => {
+  const { searchTerm } = useSearch(); // 👈
+
   const [books, setBooks] = useState([]);
-  const [filteredBooks, setFilteredBooks] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState([0, 999999]);
   const [form] = Form.useForm();
-  const [filter, setFilter] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [listCategory, setListCategory] = useState([]);
   const [current, setCurrent] = useState(1);
@@ -48,22 +48,6 @@ const HomePage = () => {
     fetchData();
   }, []);
   const navigate = useNavigate();
-
-  //   useEffect(() => {
-  //     let result = books;
-
-  //     if (searchTerm.trim()) {
-  //       result = result.filter((book) =>
-  //         book.title.toLowerCase().includes(searchTerm.toLowerCase())
-  //       );
-  //     }
-
-  //     result = result.filter(
-  //       (book) => book.price >= priceRange[0] && book.price <= priceRange[1]
-  //     );
-
-  //     setFilteredBooks(result);
-  //   }, [searchTerm, priceRange, books]);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -115,9 +99,13 @@ const HomePage = () => {
         style={{ maxWidth: 1440, margin: "0 auto" }}
       >
         <Row gutter={[20, 20]}>
-          <Col md={4} sm={6} xs={24}>
+          <Col md={4} sm={0} xs={0}>
             <div
-              style={{ padding: "20px", background: "#fff", borderRadius: 5 }}
+              style={{
+                padding: "35px",
+                background: "#fff",
+                borderRadius: 5,
+              }}
             >
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span>
@@ -128,7 +116,6 @@ const HomePage = () => {
                   title="Reset"
                   onClick={() => {
                     form.resetFields();
-                    setSearchTerm(""); // Reset ô tìm kiếm
                     setFilterCategory(""); // Reset category filter
                     setPriceRange([0, 999999]); // Reset price filter
                     setSortQuery(""); // Reset sort
@@ -284,6 +271,7 @@ const HomePage = () => {
           </Col>
         </Row>
       </div>
+      <Footer />
     </div>
   );
 };
