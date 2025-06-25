@@ -141,6 +141,7 @@ router.post('/', jwtConfig.requireAdmin, BookController.createBook);
  *         description: Book not found
  */
 router.post('/borrow/request', jwtConfig.requireAuth, BookController.createBorrowRequest);
+router.get('/borrow-requests/pending', BookController.getPendingBorrowRequests);
 
 /**
  * @swagger

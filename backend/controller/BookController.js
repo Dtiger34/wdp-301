@@ -2,7 +2,9 @@ const Book = require('../model/book');
 const Inventory = require('../model/Inventory');
 const BorrowRecord = require('../model/borrowHistory');
 const Review = require('../model/review');
+const borrowController = require('../model/borrowHistory');
 
+////////// book
 exports.getAllBooks = async (req, res) => {
 	try {
 		const books = await Book.find().populate('categories', 'name').populate('bookshelf', 'code name location');
@@ -47,6 +49,7 @@ exports.getBookById = async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 };
+
 exports.updateBook = async (req, res) => {
 	try {
 		const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
@@ -63,6 +66,7 @@ exports.updateBook = async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 };
+
 exports.deleteBook = async (req, res) => {
 	try {
 		const book = await Book.findByIdAndDelete(req.params.id);
@@ -99,9 +103,11 @@ exports.createBook = async (req, res) => {
 	}
 };
 
+/////////// borrow
+// Tạo yêu cầu mượn sách
 exports.createBorrowRequest = async (req, res) => {
 	try {
-		const { bookId, isReadOnSite, notes } = req.body;
+		const { bookId, isReadOnSite, notes, dueDate } = req.body;
 		const userId = req.user.id;
 
 		// Check if book exists
@@ -116,7 +122,7 @@ exports.createBorrowRequest = async (req, res) => {
 			return res.status(400).json({ message: 'Book is not available for borrowing' });
 		}
 
-		// Check if user already has a pending or active borrow request for this book
+		// Check for existing request
 		const existingRequest = await BorrowRecord.findOne({
 			userId,
 			bookId,
@@ -129,14 +135,16 @@ exports.createBorrowRequest = async (req, res) => {
 			});
 		}
 
-		// Create borrow request
-		const dueDate = new Date();
-		dueDate.setDate(dueDate.getDate() + (isReadOnSite ? 1 : 14)); // 1 day for on-site, 14 days for take-home
+		// Validate dueDate
+		if (!dueDate || isNaN(new Date(dueDate))) {
+			return res.status(400).json({ message: 'Invalid or missing dueDate' });
+		}
 
+		// Create borrow request
 		const borrowRequest = await BorrowRecord.create({
 			userId,
 			bookId,
-			dueDate,
+			dueDate: new Date(dueDate),
 			isReadOnSite,
 			notes,
 			status: 'pending',
@@ -147,6 +155,23 @@ exports.createBorrowRequest = async (req, res) => {
 		res.status(201).json({
 			message: 'Borrow request created successfully',
 			borrowRequest,
+		});
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+// Staff: Lấy danh sách yêu cầu mượn đang pending
+exports.getPendingBorrowRequests = async (req, res) => {
+	try {
+		const pendingRequests = await borrowController.find({ status: 'pending' })
+			.populate('userId')
+			.populate('bookId')
+			.sort({ createdAt: -1 }); // Mới nhất lên đầu
+
+		res.status(200).json({
+			message: 'Pending borrow requests fetched successfully',
+			data: pendingRequests,
 		});
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -246,6 +271,7 @@ exports.getUserBorrowRequests = async (req, res) => {
 	}
 };
 
+////////// review
 exports.createReview = async (req, res) => {
 	try {
 		const { bookId, rating, comment } = req.body;
@@ -347,3 +373,145 @@ exports.deleteReview = async (req, res) => {
 	}
 }
 
+///// 
+exports.searchBooks = async (req, res) => {
+	try {
+		const {
+			query,
+			category,
+			bookshelf,
+			author,
+			publishYear,
+			available,
+			page = 1,
+			limit = 10,
+			sortBy = 'createdAt',
+			sortOrder = 'desc',
+		} = req.query;
+
+		// Build search query
+		const searchQuery = {};
+
+		if (query) {
+			searchQuery.$or = [
+				{ title: { $regex: query, $options: 'i' } },
+				{ author: { $regex: query, $options: 'i' } },
+				{ isbn: { $regex: query, $options: 'i' } },
+				{ description: { $regex: query, $options: 'i' } },
+			];
+		}
+
+		if (category) {
+			searchQuery.categories = category;
+		}
+
+		if (bookshelf) {
+			searchQuery.bookshelf = bookshelf;
+		}
+
+		if (author) {
+			searchQuery.author = { $regex: author, $options: 'i' };
+		}
+
+		if (publishYear) {
+			searchQuery.publishYear = publishYear;
+		}
+
+		// Get books
+		let booksQuery = Book.find(searchQuery)
+			.populate('categories', 'name')
+			.populate('bookshelf', 'code name location')
+			.sort({ [sortBy]: sortOrder === 'desc' ? -1 : 1 })
+			.limit(limit * 1)
+			.skip((page - 1) * limit);
+
+		let books = await booksQuery;
+
+		// Filter by availability if requested
+		if (available === 'true') {
+			const bookIds = books.map((book) => book._id);
+			const availableInventory = await Inventory.find({
+				book: { $in: bookIds },
+				available: { $gt: 0 },
+			}).select('book');
+
+			const availableBookIds = availableInventory.map((inv) => inv.book.toString());
+			books = books.filter((book) => availableBookIds.includes(book._id.toString()));
+		}
+
+		// Get inventory information for each book
+		const booksWithInventory = await Promise.all(
+			books.map(async (book) => {
+				const inventory = await Inventory.findOne({ book: book._id });
+				return {
+					...book.toObject(),
+					inventory: inventory || { available: 0, total: 0, borrowed: 0, damaged: 0, lost: 0 },
+				};
+			})
+		);
+
+		const total = await Book.countDocuments(searchQuery);
+
+		res.status(200).json({
+			books: booksWithInventory,
+			pagination: {
+				currentPage: page,
+				totalPages: Math.ceil(total / limit),
+				totalRecords: total,
+				hasNext: page * limit < total,
+				hasPrev: page > 1,
+			},
+		});
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+//////////
+exports.updateBookInventory = async (req, res) => {
+	try {
+		const bookId = req.params.id;
+		const { total, available, borrowed, damaged, lost } = req.body;
+
+		const book = await Book.findById(bookId);
+		if (!book) {
+			return res.status(404).json({ message: 'Book not found' });
+		}
+
+		const inventory = await Inventory.findOne({ book: bookId });
+		if (!inventory) {
+			return res.status(404).json({ message: 'Inventory not found for this book' });
+		}
+
+		// Validate the numbers make sense
+		const newTotal = total !== undefined ? total : inventory.total;
+		const newAvailable = available !== undefined ? available : inventory.available;
+		const newBorrowed = borrowed !== undefined ? borrowed : inventory.borrowed;
+		const newDamaged = damaged !== undefined ? damaged : inventory.damaged;
+		const newLost = lost !== undefined ? lost : inventory.lost;
+
+		if (newAvailable + newBorrowed + newDamaged + newLost !== newTotal) {
+			return res.status(400).json({
+				message: 'Invalid inventory numbers. Total must equal available + borrowed + damaged + lost',
+			});
+		}
+
+		// Update inventory
+		Object.assign(inventory, {
+			total: newTotal,
+			available: newAvailable,
+			borrowed: newBorrowed,
+			damaged: newDamaged,
+			lost: newLost,
+		});
+
+		await inventory.save();
+
+		res.status(200).json({
+			message: 'Book inventory updated successfully',
+			inventory,
+		});
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
