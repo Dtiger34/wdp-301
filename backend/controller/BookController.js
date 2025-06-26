@@ -52,46 +52,101 @@ exports.getBookById = async (req, res) => {
 
 exports.updateBook = async (req, res) => {
   try {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    }).populate('categories', 'name').populate('bookshelf', 'code name location');
+    const id = req.params.id;
+    const {
+      title,
+      isbn,
+      author,
+      publisher,
+      publishYear,
+      description,
+      price,
+      bookshelf,
+    } = req.body;
 
-    if (!book) {
-      return res.status(404).json({ message: 'Book not found' });
+    const categories = req.body.categories || [];
+
+    const updatedData = {
+      title,
+      isbn,
+      author,
+      publisher,
+      publishYear,
+      description,
+      price,
+      bookshelf,
+      categories: Array.isArray(categories) ? categories : [categories],
+    };
+
+    if (req.file) {
+      updatedData.image = `/uploads/${req.file.filename}`; // ✅ nếu có ảnh mới
     }
 
-    res.status(200).json(book);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const updatedBook = await Book.findByIdAndUpdate(id, updatedData, { new: true })
+      .populate('categories', 'name')
+      .populate('bookshelf', 'name code location');
+
+    res.json(updatedBook);
+  } catch (err) {
+    console.error('Update book failed:', err);
+    res.status(500).json({ error: 'Failed to update book' });
   }
 };
 
+
 exports.deleteBook = async (req, res) => {
-  try {
-    const book = await Book.findByIdAndDelete(req.params.id);
-    if (!book) {
-      return res.status(404).json({ message: 'Book not found' });
-    }
+	try {
+		const book = await Book.findByIdAndDelete(req.params.id);
+		if (!book) {
+			return res.status(404).json({ message: 'Book not found' });
+		}
 
-    // Xoá cả inventory nếu có
-    await Inventory.findOneAndDelete({ book: req.params.id });
+		// Xoá cả inventory nếu có
+		await Inventory.findOneAndDelete({ book: req.params.id });
 
-    res.status(200).json({ message: 'Book deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+		res.status(200).json({ message: 'Book deleted successfully' });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
 };
 
 exports.createBook = async (req, res) => {
   try {
-    const book = await Book.create(req.body);
+    const {
+      title,
+      isbn,
+      author,
+      publisher,
+      publishYear,
+      description,
+      price,
+      categories,
+      bookshelf,
+      quantity
+    } = req.body;
 
-    // Create inventory record for the new book
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
+
+    const newBook = new Book({
+      title,
+      isbn,
+      author,
+      publisher,
+      publishYear: parseInt(publishYear),
+      description,
+      price: parseFloat(price),
+      image: imagePath,
+      categories: Array.isArray(categories) ? categories : [categories],
+      bookshelf
+    });
+
+    const book = await newBook.save();
+
+    // Tạo inventory
     await Inventory.create({
       book: book._id,
-      total: req.body.quantity || 0,
-      available: req.body.quantity || 0,
+      total: quantity || 0,
+      available: quantity || 0,
       borrowed: 0,
       damaged: 0,
       lost: 0,
@@ -99,10 +154,10 @@ exports.createBook = async (req, res) => {
 
     res.status(201).json(book);
   } catch (error) {
+    console.error('Error creating book:', error);
     res.status(500).json({ message: error.message });
   }
 };
-
 /////////// borrow
 // Tạo yêu cầu mượn sách
 exports.createBorrowRequest = async (req, res) => {

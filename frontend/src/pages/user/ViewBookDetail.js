@@ -5,7 +5,8 @@ import { requestBorrowBook } from '../../services/borrowApiService';
 import { getInventoryItemById } from '../../services/InventoryServicesApi';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import BorrowModal from '../../components/BorrowModal'; // Đảm bảo đúng đường dẫn
+import BorrowModal from '../../components/BorrowModal';
+import { getToken, checkUserAuth } from '../../utils/auth';
 
 const ViewBookDetail = () => {
   const { id } = useParams();
@@ -16,6 +17,11 @@ const ViewBookDetail = () => {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+
+  // Lấy thông tin người dùng và kiểm tra role
+  const token = getToken();
+  const user = token ? checkUserAuth(token) : null;
+  const isUser = user?.role === 'user';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,6 +68,16 @@ const ViewBookDetail = () => {
     }
   };
 
+  const getSafeImage = (url) => {
+    if (!url || url.startsWith('blob:')) {
+      return 'https://via.placeholder.com/200x300?text=No+Image';
+    }
+    if (url.startsWith('/uploads/')) {
+      return `http://localhost:9999${url}`;
+    }
+    return url;
+  };
+
   if (!book) return <div style={{ padding: '20px' }}>Đang tải...</div>;
 
   return (
@@ -80,7 +96,7 @@ const ViewBookDetail = () => {
           gap: '30px',
         }}>
           <img
-            src={book.image || 'https://via.placeholder.com/200'}
+            src={getSafeImage(book.image)}
             alt={book.title}
             style={{
               width: '300px',
@@ -94,45 +110,46 @@ const ViewBookDetail = () => {
           <div style={{ flex: 1 }}>
             <h2>{book.title}</h2>
             <p><strong>Tác giả:</strong> {book.author}</p>
-            <p><strong>Thể loại:</strong> {book.category || 'Không xác định'}</p>
+            <p><strong>Thể loại:</strong> {Array.isArray(book.categories) ? book.categories.map(c => c.name).join(', ') : 'Không xác định'}</p>
             <p><strong>Mô tả:</strong> {book.description || 'Chưa có mô tả'}</p>
             <p><strong>Số lượng còn lại:</strong> {available}</p>
 
-            <div style={{ marginTop: '20px' }}>
-              <label><strong>Số lượng mượn:</strong></label><br />
-              <input
-                type="number"
-                value={quantity}
-                min={1}
-                max={available}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  setQuantity(isNaN(val) ? 1 : val);
-                }}
-                style={{
-                  padding: '10px',
-                  width: '80px',
-                  borderRadius: '4px',
-                  border: '1px solid #ccc',
-                  marginRight: '10px',
-                  marginTop: '8px'
-                }}
-              />
-              <button
-                onClick={() => setModalOpen(true)}
-                disabled={loading}
-                style={{
-                  padding: '10px 18px',
-                  backgroundColor: loading ? '#95a5a6' : '#2c3e50',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: loading ? 'not-allowed' : 'pointer'
-                }}
-              >
-                {loading ? 'Đang gửi...' : '📚 Mượn sách'}
-              </button>
-            </div>
+              <div style={{ marginTop: '20px' }}>
+                <label><strong>Số lượng mượn:</strong></label><br />
+                <input
+                  type="number"
+                  value={quantity}
+                  min={1}
+                  max={available}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    setQuantity(isNaN(val) ? 1 : val);
+                  }}
+                  style={{
+                    padding: '10px',
+                    width: '80px',
+                    borderRadius: '4px',
+                    border: '1px solid #ccc',
+                    marginRight: '10px',
+                    marginTop: '8px'
+                  }}
+                />
+                <button
+                  onClick={() => setModalOpen(true)}
+                  disabled={loading}
+                  style={{
+                    padding: '10px 18px',
+                    backgroundColor: loading ? '#95a5a6' : '#2c3e50',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: loading ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  {loading ? 'Đang gửi...' : '📚 Mượn sách'}
+                </button>
+              </div>
+            
 
             {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
             {success && <p style={{ color: 'green', marginTop: '10px' }}>{success}</p>}

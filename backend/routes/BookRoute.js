@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const BookController = require("../controller/BookController");
 const jwtConfig = require("../config/jwtconfig");
+const uploadImage = require('../middlewares/uploadImage');
 
 /**
  * @swagger
@@ -35,8 +36,8 @@ const jwtConfig = require("../config/jwtconfig");
 router.get("/", jwtConfig.requireAuth, BookController.getAllBooks);
 router.get("/filter", jwtConfig.requireAuth, BookController.getBookFilter);
 router.get("/:id", jwtConfig.requireAuth, BookController.getBookById);
-router.post("/", jwtConfig.requireAdmin, BookController.createBook);
-router.put("/:id", jwtConfig.requireAuth, BookController.updateBook);
+router.post('/', jwtConfig.requireAuth,uploadImage.single('image'), BookController.createBook);
+router.put('/:id', jwtConfig.requireAuth, uploadImage.single('image'), BookController.updateBook);
 router.delete("/:id", jwtConfig.requireAuth, BookController.deleteBook);
 
 // ------------------- BORROW ROUTES --------------------

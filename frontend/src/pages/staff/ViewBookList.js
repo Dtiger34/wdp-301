@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { getBooks, deleteBook } from '../../services/bookService';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash, FaEdit } from 'react-icons/fa';
-import StaffDashboard from "../../pages/staff/StaffDashboard";
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import StaffDashboard from '../staff/StaffDashboard';
 const ViewBookList = () => {
   const [books, setBooks] = useState([]);
   const navigate = useNavigate();
@@ -31,10 +33,23 @@ const ViewBookList = () => {
     }
   };
 
+  const getSafeImage = (url) => {
+    if (!url || url.startsWith('blob:')) {
+      return 'https://via.placeholder.com/80x100?text=No+Image';
+    }
+    if (url.startsWith('/uploads/')) {
+      return `http://localhost:9999${url}`;
+    }
+    return url;
+  };
+
   return (
-    <StaffDashboard>
-      <div style={{ padding: '40px', backgroundColor: '#f9fafb', minHeight: '100vh' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <StaffDashboard>
+
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+
+      <main style={{ flex: 1 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#374151' }}>Danh sách sách</h2>
             <button
@@ -56,24 +71,26 @@ const ViewBookList = () => {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead style={{ backgroundColor: '#f3f4f6', borderBottom: '1px solid #e5e7eb' }}>
                 <tr>
-                  <th style={{ padding: '16px', textAlign: 'left' }}>Tiêu đề</th>
-                  <th style={{ padding: '16px', textAlign: 'left' }}>Thông tin</th>
-                  <th style={{ padding: '16px', textAlign: 'left' }}>Ảnh bìa</th>
-                  <th style={{ padding: '16px', textAlign: 'left' }}>Thể loại</th>
-                  <th style={{ padding: '16px', textAlign: 'left' }}>Kệ sách</th>
-                  <th style={{ padding: '16px', textAlign: 'center' }}>Hành động</th>
+                  <th style={thStyle}>Tiêu đề</th>
+                  <th style={thStyle}>Thông tin</th>
+                  <th style={thStyle}>Ảnh bìa</th>
+                  <th style={thStyle}>Thể loại</th>
+                  <th style={thStyle}>Kệ sách</th>
+                  <th style={{ ...thStyle, textAlign: 'center' }}>Hành động</th>
                 </tr>
               </thead>
               <tbody>
                 {books.length === 0 ? (
                   <tr>
-                    <td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: '#9ca3af' }}>Không có sách nào được tìm thấy.</td>
+                    <td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: '#9ca3af' }}>
+                      Không có sách nào được tìm thấy.
+                    </td>
                   </tr>
                 ) : (
                   books.map((book) => (
                     <tr key={book._id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                      <td style={{ padding: '16px', fontWeight: '600', color: '#1f2937' }}>{book.title}</td>
-                      <td style={{ padding: '16px', fontSize: '14px', color: '#374151' }}>
+                      <td style={tdStyleTitle}>{book.title}</td>
+                      <td style={tdStyleInfo}>
                         <div>Tác giả: {book.author || '-'}</div>
                         <div>NXB: {book.publisher || '-'}</div>
                         <div>Năm: {book.publishYear || '-'}</div>
@@ -82,17 +99,13 @@ const ViewBookList = () => {
                       </td>
                       <td style={{ padding: '16px' }}>
                         <img
-                          src={book.image || 'https://via.placeholder.com/80'}
+                          src={getSafeImage(book.image)}
                           alt={book.title}
                           style={{ width: '80px', height: '100px', objectFit: 'cover', borderRadius: '4px' }}
                         />
                       </td>
-                      <td style={{ padding: '16px', color: '#4b5563' }}>
-                        {book.categories?.map((c) => c.name).join(', ') || 'Không rõ'}
-                      </td>
-                      <td style={{ padding: '16px', color: '#4b5563' }}>
-                        {book.bookshelf?.name || 'Không rõ'}
-                      </td>
+                      <td style={tdStyle}>{book.categories?.map((c) => c.name).join(', ') || 'Không rõ'}</td>
+                      <td style={tdStyle}>{book.bookshelf?.name || 'Không rõ'}</td>
                       <td style={{ padding: '16px', textAlign: 'center' }}>
                         <button
                           onClick={() => navigate(`/staff/update-book/${book._id}`)}
@@ -116,9 +129,35 @@ const ViewBookList = () => {
             </table>
           </div>
         </div>
-      </div>
-    </StaffDashboard>
+      </main>
+    </div>
+      </StaffDashboard>
+
   );
+};
+
+const thStyle = {
+  padding: '16px',
+  textAlign: 'left',
+  fontWeight: '600',
+  color: '#374151'
+};
+
+const tdStyle = {
+  padding: '16px',
+  fontSize: '14px',
+  color: '#374151'
+};
+
+const tdStyleTitle = {
+  ...tdStyle,
+  fontWeight: '600',
+  color: '#1f2937'
+};
+
+const tdStyleInfo = {
+  ...tdStyle,
+  lineHeight: '1.5'
 };
 
 export default ViewBookList;

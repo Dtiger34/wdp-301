@@ -19,6 +19,25 @@
   box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.1);
   border-radius: 0.125rem;
   padding: 0.3rem;
+  background-color: #fff;
+}
+
+.thumbnail-fixed-ratio {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.thumbnail-fixed-ratio img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: auto;
 }
 
 .homepage-container .customize-row .column .wrapper .text {
@@ -32,37 +51,14 @@
   text-overflow: ellipsis;
 }
 
-.homepage-container .customize-row .column .wrapper .rating {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.homepage-container .customize-row .thumbnail {
-  max-height: 200px;
-  max-width: 200px;
-  margin: 0 auto;
-}
-
-.homepage-container .customize-row .thumbnail img {
-  max-width: 100%;
-  max-height: 100%;
-  background-color: white;
-  object-fit: contain;
-}
-
-/* Responsive 50% cho điện thoại */
 @media screen and (max-width: 600px) {
   .homepage-container .customize-row .column {
     width: calc(50% - 8px);
-    flex-wrap: wrap;
   }
 }
 
-/* Responsive 25% cho tablet */
 @media screen and (max-width: 800px) and (min-width: 601px) {
   .homepage-container .customize-row .column {
     width: calc(25% - 8px);
-    flex-wrap: wrap;
   }
 }

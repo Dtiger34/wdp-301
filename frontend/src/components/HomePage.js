@@ -1,3 +1,4 @@
+// HomePage.js
 import React, { useState, useEffect } from "react";
 import { getBooksFilter } from "../services/bookService";
 import Header from "../components/Header";
@@ -21,8 +22,9 @@ import { FilterTwoTone, ReloadOutlined } from "@ant-design/icons";
 import "../css/HomePage.css";
 import { getCategoryOptions } from "../services/categoryService";
 import { useSearch } from "../searchContext";
+
 const HomePage = () => {
-  const { searchTerm } = useSearch(); // 👈
+  const { searchTerm } = useSearch();
 
   const [books, setBooks] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 999999]);
@@ -35,18 +37,19 @@ const HomePage = () => {
   const [sortQuery, setSortQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const categories = await getCategoryOptions();
-        setListCategory(categories); // [{ value: "...", label: "..." }]
+        setListCategory(categories);
       } catch (err) {
         console.error(err);
       }
     };
     fetchData();
   }, []);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -82,14 +85,16 @@ const HomePage = () => {
 
     setFilterCategory(categoryString);
     setPriceRange([from, to]);
-    setCurrent(1); // reset về trang đầu
+    setCurrent(1);
   };
+
   const items = [
     { key: "", label: "Tất cả", children: <></> },
     { key: "-updatedAt", label: "Sách Mới", children: <></> },
     { key: "price", label: "Giá Thấp Đến Cao", children: <></> },
     { key: "-price", label: "Giá Cao Đến Thấp", children: <></> },
   ];
+
   return (
     <div style={{ background: "#efefef", padding: "20px 0" }}>
       <Header />
@@ -115,19 +120,15 @@ const HomePage = () => {
                   title="Reset"
                   onClick={() => {
                     form.resetFields();
-                    setFilterCategory(""); // Reset category filter
-                    setPriceRange([0, 999999]); // Reset price filter
-                    setSortQuery(""); // Reset sort
+                    setFilterCategory("");
+                    setPriceRange([0, 999999]);
+                    setSortQuery("");
                     setCurrent(1);
                   }}
                 />
               </div>
               <Divider />
-              <Form
-                // onFinish={onFinish}
-                form={form}
-                onValuesChange={handleChangeFilter}
-              >
+              <Form form={form} onValuesChange={handleChangeFilter}>
                 <Form.Item
                   name="category"
                   label="Danh mục sản phẩm"
@@ -150,7 +151,6 @@ const HomePage = () => {
                     <Col xl={11} md={24}>
                       <Form.Item name={["range", "from"]}>
                         <InputNumber
-                          name="from"
                           min={0}
                           placeholder="đ TỪ"
                           formatter={(value) =>
@@ -166,7 +166,6 @@ const HomePage = () => {
                     <Col xl={11} md={24}>
                       <Form.Item name={["range", "to"]}>
                         <InputNumber
-                          name="to"
                           min={0}
                           placeholder="đ ĐẾN"
                           formatter={(value) =>
@@ -227,20 +226,19 @@ const HomePage = () => {
                       key={index}
                     >
                       <div className="wrapper">
-                        <div className="thumbnail">
+                        <div className="thumbnail-fixed-ratio">
                           <img
-                            src={`http://localhost:9999/images/book/${item.image}`}
+                            src={`http://localhost:9999${item.image}`}
                             alt="thumbnail book"
+                            loading="lazy"
                           />
                         </div>
                         <div className="text" title={item.title}>
                           {item.title}
                         </div>
-
                         <div className="text">
                           <span>Tác giả {item?.author}</span>
                         </div>
-
                         <div className="price">
                           {new Intl.NumberFormat("vi-VN", {
                             style: "currency",

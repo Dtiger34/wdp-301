@@ -33,31 +33,49 @@ export const getBook = async (id) => {
 };
 
 // Add new book
-export const addBook = async (book) => {
-  try {
-    const token = getToken();
-    const response = await api.post("/books", book, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error adding book:", error);
-    throw error;
-  }
+export const addBook = async (bookData) => {
+  const formData = new FormData();
+  formData.append('title', bookData.title);
+  formData.append('isbn', bookData.isbn);
+  formData.append('author', bookData.author);
+  formData.append('publisher', bookData.publisher);
+  formData.append('publishYear', bookData.publishYear);
+  formData.append('description', bookData.description);
+  formData.append('price', bookData.price);
+  formData.append('bookshelf', bookData.bookshelf);
+  bookData.categories.forEach((cat) => formData.append('categories[]', cat));
+  formData.append('image', bookData.imageFile); // file thực
+
+  const response = await api.post('/books', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+  return response.data;
 };
 
+
 // Update book by ID
-export const updateBook = async (id, book) => {
-  try {
-    const token = getToken();
-    const response = await api.put(`/books/${id}`, book, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error updating book:", error);
-    throw error;
+export const updateBook = async (id, bookData) => {
+  const formData = new FormData();
+  formData.append('title', bookData.title);
+  formData.append('isbn', bookData.isbn);
+  formData.append('author', bookData.author);
+  formData.append('publisher', bookData.publisher);
+  formData.append('publishYear', bookData.publishYear);
+  formData.append('description', bookData.description);
+  formData.append('price', bookData.price);
+  formData.append('bookshelf', bookData.bookshelf);
+  bookData.categories.forEach((cat) => formData.append('categories[]', cat));
+
+  if (bookData.imageFile) {
+    formData.append('image', bookData.imageFile); // Gửi ảnh mới nếu có
   }
+
+  const response = await api.put(`/books/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+  return response.data;
 };
 
 // Delete book by ID

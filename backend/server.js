@@ -10,6 +10,7 @@ const app = express();
 
 // Swagger Docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+app.use('/uploads', express.static('uploads'));
 
 // Middleware
 app.use(bodyParser.json());

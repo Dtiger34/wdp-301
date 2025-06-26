@@ -21,7 +21,7 @@ const AdminDashboard = ({ children }) => {
                         <li style={{ marginBottom: '15px' }}>
                             <Link to="/admin/users" style={linkStyle}>👤 Quản lý người dùng</Link>
                         </li>
-                        <li style={{ marginBottom: '15px' }}>
+                        {/* <li style={{ marginBottom: '15px' }}>
                             <Link to="/admin/books" style={linkStyle}>📚 Quản lý sách</Link>
                         </li>
                         <li style={{ marginBottom: '15px' }}>
@@ -32,7 +32,7 @@ const AdminDashboard = ({ children }) => {
                         </li>
                         <li style={{ marginBottom: '15px' }}>
                             <Link to="/admin/reports" style={linkStyle}>📈 Thống kê</Link>
-                        </li>
+                        </li> */}
                     </ul>
                 </aside>
 
