@@ -1,19 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { logoutUser } from "../services/api";
 import { removeToken, getToken, checkUserAuth } from "../utils/auth";
-import { Avatar, Dropdown, Space } from "antd";
+import { Avatar, Badge, Dropdown, Empty, Popover, Space } from "antd";
 import { VscSearchFuzzy } from "react-icons/vsc";
-import { FaReact } from "react-icons/fa";
+import { FaBell, FaReact } from "react-icons/fa";
 import "../css/Header.css";
 import { useSearch } from "../searchContext";
 
 const Header = () => {
   const navigate = useNavigate();
   const { searchTerm, setSearchTerm } = useSearch();
-
   const token = getToken();
   const user = token ? checkUserAuth(token) : null;
+
   const isAdmin = user?.role === "admin";
   const isStaff = user?.role === "staff";
   const handleLogout = async () => {
@@ -55,6 +55,10 @@ const Header = () => {
       key: "staff",
     });
   }
+
+  const contentPopover = () => {
+    return <Empty description="Không có thông báo mới" />;
+  };
   return (
     <div className="header-wrapper">
       <div className="page-header">
@@ -75,6 +79,18 @@ const Header = () => {
             onChange={handleSearchChange} // 👈
           />
         </div>
+        <Popover
+          className="popover-carts"
+          placement="topRight"
+          rootClassName="popover-carts"
+          title={"Thông báo mới"}
+          content={contentPopover}
+          arrow={true}
+        >
+          <Badge count={0} size={"small"} showZero>
+            <FaBell className="icon-bell" />
+          </Badge>
+        </Popover>
         <div>
           <Dropdown menu={{ items }} trigger={["click"]}>
             <Space>

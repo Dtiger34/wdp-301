@@ -16,7 +16,7 @@
 
 .homepage-container .customize-row .column .wrapper {
   cursor: pointer;
-  box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.2);
   border-radius: 0.125rem;
   padding: 0.3rem;
 }

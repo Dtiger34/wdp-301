@@ -16,6 +16,13 @@
   padding: 0 20px;
   gap: 20px;
 }
+.icon-bell {
+  font-size: 20px;
+  top: 5px;
+  position: relative;
+  color: #353636;
+  margin-right: 10px;
+}
 
 /* Left - Logo */
 .page-header__left {
