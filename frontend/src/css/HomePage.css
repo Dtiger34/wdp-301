@@ -1,0 +1,68 @@
+.homepage-container .customize-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 10px;
+}
+
+.homepage-container .customize-row .column {
+  width: calc(20% - 8px);
+  transition: transform 0.2s ease;
+}
+
+.homepage-container .customize-row .column:hover {
+  box-shadow: 0 0.0625rem 20px 0 rgba(0, 0, 0, 0.05);
+  transform: translateY(-0.0625rem);
+}
+
+.homepage-container .customize-row .column .wrapper {
+  cursor: pointer;
+  box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.1);
+  border-radius: 0.125rem;
+  padding: 0.3rem;
+}
+
+.homepage-container .customize-row .column .wrapper .text {
+  padding: 0.5rem 0;
+  font-size: 0.75rem;
+  height: 50px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.homepage-container .customize-row .column .wrapper .rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.homepage-container .customize-row .thumbnail {
+  max-height: 200px;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.homepage-container .customize-row .thumbnail img {
+  max-width: 100%;
+  max-height: 100%;
+  background-color: white;
+  object-fit: contain;
+}
+
+/* Responsive 50% cho điện thoại */
+@media screen and (max-width: 600px) {
+  .homepage-container .customize-row .column {
+    width: calc(50% - 8px);
+    flex-wrap: wrap;
+  }
+}
+
+/* Responsive 25% cho tablet */
+@media screen and (max-width: 800px) and (min-width: 601px) {
+  .homepage-container .customize-row .column {
+    width: calc(25% - 8px);
+    flex-wrap: wrap;
+  }
+}

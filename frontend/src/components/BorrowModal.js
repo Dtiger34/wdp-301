@@ -1,0 +1,134 @@
+import React, { useState } from 'react';
+
+const BorrowModal = ({ open, onClose, onConfirm, maxQuantity }) => {
+    const [quantity, setQuantity] = useState(1);
+    const [isReadOnSite, setIsReadOnSite] = useState(false);
+    const [dueDate, setDueDate] = useState('');
+    const [error, setError] = useState('');
+
+    const handleSubmit = () => {
+        if (!dueDate) {
+            return setError('Vui lòng chọn ngày trả.');
+        }
+
+        const isoDueDate = new Date(dueDate).toISOString(); // ✅ chuẩn hóa ISO
+
+        if (isNaN(Date.parse(dueDate))) {
+            return setError('Ngày trả không hợp lệ.');
+        }
+
+        if (quantity < 1 || quantity > maxQuantity) {
+            return setError(`Số lượng mượn phải từ 1 đến ${maxQuantity}`);
+        }
+
+        onConfirm({ quantity, isReadOnSite, dueDate: isoDueDate });
+        setError('');
+    };
+
+    if (!open) return null;
+
+    return (
+        <div style={styles.overlay}>
+            <div style={styles.modal}>
+                <h3>Thông tin mượn sách</h3>
+
+                <label>Số lượng:</label>
+                <input
+                    type="number"
+                    value={quantity}
+                    min={1}
+                    max={maxQuantity}
+                    onChange={(e) => setQuantity(parseInt(e.target.value))}
+                    style={styles.input}
+                />
+
+                <label>Hình thức mượn:</label>
+                <div style={{ marginBottom: '10px' }}>
+                    <label>
+                        <input
+                            type="radio"
+                            name="borrowType"
+                            value="take-home"
+                            checked={!isReadOnSite}
+                            onChange={() => setIsReadOnSite(false)}
+                        />{' '}
+                        Mang về
+                    </label>{' '}
+                    <label>
+                        <input
+                            type="radio"
+                            name="borrowType"
+                            value="read-onsite"
+                            checked={isReadOnSite}
+                            onChange={() => setIsReadOnSite(true)}
+                        />{' '}
+                        Đọc tại chỗ
+                    </label>
+                </div>
+
+                <label>Ngày trả:</label>
+                <input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    style={styles.input}
+                />
+
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+
+                <div style={{ marginTop: '16px' }}>
+                    <button onClick={handleSubmit} style={styles.button}>
+                        Xác nhận
+                    </button>
+                    <button
+                        onClick={onClose}
+                        style={{ ...styles.button, backgroundColor: '#ccc' }}
+                    >
+                        Hủy
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const styles = {
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 9999,
+    },
+    modal: {
+        backgroundColor: 'white',
+        padding: '30px',
+        borderRadius: '10px',
+        width: '400px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+    },
+    input: {
+        width: '100%',
+        padding: '8px',
+        marginTop: '4px',
+        marginBottom: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+    },
+    button: {
+        padding: '10px 16px',
+        marginRight: '10px',
+        backgroundColor: '#2c3e50',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+    },
+};
+
+export default BorrowModal;

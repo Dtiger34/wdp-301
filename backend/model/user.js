@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true, // bắt buộc đổi mật khẩu sau lần đăng nhập đầu
   },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

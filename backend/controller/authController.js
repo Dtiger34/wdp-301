@@ -10,11 +10,18 @@ exports.login = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: 'User not found' }); // Không tìm thấy người dùng
 
+<<<<<<< HEAD
         console.log('Đăng nhập studentId:', user.studentId);
 
         // ⚠️ Đoạn này tạm thời chưa bật kiểm tra mật khẩu
         // const isMatch = await user.comparePassword(password);
         // if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
+=======
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
+>>>>>>> main
 
         // Tạo token có chứa id và vai trò của người dùng
         const token = jwtConfig.generateToken({ id: user._id, role: user.role });
@@ -81,8 +88,11 @@ exports.importUsersFromExcel = async (req, res) => {
 
 // Đổi mật khẩu người dùng
 exports.changePassword = async (req, res) => {
-    const { studentId, newPassword } = req.body;
+    const { newPassword } = req.body;
+    const userId = req.params.id;
+
     try {
+<<<<<<< HEAD
         // Tìm người dùng theo studentId và cập nhật mật khẩu mới, bỏ bắt buộc đổi mật khẩu
         const user = await User.findOneAndUpdate(
             { studentId },
@@ -91,6 +101,21 @@ exports.changePassword = async (req, res) => {
         );
         if (!user) return res.status(404).json({ message: 'User not found' });
 
+=======
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { password: newPassword },
+            { new: true }
+        );
+
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        if (user.mustChangePassword) {
+            user.mustChangePassword = false;
+            await user.save();
+        }
+
+>>>>>>> main
         const token = jwtConfig.generateToken({ id: user._id, role: user.role });
 
         res.status(200).json({
@@ -98,11 +123,11 @@ exports.changePassword = async (req, res) => {
             token,
             user: { id: user._id, name: user.name, studentId: user.studentId, role: user.role }
         });
-    }
-    catch (err) {
+    } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
-}
+};
+
 
 // Lấy thông tin người dùng theo ID
 exports.getUserById = async (req, res) => {
@@ -125,3 +150,37 @@ exports.getUserById = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
+<<<<<<< HEAD
+=======
+
+
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        res.status(200).json(users);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+exports.createAccount = async (req, res) => {
+    const { studentId, name, password, email, phone, address, role } = req.body;
+
+    try {
+        const existingUser = await User.findOne({ studentId });
+        if (existingUser) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        const user = new User({ studentId, name, password, email, phone, address, role });
+        await user.save();
+
+        res.status(201).json({ message: 'User created successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+>>>>>>> main
