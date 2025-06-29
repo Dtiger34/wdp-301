@@ -79,7 +79,7 @@ exports.updateBook = async (req, res) => {
     };
 
     if (req.file) {
-      updatedData.image = `/uploads/${req.file.filename}`; // ✅ nếu có ảnh mới
+      updatedData.image = `/images/book/${req.file.filename}`; // ✅ nếu có ảnh mới
     }
 
     const updatedBook = await Book.findByIdAndUpdate(id, updatedData, { new: true })
@@ -125,7 +125,7 @@ exports.createBook = async (req, res) => {
       quantity
     } = req.body;
 
-    const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
+    const imagePath = req.file ? `/images/book/${req.file.filename}` : '';
 
     const newBook = new Book({
       title,

@@ -73,12 +73,14 @@ const ViewBookDetail = () => {
       return 'https://via.placeholder.com/200x300?text=No+Image';
     }
 
-    // Nếu chỉ có tên file, thêm đường dẫn uploads
-    if (!url.startsWith('http') && !url.startsWith('/uploads/')) {
-      url = `/uploads/${url}`;
+
+    // Nếu là ảnh trong thư mục public/images/book
+    if (url.startsWith('/images/book/')) {
+      return `http://localhost:9999${url}`;
     }
 
-    return `http://localhost:9999${url}`;
+    // Trường hợp khác
+    return url;
   };
 
 

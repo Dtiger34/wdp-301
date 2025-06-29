@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Tạo thư mục uploads nếu chưa tồn tại
-const uploadDir = 'uploads/';
+const uploadDir = 'public/images/book/';
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
