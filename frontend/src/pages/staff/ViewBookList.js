@@ -37,9 +37,10 @@ const ViewBookList = () => {
     if (!url || url.startsWith('blob:')) {
       return 'https://via.placeholder.com/80x100?text=No+Image';
     }
-    if (url.startsWith('/uploads/')) {
-      return `http://localhost:9999${url}`;
-    }
+    if (url.startsWith('/images/book/')) {
+    return `http://localhost:9999${url}`;
+  }
+
     return url;
   };
 

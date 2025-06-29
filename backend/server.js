@@ -17,7 +17,9 @@ app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use(cors());
 app.use(urlencoded({ extended: true }));
-app.use("/images/book", express.static("public/images/book"));
+const path = require("path");
+
+app.use("/images/book", express.static(path.join(__dirname, "public/images/book")));
 
 // Routes
 app.use("/api/v1/auth", require("./routes/AuthRoute"));

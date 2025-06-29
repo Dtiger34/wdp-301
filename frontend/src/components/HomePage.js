@@ -131,7 +131,7 @@ const HomePage = () => {
               <Form form={form} onValuesChange={handleChangeFilter}>
                 <Form.Item
                   name="category"
-                  label="Danh mục sản phẩm"
+                  label="Danh mục sách"
                   labelCol={{ span: 24 }}
                 >
                   <Checkbox.Group>

@@ -68,15 +68,21 @@ const ViewBookDetail = () => {
     }
   };
 
-  const getSafeImage = (url) => {
-    if (!url || url.startsWith('blob:')) {
-      return 'https://via.placeholder.com/200x300?text=No+Image';
-    }
-    if (url.startsWith('/uploads/')) {
-      return `http://localhost:9999${url}`;
-    }
-    return url;
-  };
+ const getSafeImage = (url) => {
+  if (!url || url.startsWith('blob:')) {
+    return 'https://via.placeholder.com/200x300?text=No+Image';
+  }
+
+
+  // Nếu là ảnh trong thư mục public/images/book
+  if (url.startsWith('/images/book/')) {
+    return `http://localhost:9999${url}`;
+  }
+
+  // Trường hợp khác
+  return url;
+};
+
 
   if (!book) return <div style={{ padding: '20px' }}>Đang tải...</div>;
 
