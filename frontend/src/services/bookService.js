@@ -95,7 +95,6 @@ export const deleteBook = async (id) => {
 export const getBooksFilter = async (params = {}) => {
   try {
     const token = getToken();
-    console.log("Token:", token);
     const queryString = new URLSearchParams(params).toString();
     const res = await api.get(`/books/filter?${queryString}`, {
       headers: {

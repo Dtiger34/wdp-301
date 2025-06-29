@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { getBooks, deleteBook } from '../../services/bookService';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash, FaEdit } from 'react-icons/fa';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import StaffDashboard from '../staff/StaffDashboard';
 const ViewBookList = () => {
   const [books, setBooks] = useState([]);
@@ -35,103 +33,107 @@ const ViewBookList = () => {
 
   const getSafeImage = (url) => {
     if (!url || url.startsWith('blob:')) {
-      return 'https://via.placeholder.com/80x100?text=No+Image';
+      return 'https://via.placeholder.com/200x300?text=No+Image';
     }
-    if (url.startsWith('/uploads/')) {
-      return `http://localhost:9999${url}`;
+
+    // Nếu chỉ có tên file, thêm đường dẫn uploads
+    if (!url.startsWith('http') && !url.startsWith('/uploads/')) {
+      url = `/uploads/${url}`;
     }
-    return url;
+    console.log('Invalid image URL:', url);
+    return `http://localhost:9999${url}`;
   };
 
+
   return (
-        <StaffDashboard>
+    <StaffDashboard>
 
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f9fafb' }}>
 
-      <main style={{ flex: 1 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#374151' }}>Danh sách sách</h2>
-            <button
-              onClick={() => navigate('/staff/add-book')}
-              style={{
-                backgroundColor: '#319795',
-                color: 'white',
-                padding: '10px 20px',
-                borderRadius: '6px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                cursor: 'pointer'
-              }}
-            >
-              + Thêm sách
-            </button>
-          </div>
+        <main style={{ flex: 1 }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#374151' }}>Danh sách sách</h2>
+              <button
+                onClick={() => navigate('/staff/add-book')}
+                style={{
+                  backgroundColor: '#319795',
+                  color: 'white',
+                  padding: '10px 20px',
+                  borderRadius: '6px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  cursor: 'pointer'
+                }}
+              >
+                + Thêm sách
+              </button>
+            </div>
 
-          <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead style={{ backgroundColor: '#f3f4f6', borderBottom: '1px solid #e5e7eb' }}>
-                <tr>
-                  <th style={thStyle}>Tiêu đề</th>
-                  <th style={thStyle}>Thông tin</th>
-                  <th style={thStyle}>Ảnh bìa</th>
-                  <th style={thStyle}>Thể loại</th>
-                  <th style={thStyle}>Kệ sách</th>
-                  <th style={{ ...thStyle, textAlign: 'center' }}>Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                {books.length === 0 ? (
+            <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead style={{ backgroundColor: '#f3f4f6', borderBottom: '1px solid #e5e7eb' }}>
                   <tr>
-                    <td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: '#9ca3af' }}>
-                      Không có sách nào được tìm thấy.
-                    </td>
+                    <th style={thStyle}>Tiêu đề</th>
+                    <th style={thStyle}>Thông tin</th>
+                    <th style={thStyle}>Ảnh bìa</th>
+                    <th style={thStyle}>Thể loại</th>
+                    <th style={thStyle}>Kệ sách</th>
+                    <th style={{ ...thStyle, textAlign: 'center' }}>Hành động</th>
                   </tr>
-                ) : (
-                  books.map((book) => (
-                    <tr key={book._id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                      <td style={tdStyleTitle}>{book.title}</td>
-                      <td style={tdStyleInfo}>
-                        <div>Tác giả: {book.author || '-'}</div>
-                        <div>NXB: {book.publisher || '-'}</div>
-                        <div>Năm: {book.publishYear || '-'}</div>
-                        <div>Giá: {book.price?.toLocaleString()} đ</div>
-                        <div>Mô tả: {book.description || '-'}</div>
-                      </td>
-                      <td style={{ padding: '16px' }}>
-                        <img
-                          src={getSafeImage(book.image)}
-                          alt={book.title}
-                          style={{ width: '80px', height: '100px', objectFit: 'cover', borderRadius: '4px' }}
-                        />
-                      </td>
-                      <td style={tdStyle}>{book.categories?.map((c) => c.name).join(', ') || 'Không rõ'}</td>
-                      <td style={tdStyle}>{book.bookshelf?.name || 'Không rõ'}</td>
-                      <td style={{ padding: '16px', textAlign: 'center' }}>
-                        <button
-                          onClick={() => navigate(`/staff/update-book/${book._id}`)}
-                          style={{ color: '#3b82f6', marginRight: '8px', cursor: 'pointer' }}
-                          title="Sửa"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(book._id)}
-                          style={{ color: '#ef4444', cursor: 'pointer' }}
-                          title="Xóa"
-                        >
-                          <FaTrash />
-                        </button>
+                </thead>
+                <tbody>
+                  {books.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: '#9ca3af' }}>
+                        Không có sách nào được tìm thấy.
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    books.map((book) => (
+                      <tr key={book._id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                        <td style={tdStyleTitle}>{book.title}</td>
+                        <td style={tdStyleInfo}>
+                          <div>Tác giả: {book.author || '-'}</div>
+                          <div>NXB: {book.publisher || '-'}</div>
+                          <div>Năm: {book.publishYear || '-'}</div>
+                          <div>Giá: {book.price?.toLocaleString()} đ</div>
+                          <div>Mô tả: {book.description || '-'}</div>
+                        </td>
+                        <td style={{ padding: '16px' }}>
+                          <img
+                            src={getSafeImage(book.image)}
+                            alt={book.title}
+                            style={{ width: '80px', height: '100px', objectFit: 'cover', borderRadius: '4px' }}
+                          />
+                        </td>
+                        <td style={tdStyle}>{book.categories?.map((c) => c.name).join(', ') || 'Không rõ'}</td>
+                        <td style={tdStyle}>{book.bookshelf?.name || 'Không rõ'}</td>
+                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                          <button
+                            onClick={() => navigate(`/staff/update-book/${book._id}`)}
+                            style={{ color: '#3b82f6', marginRight: '8px', cursor: 'pointer' }}
+                            title="Sửa"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(book._id)}
+                            style={{ color: '#ef4444', cursor: 'pointer' }}
+                            title="Xóa"
+                          >
+                            <FaTrash />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
-      </StaffDashboard>
+        </main>
+      </div>
+    </StaffDashboard>
 
   );
 };

@@ -12,8 +12,12 @@ function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        if (!username || !password) {
-            setError('Please enter both username and password.');
+        if (!username) {
+            setError('Vui lòng kiểm tra tên đăng nhập của bạn.');
+            return;
+        }
+        if (!password) {
+            setError('Vui lòng kiểm tra mật khẩu của bạn.');
             return;
         }
 
@@ -23,7 +27,7 @@ function Login() {
             saveToken(token);
             navigate('/home');
         } catch (err) {
-            setError('Login failed. Please check your credentials.');
+            setError('Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn.');
         } finally {
             setLoading(false);
         }
