@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
+const bookcopies = require("./bookcopies");
 
 const bookSchema = new mongoose.Schema({
-  title: { type: String, required: true }, // tiêu đề (có thể trùng giữa các phiên bản)
+  title: { type: String, required: true },
   isbn: { type: String, required: true, unique: true }, // mã ISBN duy nhất
   author: String,
   publisher: String,
@@ -9,6 +10,12 @@ const bookSchema = new mongoose.Schema({
   description: String,
   price: Number,
   image: String,
+  bookcopies: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "BookCopy",
+    },
+  ],
   categories: [
     {
       type: mongoose.Schema.Types.ObjectId,

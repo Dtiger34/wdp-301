@@ -5,7 +5,6 @@ const inventorySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Book',
         required: true,
-        unique: true // mỗi phiên bản sách chỉ có 1 bản ghi inventory
     },
 
     total: { type: Number, default: 0 },       // Tổng số sách nhập
