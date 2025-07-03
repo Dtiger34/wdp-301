@@ -3,11 +3,13 @@ const Inventory = require('../model/Inventory');
 const BorrowInventory = require('../model/borrowHistory')
 const Fine = require('../model/fine');
 const BorrowRecord = require('../model/borrowHistory');
+const BookCopy = require('../model/bookcopies');
 
+// @done: duyệt một yêu cầu mượn sách (đổi lại status, sửa lại số lượng)
 exports.acceptBorrowRequest = async (req, res) => {
     try {
         const { borrowId } = req.params;
-        const borrowRecord = await borrow.findById(borrowId);
+        const borrowRecord = await BorrowRecord.findById(borrowId);
 
         if (!borrowRecord) {
             return res.status(404).json({ message: 'Borrow request not found' });
@@ -17,16 +19,43 @@ exports.acceptBorrowRequest = async (req, res) => {
             return res.status(400).json({ message: 'Borrow request is not pending' });
         }
 
+        // Nhận các bản sao sách có sẵn
+        const bookCopies = await BookCopy.find({ book: borrowRecord.bookId, status: 'available' }).limit(borrowRecord.quantity); // assuming `quantity` is requested number of books
+
+        if (bookCopies.length < borrowRecord.quantity) {
+            return res.status(400).json({ message: 'Not enough available copies' });
+        }
+
+        // Cập nhật trạng thái của từng bản sao sách thành bản đã mượn
+        for (let i = 0; i < bookCopies.length; i++) {
+            bookCopies[i].status = 'borrowed';
+            bookCopies[i].currentBorrower = borrowRecord.userId;
+            await bookCopies[i].save();
+        }
+
+        // Cập nhật hồ sơ mượn thành 'đã mượn' và lưu ngày mượn
         borrowRecord.status = 'borrowed';
         borrowRecord.borrowedAt = new Date();
         await borrowRecord.save();
 
+        // Update the inventory
         const inventory = await Inventory.findOne({ book: borrowRecord.bookId });
         if (inventory) {
-            inventory.available -= 1;
-            inventory.borrowed += 1;
+            // Tính toán số lượng sách còn lại và số sách đã mượn
+            const availableBooks = inventory.available - borrowRecord.quantity;
+            const borrowedBooks = inventory.borrowed + borrowRecord.quantity;
+
+            // Kiểm tra nếu các giá trị này không phải là NaN
+            if (isNaN(availableBooks) || isNaN(borrowedBooks)) {
+                return res.status(400).json({ message: "Invalid quantity for available or borrowed books." });
+            }
+
+            // Cập nhật lại số lượng sách trong kho
+            inventory.available = availableBooks;
+            inventory.borrowed = borrowedBooks;
             await inventory.save();
         }
+
 
         res.status(200).json(borrowRecord);
     } catch (error) {
@@ -34,7 +63,7 @@ exports.acceptBorrowRequest = async (req, res) => {
     }
 };
 
-// Lấy danh sách các yêu cầu mượn sách
+// @done: Lấy danh sách các yêu cầu mượn sách
 exports.getAllBorrowRequests = async (req, res) => {
     try {
         const { page = 1, limit = 10, status, userId, bookId, isOverdue } = req.query;
@@ -77,55 +106,7 @@ exports.getAllBorrowRequests = async (req, res) => {
     }
 };
 
-// Duyệt yêu cầu mượn sách (Trạng thái pending, có sách)
-exports.approveBorrowRequest = async (req, res) => {
-    try {
-        const requestId = req.params.id;
-        const staffId = req.user.id;
-
-        const borrowRequest = await BorrowRecord.findById(requestId)
-            .populate('userId', 'name studentId')
-            .populate('bookId', 'title author isbn');
-
-        if (!borrowRequest) {
-            return res.status(404).json({ message: 'Borrow request not found' });
-        }
-
-        if (borrowRequest.status !== 'pending') {
-            return res.status(400).json({
-                message: 'Only pending requests can be approved',
-            });
-        }
-
-        // Check inventory availability
-        const inventory = await Inventory.findOne({ book: borrowRequest.bookId._id });
-        if (!inventory || inventory.available <= 0) {
-            return res.status(400).json({
-                message: 'Book is not available for borrowing',
-            });
-        }
-
-        // Update borrow request
-        borrowRequest.status = 'borrowed';
-        borrowRequest.borrowDate = new Date();
-        borrowRequest.processedBy = staffId;
-        await borrowRequest.save();
-
-        // Update inventory
-        inventory.available -= 1;
-        inventory.borrowed += 1;
-        await inventory.save();
-
-        res.status(200).json({
-            message: 'Borrow request approved successfully',
-            borrowRequest,
-        });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-// Từ chối yêu cầu mượn sách (Trạng thái pending)
+// @done: Từ chối yêu cầu mượn sách (Trạng thái pending)
 exports.declineBorrowRequest = async (req, res) => {
     try {
         const requestId = req.params.id;
@@ -263,7 +244,7 @@ exports.returnBook = async (req, res) => {
     }
 };
 
-// Gia hạn thời gian mượn sách (Đang mượn và không có phạt)
+// @doing: Gia hạn thời gian mượn sách (Đang mượn và không có phạt)
 exports.extendBorrowPeriod = async (req, res) => {
     try {
         const requestId = req.params.id;
@@ -314,7 +295,7 @@ exports.extendBorrowPeriod = async (req, res) => {
     }
 };
 
-// Lấy thống kê mượn/trả sách (Lọc theo thời gian)
+// @doing: Lấy thống kê mượn/trả sách (Lọc theo thời gian)
 exports.getBorrowStatistics = async (req, res) => {
     try {
         const { fromDate, toDate } = req.query;
