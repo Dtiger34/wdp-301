@@ -3,17 +3,37 @@ const Inventory = require('../model/Inventory');
 const BorrowRecord = require('../model/borrowHistory');
 const Review = require('../model/review');
 const borrowController = require('../model/borrowHistory');
+const BookCopy = require('../model/bookcopies')
 
 ////////// book
+// @done: get all book
 exports.getAllBooks = async (req, res) => {
   try {
-    const books = await Book.find().populate('categories', 'name').populate('bookshelf', 'code name location');
-    res.status(200).json(books);
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại (mặc định là 1)
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const totalBooks = await Book.countDocuments(); // Tổng số sách
+    const totalPages = Math.ceil(totalBooks / limit);
+
+    const books = await Book.find()
+      .skip(skip)
+      .limit(limit)
+      .populate('categories', 'name')
+      .populate('bookshelf', 'code name location');
+
+    res.status(200).json({
+      currentPage: page,
+      totalPages,
+      totalBooks,
+      books,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+// @done: get book by id
 exports.getBookById = async (req, res) => {
   try {
     const book = await Book.findById(req.params.id)
@@ -50,6 +70,7 @@ exports.getBookById = async (req, res) => {
   }
 };
 
+// @done: update book
 exports.updateBook = async (req, res) => {
   try {
     const id = req.params.id;
@@ -93,23 +114,24 @@ exports.updateBook = async (req, res) => {
   }
 };
 
-
+// @done: delete book
 exports.deleteBook = async (req, res) => {
-	try {
-		const book = await Book.findByIdAndDelete(req.params.id);
-		if (!book) {
-			return res.status(404).json({ message: 'Book not found' });
-		}
+  try {
+    const book = await Book.findByIdAndDelete(req.params.id);
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
 
-		// Xoá cả inventory nếu có
-		await Inventory.findOneAndDelete({ book: req.params.id });
+    // Xoá cả inventory nếu có
+    await Inventory.findOneAndDelete({ book: req.params.id });
 
-		res.status(200).json({ message: 'Book deleted successfully' });
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
+    res.status(200).json({ message: 'Book deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
+// @done create book
 exports.createBook = async (req, res) => {
   try {
     const {
@@ -152,32 +174,57 @@ exports.createBook = async (req, res) => {
       lost: 0,
     });
 
+    // Tạo bản sao sách có mã vạch duy nhất
+    const bookCopies = [];
+    for (let i = 0; i < quantity; i++) {
+      const barcode = `BC-${book._id.toString()}-${i + 1}`;  // Mã vạch duy nhất cho mỗi bản sao
+      const newBookCopy = new BookCopy({
+        book: book._id,
+        barcode,
+        status: "available"
+      });
+      bookCopies.push(newBookCopy);
+    }
+
+    // Lưu tất cả các bản sao sách
+    await BookCopy.insertMany(bookCopies);
+
+    // Thêm bản sao sách vào mảng bản sao sách
+    book.bookcopies = bookCopies.map(copy => copy._id);
+    await book.save();
+
     res.status(201).json(book);
   } catch (error) {
     console.error('Error creating book:', error);
     res.status(500).json({ message: error.message });
   }
 };
+
 /////////// borrow
-// Tạo yêu cầu mượn sách
+// @doing: Tạo yêu cầu mượn sách
 exports.createBorrowRequest = async (req, res) => {
   try {
-    const { bookId, isReadOnSite, notes, dueDate } = req.body;
+    const { bookId, isReadOnSite, notes, dueDate, quantity } = req.body;
     const userId = req.user.id;
 
-    // Check if book exists
+    // Kiểm tra xem sách có tồn tại không
     const book = await Book.findById(bookId);
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
 
-    // Check inventory availability
+    // Kiểm tra tình trạng sẵn có của hàng tồn kho
     const inventory = await Inventory.findOne({ book: bookId });
     if (!inventory || inventory.available <= 0) {
       return res.status(400).json({ message: 'Book is not available for borrowing' });
     }
 
-    // Check for existing request
+    // Kiểm tra xem số lượng yêu cầu có vượt quá số lượng có sẵn không
+    if (quantity > inventory.available) {
+      return res.status(400).json({ message: 'Not enough copies available for borrowing' });
+    }
+
+    // Kiểm tra yêu cầu hiện có
     const existingRequest = await BorrowRecord.findOne({
       userId,
       bookId,
@@ -195,15 +242,21 @@ exports.createBorrowRequest = async (req, res) => {
       return res.status(400).json({ message: 'Invalid or missing dueDate' });
     }
 
-    // Create borrow request
+    // Tạo yêu cầu mượn
     const borrowRequest = await BorrowRecord.create({
       userId,
       bookId,
       dueDate: new Date(dueDate),
       isReadOnSite,
       notes,
+      quantity, // Lưu quantity vào trong yêu cầu mượn
       status: 'pending',
     });
+
+    // Update inventory: giảm số lượng sách có sẵn
+    // inventory.available -= quantity;
+    // inventory.borrowed += quantity;
+    await inventory.save();
 
     await borrowRequest.populate(['userId', 'bookId']);
 
@@ -216,7 +269,8 @@ exports.createBorrowRequest = async (req, res) => {
   }
 };
 
-// Staff: Lấy danh sách yêu cầu mượn đang pending
+//////////// Staff
+//  @done: Lấy danh sách yêu cầu mượn đang pending
 exports.getPendingBorrowRequests = async (req, res) => {
   try {
     const pendingRequests = await borrowController.find({ status: 'pending' })
@@ -233,6 +287,8 @@ exports.getPendingBorrowRequests = async (req, res) => {
   }
 };
 
+// @doing: hủy yêu cầu mượn sách của người dùng hiện tại
+// note: thêm của staff nào và lý do sao từ chối
 exports.cancelBorrowRequest = async (req, res) => {
   try {
     const requestId = req.params.id;
@@ -269,6 +325,7 @@ exports.cancelBorrowRequest = async (req, res) => {
   }
 };
 
+// @done: lấy lịch sử mượn sách và đánh giá sách của người dùng hiện tại
 exports.getBorrowHistory = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -311,6 +368,7 @@ exports.getBorrowHistory = async (req, res) => {
   }
 };
 
+// @done: lấy danh sách tất cả các yêu cầu mượn sách của người dùng hiện tại
 exports.getUserBorrowRequests = async (req, res) => {
   try {
     const userId = req.user.id;

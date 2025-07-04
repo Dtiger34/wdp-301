@@ -2,6 +2,7 @@ const User = require('../model/user');
 const XLSX = require('xlsx');
 const jwtConfig = require('../config/jwtconfig');
 
+// @done loggin
 exports.login = async (req, res) => {
     const { studentId, password } = req.body;
     try {
@@ -33,6 +34,7 @@ exports.login = async (req, res) => {
     }
 };
 
+// @done importUsersFromExcel
 exports.importUsersFromExcel = async (req, res) => {
     try {
         const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
@@ -71,6 +73,7 @@ exports.importUsersFromExcel = async (req, res) => {
     }
 };
 
+// @done change password
 exports.changePassword = async (req, res) => {
     const { newPassword } = req.body;
     const userId = req.params.id;
@@ -100,7 +103,7 @@ exports.changePassword = async (req, res) => {
     }
 };
 
-
+// @done get user by id
 exports.getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id).select('-password'); // Ẩn mật khẩu
@@ -122,17 +125,34 @@ exports.getUserById = async (req, res) => {
     }
 };
 
-
+// @done get all users with pagination (GET)
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select('-password');
-        res.status(200).json(users);
+        const page = parseInt(req.query.page) || 1; // Trang mặc định là 1 nếu không truyền
+        const limit = 10; // Mỗi trang có 10 user
+        const skip = (page - 1) * limit;
+
+        const users = await User.find()
+            .select('-password') // Ẩn trường password
+            .skip(skip)
+            .limit(limit);
+
+        const totalUsers = await User.countDocuments(); // Tổng số user
+        const totalPages = Math.ceil(totalUsers / limit);
+
+        res.status(200).json({
+            currentPage: page,
+            totalPages,
+            totalUsers,
+            users,
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
 
+// @done create account
 exports.createAccount = async (req, res) => {
     const { studentId, name, password, email, phone, address, role } = req.body;
 

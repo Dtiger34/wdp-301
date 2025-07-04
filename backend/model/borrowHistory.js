@@ -52,6 +52,13 @@ const borrowRecordSchema = new mongoose.Schema({
     createdRequestAt: { // thời gian bắt đầu request mượn, status 'pending'
         type: Date,
         default: Date.now
+    },
+
+    // Số lượng sách người dùng yêu cầu mượn
+    quantity: {
+        type: Number,
+        required: true,
+        min: [1, 'Quantity must be at least 1']
     }
 });
 

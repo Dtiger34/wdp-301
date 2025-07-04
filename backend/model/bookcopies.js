@@ -1,10 +1,12 @@
+const mongoose = require("mongoose");
+
 const bookCopySchema = new mongoose.Schema({
     book: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Book",
         required: true,
     },
-    barcode: {
+    barcode: { // mã vạch duy nhất của mỗi sách
         type: String,
         required: true,
         unique: true,
@@ -14,20 +16,20 @@ const bookCopySchema = new mongoose.Schema({
         enum: ["available", "borrowed", "lost", "damaged"],
         default: "available",
     },
-    currentBorrower: {
+    currentBorrower: { // người dùng hiện tại đang mượn
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         default: null,
     },
-    dueDate: {
+    dueDate: { //ngày phải trả sách
         type: Date,
         default: null,
     },
-    createdAt: {
+    createdAt: { //Thời gian tạo bản sao sách.
         type: Date,
         default: Date.now,
     },
-    updatedAt: {
+    updatedAt: { // Thời gian cập nhật bản sao sách.
         type: Date,
         default: Date.now,
     },
