@@ -6,22 +6,22 @@ import { getInventoryItemById } from '../../services/InventoryServicesApi';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import BorrowModal from '../../components/BorrowModal';
-import { getToken, checkUserAuth } from '../../utils/auth';
+// import { getToken, checkUserAuth } from '../../utils/auth';
 
 const ViewBookDetail = () => {
   const { id } = useParams();
   const [book, setBook] = useState(null);
   const [available, setAvailable] = useState(0);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity] = useState(1);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
   // Lấy thông tin người dùng và kiểm tra role
-  const token = getToken();
-  const user = token ? checkUserAuth(token) : null;
-  const isUser = user?.role === 'user';
+  // const token = getToken();
+  // const user = token ? checkUserAuth(token) : null;
+  // const isUser = user?.role === 'user';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,7 +121,7 @@ const ViewBookDetail = () => {
             <p><strong>Số lượng còn lại:</strong> {available}</p>
 
             <div style={{ marginTop: '20px' }}>
-              <label><strong>Số lượng mượn:</strong></label><br />
+              {/* <label><strong>Số lượng mượn:</strong></label><br />
               <input
                 type="number"
                 value={quantity}
@@ -139,7 +139,7 @@ const ViewBookDetail = () => {
                   marginRight: '10px',
                   marginTop: '8px'
                 }}
-              />
+              /> */}
               <button
                 onClick={() => setModalOpen(true)}
                 disabled={loading}

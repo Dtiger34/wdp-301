@@ -37,10 +37,6 @@ const ViewBookList = () => {
     }
   };
 
-  const handleAcceptBorrowRequest = (id) => {
-    navigate(`/staff/return-book/${id}`);
-  };
-
   const getSafeImage = (url) => {
     if (!url || url.startsWith('blob:')) {
       return 'https://via.placeholder.com/200x300?text=No+Image';
