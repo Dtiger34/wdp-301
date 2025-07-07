@@ -50,7 +50,7 @@ function App() {
   return (
     <Routes>
       {/* Common / Auth */}
-      <Route path="/" element={<Navigate to={user ? "/home" : "/login"} />} />
+      <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={<HomePage />} />
       <Route path="/profile" element={user ? <ViewUserProfile /> : <Navigate to="/login" />} />

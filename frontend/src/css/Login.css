@@ -1,5 +1,6 @@
 /* src/components/Login.css */
 
+
 .login-container {
     width: 100%;
     max-width: 400px;
@@ -66,4 +67,18 @@ input:focus {
 .login-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+.login-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.login-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
 }

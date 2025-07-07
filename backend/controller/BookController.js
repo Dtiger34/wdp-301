@@ -4,7 +4,7 @@ const BorrowRecord = require('../model/borrowHistory');
 const Review = require('../model/review');
 const borrowController = require('../model/borrowHistory');
 const BookCopy = require('../model/bookcopies')
-
+const mongoose = require('mongoose');
 ////////// book
 // @done: get all book
 exports.getAllBooks = async (req, res) => {
@@ -277,6 +277,8 @@ exports.getPendingBorrowRequests = async (req, res) => {
       .populate('userId')
       .populate('bookId')
       .sort({ createdAt: -1 }); // Mới nhất lên đầu
+
+    const { page = 1, limit = 10, status } = req.query;
 
     res.status(200).json({
       message: 'Pending borrow requests fetched successfully',
@@ -673,7 +675,6 @@ exports.getBookFilter = async (req, res) => {
 
     // Sắp xếp (ví dụ: sort=-price hoặc sort=title)
     let sortOption = {};
-    console.log("Sort received:", req.query.sort);
     if (sort) {
       const [field, order] = sort.startsWith("-")
         ? [sort.slice(1), -1]

@@ -1,24 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { getBooks, deleteBook } from '../../services/bookService';
+import React, { useEffect, useState, useCallback } from 'react';
+import { getAllBooks, deleteBook } from '../../services/bookService';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash, FaEdit } from 'react-icons/fa';
-import StaffDashboard from '../staff/StaffDashboard';
+import StaffDashboard from '../staff/StaffDashboard'
+import { Row, Pagination } from 'antd';
 const ViewBookList = () => {
   const [books, setBooks] = useState([]);
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 10;
 
-  const fetchBooks = async () => {
+  const fetchBooks = useCallback(async () => {
     try {
-      const data = await getBooks();
-      setBooks(data);
+      const data = await getAllBooks({ page: currentPage });
+      setBooks(Array.isArray(data.books) ? data.books : []);
+      setTotalItems(data.totalBooks || 0);
     } catch (err) {
-      console.error('Failed to load books', err);
+      console.error("Failed to load books", err);
+      setBooks([]);
     }
-  };
+  }, [currentPage]);
 
   useEffect(() => {
     fetchBooks();
-  }, []);
+  }, [fetchBooks]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa sách này?')) {
@@ -29,6 +35,10 @@ const ViewBookList = () => {
         console.error('Delete failed:', err);
       }
     }
+  };
+
+  const handleAcceptBorrowRequest = (id) => {
+    navigate(`/staff/return-book/${id}`);
   };
 
   const getSafeImage = (url) => {
@@ -127,9 +137,19 @@ const ViewBookList = () => {
                   )}
                 </tbody>
               </table>
+
             </div>
           </div>
         </main>
+        <Row style={{ display: "flex", justifyContent: "center", margin: "24px 0" }}>
+          <Pagination
+            current={currentPage}
+            total={totalItems}
+            pageSize={pageSize}
+            onChange={(page) => setCurrentPage(page)}
+            showSizeChanger={false}
+          />
+        </Row>
       </div>
     </StaffDashboard>
 

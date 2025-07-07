@@ -8,7 +8,7 @@ router.post(
   jwtConfig.requireAdminOrStaff,
   categoryController.createCategory
 );
-router.get("/", jwtConfig.requireAuth, categoryController.getAllCategories);
+router.get("/", categoryController.getAllCategories);
 router.get(
   "/:id",
   jwtConfig.requireAdminOrStaff,

@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { logoutUser } from "../services/api";
 import { removeToken, getToken, checkUserAuth } from "../utils/auth";
 import { Avatar, Dropdown, Space } from "antd";
@@ -11,7 +11,7 @@ import { useSearch } from "../searchContext";
 const Header = () => {
   const navigate = useNavigate();
   const { searchTerm, setSearchTerm } = useSearch();
-
+  const location = useLocation();
   const token = getToken();
   const user = token ? checkUserAuth(token) : null;
   const isAdmin = user?.role === "admin";
@@ -55,6 +55,8 @@ const Header = () => {
       key: "staff",
     });
   }
+
+
   return (
     <div className="header-wrapper">
       <div className="page-header">
@@ -76,12 +78,20 @@ const Header = () => {
           />
         </div>
         <div>
-          <Dropdown menu={{ items }} trigger={["click"]}>
-            <Space>
-              <Avatar>{user?.fullName?.charAt(0) || "U"}</Avatar>
-              {user?.fullName}
-            </Space>
-          </Dropdown>
+          {user ? (
+            <Dropdown menu={{ items }} trigger={["click"]}>
+              <Space>
+                <Avatar>{user?.fullName?.charAt(0) || "U"}</Avatar>
+                {user?.fullName}
+              </Space>
+            </Dropdown>
+          ) : (
+            location.pathname !== "/login" && (
+              <Link to="/login" className="login-link">
+                Đăng nhập
+              </Link>
+            )
+          )}
         </div>
       </div>
     </div>

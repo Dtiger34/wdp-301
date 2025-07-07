@@ -3,7 +3,7 @@ import { getToken } from "../utils/auth"; // điều chỉnh đường dẫn n�
 
 // Get all books
 // Get books with optional filters
-export const getBooks = async (params = {}) => {
+export const getAllBooks = async (params = {}) => {
   try {
     const token = getToken();
     const response = await api.get("/books", {

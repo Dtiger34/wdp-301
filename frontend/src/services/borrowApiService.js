@@ -1,10 +1,16 @@
 import api from './api';
 
-export const requestBorrowBook = async ({ bookId, isReadOnSite, notes = '', dueDate }) => {
+export const requestBorrowBook = async ({
+    bookId,
+    isReadOnSite,
+    notes = '',
+    dueDate,
+    quantity = 1
+}) => {
     try {
         const response = await api.post(
             '/books/borrow/request',
-            { bookId, isReadOnSite, notes, dueDate },
+            { bookId, isReadOnSite, notes, dueDate, quantity },
             {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -31,7 +37,7 @@ export const getBorrowRequests = async () => {
 
 export const acceptBorrowRequest = async (borrowId) => {
     try {
-        const response = await api.put(`/borrows/accept/${borrowId}`);
+        const response = await api.post(`/borrows/accept-borrow-request/${borrowId}`);
         return response.data;
     } catch (error) {
         console.error('Error accepting borrow request:', error);

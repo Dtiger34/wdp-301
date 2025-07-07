@@ -6,6 +6,7 @@ import Footer from '../../components/Footer';
 const StaffDashboard = ({ children }) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Header />
             <div style={{ display: 'flex', flex: 1 }}>
                 {/* Sidebar */}
                 <aside style={{
@@ -31,6 +32,9 @@ const StaffDashboard = ({ children }) => {
                         </li>
                         <li style={{ marginBottom: '15px' }}>
                             <Link to="/staff/ViewListRequest" style={linkStyle}>📚 Quản lý yêu cầu</Link>
+                        </li>
+                        <li style={{ marginBottom: '15px' }}>
+                            <Link to="/staff/ViewListRequest" style={linkStyle}>📚 Quản lý trả sách</Link>
                         </li>
                         <li style={{ marginBottom: '15px' }}>
                             <Link to="/" style={linkStyle}>📈 Thống kê</Link>

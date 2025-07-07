@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { createAccount } from '../../services/AuthServicesApi';
 import AdminDashboard from './AdminDashboard';
 

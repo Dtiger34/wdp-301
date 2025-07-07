@@ -34,9 +34,9 @@ const uploadImage = require('../middlewares/uploadImage');
 
 // ------------------- BOOK ROUTES --------------------
 router.get("/", jwtConfig.requireAuth, BookController.getAllBooks);
-router.get("/filter", jwtConfig.requireAuth, BookController.getBookFilter);
-router.get("/:id", jwtConfig.requireAuth, BookController.getBookById);
-router.post('/', jwtConfig.requireAuth,uploadImage.single('image'), BookController.createBook);
+router.get("/filter", BookController.getBookFilter);
+router.get("/:id", BookController.getBookById);
+router.post('/', jwtConfig.requireAuth, uploadImage.single('image'), BookController.createBook);
 router.put('/:id', jwtConfig.requireAuth, uploadImage.single('image'), BookController.updateBook);
 router.delete("/:id", jwtConfig.requireAuth, BookController.deleteBook);
 
