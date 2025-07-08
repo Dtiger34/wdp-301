@@ -5,9 +5,10 @@ export const requestBorrowBook = async ({
     isReadOnSite,
     notes = '',
     dueDate,
-    quantity = 1
+    quantity
 }) => {
     try {
+
         const response = await api.post(
             '/books/borrow/request',
             { bookId, isReadOnSite, notes, dueDate, quantity },
@@ -51,6 +52,17 @@ export const getPendingBorrowRequests = async () => {
         return response.data;
     } catch (error) {
         console.error('Error fetching pending borrow requests:', error);
+        throw error;
+    }
+};
+
+
+export const getBorrowedHistory = async (userId) => {
+    try {
+        const response = await api.get(`/books/borrow-history/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching borrow history:', error);
         throw error;
     }
 };

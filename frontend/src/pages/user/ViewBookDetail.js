@@ -48,15 +48,15 @@ const ViewBookDetail = () => {
   const handleModalConfirm = async ({ quantity, isReadOnSite, dueDate }) => {
     setLoading(true);
     try {
-      for (let i = 0; i < quantity; i++) {
-        await requestBorrowBook({
-          bookId: book._id,
-          isReadOnSite,
-          dueDate,
-          notes: `Trả trước ngày ${dueDate}`
-        });
-      }
-      setSuccess(`✅ Đã gửi yêu cầu mượn ${quantity} cuốn "${book.title}"`);
+      await requestBorrowBook({
+        bookId: book._id,
+        isReadOnSite,
+        dueDate,
+        notes: `Trả trước ngày ${dueDate}`,
+        quantity
+      });
+
+      setSuccess(`Đã gửi yêu cầu mượn ${quantity} cuốn "${book.title}"`);
       setError('');
       setModalOpen(false);
     } catch (err) {
@@ -67,6 +67,7 @@ const ViewBookDetail = () => {
       setLoading(false);
     }
   };
+
 
   const getSafeImage = (url) => {
     if (!url || url.startsWith('blob:')) {

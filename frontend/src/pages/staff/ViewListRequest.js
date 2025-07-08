@@ -14,17 +14,17 @@ const ViewListRequest = () => {
       const res = await getPendingBorrowRequests();
       setRequests(res.data);
     } catch (error) {
-      console.error("❌ Lỗi khi lấy danh sách:", error);
+      console.error("Lỗi khi lấy danh sách:", error);
     }
   };
 
   const handleAcceptBorrowRequest = async (borrowId) => {
     try {
       await acceptBorrowRequest(borrowId);
+      alert("Chắc chắn chấp nhận yêu cầu mượn sau?");
       fetchRequests();
     } catch (error) {
-      console.error("❌ Lỗi khi chấp nhận yêu cầu:", error);
-      alert("Không thể chấp nhận yêu cầu mượn sách.");
+      alert(error.response?.data?.message);
     }
   };
 
@@ -83,8 +83,6 @@ const ViewListRequest = () => {
             </div>
           </div>
         </main>
-
-
       </div>
     </StaffDashboard>
   );

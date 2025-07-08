@@ -64,15 +64,12 @@ exports.acceptBorrowRequest = async (req, res) => {
 };
 
 // @done: Lấy danh sách các yêu cầu mượn sách
-exports.getAllBorrowRequests = async (req, res) => {
+exports.getAllBorrowedRequests = async (req, res) => {
     try {
-        const { page = 1, limit = 10, status, userId, bookId, isOverdue } = req.query;
+        const { page = 1, limit = 10, isOverdue } = req.query;
 
+        const query = { status: 'borrowed' };
         // Build query
-        const query = {};
-        if (status) query.status = status;
-        if (userId) query.userId = userId;
-        if (bookId) query.bookId = bookId;
 
         // Filter overdue books
         if (isOverdue === 'true') {
