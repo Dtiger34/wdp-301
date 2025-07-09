@@ -6,7 +6,6 @@ import { getInventoryItemById } from '../../services/InventoryServicesApi';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import BorrowModal from '../../components/BorrowModal';
-// import { getToken, checkUserAuth } from '../../utils/auth';
 
 const ViewBookDetail = () => {
   const { id } = useParams();
@@ -17,11 +16,6 @@ const ViewBookDetail = () => {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-
-  // Lấy thông tin người dùng và kiểm tra role
-  // const token = getToken();
-  // const user = token ? checkUserAuth(token) : null;
-  // const isUser = user?.role === 'user';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,14 +42,14 @@ const ViewBookDetail = () => {
   const handleModalConfirm = async ({ quantity, isReadOnSite, dueDate }) => {
     setLoading(true);
     try {
-      for (let i = 0; i < quantity; i++) {
-        await requestBorrowBook({
-          bookId: book._id,
-          isReadOnSite,
-          dueDate,
-          notes: `Trả trước ngày ${dueDate}`
-        });
-      }
+      await requestBorrowBook({
+        bookId: book._id,
+        isReadOnSite,
+        dueDate,
+        notes: `Trả trước ngày ${dueDate}`,
+        quantity,
+      });
+
       setSuccess(`✅ Đã gửi yêu cầu mượn ${quantity} cuốn "${book.title}"`);
       setError('');
       setModalOpen(false);
@@ -72,17 +66,11 @@ const ViewBookDetail = () => {
     if (!url || url.startsWith('blob:')) {
       return 'https://via.placeholder.com/200x300?text=No+Image';
     }
-
-
-    // Nếu là ảnh trong thư mục public/images/book
     if (url.startsWith('/images/book/')) {
       return `http://localhost:9999${url}`;
     }
-
-    // Trường hợp khác
     return url;
   };
-
 
   if (!book) return <div style={{ padding: '20px' }}>Đang tải...</div>;
 
@@ -121,25 +109,6 @@ const ViewBookDetail = () => {
             <p><strong>Số lượng còn lại:</strong> {available}</p>
 
             <div style={{ marginTop: '20px' }}>
-              {/* <label><strong>Số lượng mượn:</strong></label><br />
-              <input
-                type="number"
-                value={quantity}
-                min={1}
-                max={available}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  setQuantity(isNaN(val) ? 1 : val);
-                }}
-                style={{
-                  padding: '10px',
-                  width: '80px',
-                  borderRadius: '4px',
-                  border: '1px solid #ccc',
-                  marginRight: '10px',
-                  marginTop: '8px'
-                }}
-              /> */}
               <button
                 onClick={() => setModalOpen(true)}
                 disabled={loading}
@@ -155,7 +124,6 @@ const ViewBookDetail = () => {
                 {loading ? 'Đang gửi...' : '📚 Mượn sách'}
               </button>
             </div>
-
 
             {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
             {success && <p style={{ color: 'green', marginTop: '10px' }}>{success}</p>}
