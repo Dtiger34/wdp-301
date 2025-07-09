@@ -146,8 +146,9 @@ exports.createBook = async (req, res) => {
       bookshelf,
       quantity
     } = req.body;
+        console.log('📷 Saved image:', req.file?.filename);
 
-    const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
+    const imagePath = req.file ? `/images/book/${req.file.filename}` : '';
 
     const newBook = new Book({
       title,
