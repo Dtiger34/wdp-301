@@ -21,7 +21,7 @@ const BorrowModal = ({ open, onClose, onConfirm, maxQuantity }) => {
             return setError(`Số lượng mượn phải từ 1 đến ${maxQuantity}`);
         }
 
-        onConfirm({ quantity, isReadOnSite, dueDate: isoDueDate });
+        onConfirm({ quantity: Number(quantity), isReadOnSite, dueDate: isoDueDate });
         setError('');
     };
 
@@ -38,7 +38,7 @@ const BorrowModal = ({ open, onClose, onConfirm, maxQuantity }) => {
                     value={quantity}
                     min={1}
                     max={maxQuantity}
-                    onChange={(e) => setQuantity(parseInt(e.target.value))}
+                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value)))}
                     style={styles.input}
                 />
 

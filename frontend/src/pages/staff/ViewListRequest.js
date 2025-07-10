@@ -25,6 +25,7 @@ const ViewListRequest = () => {
   const handleAcceptBorrowRequest = async (borrowId) => {
     try {
       await acceptBorrowRequest(borrowId);
+      alert("Chắc chắn chấp nhận yêu cầu mượn sau?");
       fetchRequests();
       navigate("/staff/view-borrowing-books");
     } catch (error) {
