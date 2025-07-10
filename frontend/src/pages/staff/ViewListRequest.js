@@ -1,9 +1,13 @@
+// src/pages/staff/ViewListRequest.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getPendingBorrowRequests, acceptBorrowRequest } from "../../services/borrowApiService";
 
-import StaffDashboard from '../staff/StaffDashboard';
+import StaffDashboard from "../staff/StaffDashboard";
+
 const ViewListRequest = () => {
   const [requests, setRequests] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchRequests();
@@ -14,7 +18,7 @@ const ViewListRequest = () => {
       const res = await getPendingBorrowRequests();
       setRequests(res.data);
     } catch (error) {
-      console.error("❌ Lỗi khi lấy danh sách:", error);
+      console.error("Lỗi khi lấy danh sách yêu cầu mượn:", error);
     }
   };
 
@@ -22,17 +26,21 @@ const ViewListRequest = () => {
     try {
       await acceptBorrowRequest(borrowId);
       fetchRequests();
+      navigate("/staff/view-borrowing-books");
     } catch (error) {
-      console.error("❌ Lỗi khi chấp nhận yêu cầu:", error);
-      alert("Không thể chấp nhận yêu cầu mượn sách.");
+      console.error("Lỗi khi chấp nhận yêu cầu mượn sách:");
+      console.error("Status:", error.response?.status);
+      console.error("Message:", error.response?.data?.message);
+      console.error("Full Response:", error.response?.data);
+      console.error("Error Stack:", error.stack);
+
+      alert(error.response?.data?.message || "Không thể chấp nhận yêu cầu mượn sách.");
     }
   };
 
   return (
     <StaffDashboard>
       <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#f9fafb" }}>
-
-
         <main style={{ flex: 1 }}>
           <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "40px" }}>
             <h2 style={{ fontSize: "24px", fontWeight: "600", color: "#374151", marginBottom: "24px" }}>
@@ -83,8 +91,6 @@ const ViewListRequest = () => {
             </div>
           </div>
         </main>
-
-
       </div>
     </StaffDashboard>
   );

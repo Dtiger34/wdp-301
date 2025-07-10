@@ -7,7 +7,7 @@ const borrowController = require('../controller/BorrowController');
 router.post('/accept-borrow-request/:borrowId', jwtConfig.requireAuth, borrowController.acceptBorrowRequest);
 
 // Lấy danh sách tất cả các yêu cầu mượn
-router.get('/borrow-requests', jwtConfig.requireAuth, borrowController.getAllBorrowRequests);
+router.get('/status-borrowed', borrowController.getAllBorrowedRequests);
 
 // Từ chối yêu cầu mượn sách
 router.post('/decline-borrow-request/:id', jwtConfig.requireAuth, borrowController.declineBorrowRequest);
