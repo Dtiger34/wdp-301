@@ -83,3 +83,20 @@ export const getBorrowedHistory = async (userId) => {
         throw error;
     }
 };
+export const returnBook = async (borrowId, data) => {
+    try {
+        const response = await api.post(
+            `/borrows/return-book/${borrowId}`,
+            data,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error returning book:", error.response?.data || error.message);
+        throw error;
+    }
+};

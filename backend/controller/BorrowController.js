@@ -69,17 +69,15 @@ exports.getAllBorrowedRequests = async (req, res) => {
         const { page = 1, limit = 10, isOverdue } = req.query;
 
         const query = { status: 'borrowed' };
-        // Build query
 
-        // Filter overdue books
+        // Nếu chỉ lấy sách quá hạn
         if (isOverdue === 'true') {
-            query.status = 'borrowed';
             query.dueDate = { $lt: new Date() };
         }
 
         const borrowRequests = await BorrowRecord.find(query)
             .populate('userId', 'name studentId email phone')
-            .populate('bookId', 'title author isbn image')
+            .populate('bookId', 'title author isbn image price') // ✅ Thêm 'price' ở đây
             .populate('processedBy', 'name studentId')
             .populate('fineId')
             .sort({ createdRequestAt: -1 })
@@ -91,7 +89,7 @@ exports.getAllBorrowedRequests = async (req, res) => {
         res.status(200).json({
             borrowRequests,
             pagination: {
-                currentPage: page,
+                currentPage: parseInt(page),
                 totalPages: Math.ceil(total / limit),
                 totalRecords: total,
                 hasNext: page * limit < total,
@@ -102,6 +100,7 @@ exports.getAllBorrowedRequests = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 // @done: Từ chối yêu cầu mượn sách (Trạng thái pending)
