@@ -18,8 +18,8 @@ const borrowRecordSchema = new mongoose.Schema({
     },
 
     // Thời gian mượn - trả
-    borrowDate: Date,
-    dueDate: {
+    borrowDate: Date, // thời điểm mà sách được mượn, tức là ngày mà người dùng nhận sách
+    dueDate: { // đây là thời điểm mà sách phải được trả lại
         type: Date,
         required: true
     },
@@ -59,6 +59,13 @@ const borrowRecordSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: [1, 'Quantity must be at least 1']
+    },
+
+    // thời gian mượn sách, tính bằng số ngày
+    borrowDuration: {
+        type: Number, // lưu số ngày mượn
+        required: true,
+        min: [1, 'Borrow duration must be at least 1 day'] // ít nhất là 1 ngày
     }
 });
 

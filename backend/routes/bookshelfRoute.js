@@ -9,5 +9,7 @@ router.get('/', jwtConfig.requireAdminOrStaff, bookshelfController.getAllBookshe
 router.get('/:id', jwtConfig.requireAdminOrStaff, bookshelfController.getBookshelfById);
 router.put('/:id', jwtConfig.requireAdminOrStaff, bookshelfController.updateBookshelf);
 router.delete('/:id', jwtConfig.requireAdminOrStaff, bookshelfController.deleteBookshelf);
+router.get('/stats', jwtConfig.requireAdminOrStaff, bookshelfController.getBookshelfStats);
+router.post('/move-books', jwtConfig.requireAdminOrStaff, bookshelfController.moveBooks);
 
 module.exports = router;
