@@ -255,9 +255,9 @@ exports.createBorrowRequest = async (req, res) => {
     });
 
     // Update inventory: giảm số lượng sách có sẵn
-    inventory.available -= quantity;
-    inventory.borrowed += quantity;
-    await inventory.save();
+    // inventory.available -= quantity;
+    // inventory.borrowed += quantity;
+    // await inventory.save();
 
     await borrowRequest.populate(['userId', 'bookId']);
 
