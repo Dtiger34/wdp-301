@@ -1,12 +1,18 @@
-// src/pages/staff/ViewListRequest.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPendingBorrowRequests, acceptBorrowRequest } from "../../services/borrowApiService";
-
+import {
+  getPendingBorrowRequests,
+  acceptBorrowRequest,
+  declineBorrowRequest,
+} from "../../services/borrowApiService";
 import StaffDashboard from "../staff/StaffDashboard";
 
 const ViewListRequest = () => {
   const [requests, setRequests] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedRequestId, setSelectedRequestId] = useState(null);
+  const [declineReason, setDeclineReason] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,17 +31,35 @@ const ViewListRequest = () => {
   const handleAcceptBorrowRequest = async (borrowId) => {
     try {
       await acceptBorrowRequest(borrowId);
-      alert("Chắc chắn chấp nhận yêu cầu mượn sau?");
+      alert("Đã chấp nhận yêu cầu mượn.");
       fetchRequests();
       navigate("/staff/view-borrowing-books");
     } catch (error) {
-      console.error("Lỗi khi chấp nhận yêu cầu mượn sách:");
-      console.error("Status:", error.response?.status);
-      console.error("Message:", error.response?.data?.message);
-      console.error("Full Response:", error.response?.data);
-      console.error("Error Stack:", error.stack);
-
+      console.error("Lỗi khi chấp nhận yêu cầu mượn sách:", error);
       alert(error.response?.data?.message || "Không thể chấp nhận yêu cầu mượn sách.");
+    }
+  };
+
+  const openDeclineModal = (borrowId) => {
+    setSelectedRequestId(borrowId);
+    setDeclineReason("");
+    setShowModal(true);
+  };
+
+  const handleDeclineConfirm = async () => {
+    if (!declineReason.trim()) {
+      alert("Vui lòng nhập lý do từ chối.");
+      return;
+    }
+
+    try {
+      await declineBorrowRequest(selectedRequestId, declineReason);
+      alert("Đã từ chối yêu cầu mượn.");
+      setShowModal(false);
+      fetchRequests();
+    } catch (error) {
+      console.error("Lỗi khi hủy yêu cầu mượn sách:", error);
+      alert(error.response?.data?.message || "Không thể hủy yêu cầu mượn sách.");
     }
   };
 
@@ -82,7 +106,12 @@ const ViewListRequest = () => {
                           >
                             ✔ Chấp nhận
                           </button>
-                          <button style={rejectBtnStyle}>✖ Hủy</button>
+                          <button
+                            style={rejectBtnStyle}
+                            onClick={() => openDeclineModal(req._id)}
+                          >
+                            ✖ Hủy
+                          </button>
                         </td>
                       </tr>
                     ))
@@ -93,10 +122,30 @@ const ViewListRequest = () => {
           </div>
         </main>
       </div>
+
+      {/* Modal từ chối */}
+      {showModal && (
+        <div style={modalOverlayStyle}>
+          <div style={modalContentStyle}>
+            <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px" }}>Lý do từ chối yêu cầu mượn</h3>
+            <textarea
+              style={textareaStyle}
+              placeholder="Nhập lý do từ chối..."
+              value={declineReason}
+              onChange={(e) => setDeclineReason(e.target.value)}
+            />
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}>
+              <button style={cancelBtnStyle} onClick={() => setShowModal(false)}>Hủy</button>
+              <button style={confirmBtnStyle} onClick={handleDeclineConfirm}>Xác nhận</button>
+            </div>
+          </div>
+        </div>
+      )}
     </StaffDashboard>
   );
 };
 
+// Style phần bảng
 const thStyle = {
   padding: "16px",
   textAlign: "left",
@@ -121,6 +170,57 @@ const approveBtnStyle = {
 };
 
 const rejectBtnStyle = {
+  backgroundColor: "#ef4444",
+  color: "#fff",
+  padding: "6px 12px",
+  border: "none",
+  borderRadius: "4px",
+  cursor: "pointer",
+};
+
+// Style modal popup
+const modalOverlayStyle = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100vw",
+  height: "100vh",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 1000,
+};
+
+const modalContentStyle = {
+  backgroundColor: "#fff",
+  borderRadius: "8px",
+  padding: "24px",
+  width: "400px",
+  boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+};
+
+const textareaStyle = {
+  width: "100%",
+  minHeight: "100px",
+  padding: "8px",
+  border: "1px solid #ccc",
+  borderRadius: "4px",
+  fontSize: "14px",
+  resize: "vertical",
+};
+
+const cancelBtnStyle = {
+  backgroundColor: "#9ca3af",
+  color: "#fff",
+  padding: "6px 12px",
+  marginRight: "8px",
+  border: "none",
+  borderRadius: "4px",
+  cursor: "pointer",
+};
+
+const confirmBtnStyle = {
   backgroundColor: "#ef4444",
   color: "#fff",
   padding: "6px 12px",
