@@ -2,7 +2,7 @@ const Fine = require('../model/fine');
 const BorrowRecord = require('../model/borrowHistory');
 const User = require('../model/user');
 
-// @done: Get all fines with pagination and filters
+// @done: Nhận tất cả các khoản tiền phạt với phân trang và bộ lọc
 exports.getAllFines = async (req, res) => {
 	try {
 		const { page = 1, limit = 10, paid, userId, reason } = req.query;
@@ -44,7 +44,7 @@ exports.getAllFines = async (req, res) => {
 	}
 };
 
-// @done: Get user's fines
+// @done: Nhận tiền phạt của người dùng
 exports.getUserFines = async (req, res) => {
 	try {
 		const userId = req.user.id;
@@ -81,7 +81,7 @@ exports.getUserFines = async (req, res) => {
 	}
 };
 
-// @done: Mark fine as paid
+// @done: Đánh dấu tiền phạt đã trả
 exports.markFineAsPaid = async (req, res) => {
 	try {
 		const fineId = req.params.id;
@@ -218,7 +218,7 @@ exports.getFineStatistics = async (req, res) => {
 	}
 };
 
-// @done: Create manual fine
+// @done: Nhận số liệu thống kê tốt
 exports.createManualFine = async (req, res) => {
 	try {
 		const { userId, borrowRecordId, reason, amount, note } = req.body;
@@ -271,7 +271,7 @@ exports.createManualFine = async (req, res) => {
 	}
 };
 
-// @done: Update fine
+// @done: Bản cập nhật tốt
 exports.updateFine = async (req, res) => {
 	try {
 		const fineId = req.params.id;
@@ -307,7 +307,7 @@ exports.updateFine = async (req, res) => {
 	}
 };
 
-// @done: Delete fine
+// @done: Xóa tiền phạt
 exports.deleteFine = async (req, res) => {
 	try {
 		const fineId = req.params.id;

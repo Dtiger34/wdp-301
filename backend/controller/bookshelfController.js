@@ -1,6 +1,6 @@
 const Bookshelf = require('../model/bookshelf');
 
-// Create new bookshelf
+// @done: Tạo giá sách mới
 exports.createBookshelf = async (req, res) => {
   try {
     const shelf = new Bookshelf(req.body);
@@ -11,7 +11,7 @@ exports.createBookshelf = async (req, res) => {
   }
 };
 
-// Get all bookshelves
+// @done: Nhận tất cả các kệ sách
 exports.getAllBookshelves = async (req, res) => {
   try {
     const shelves = await Bookshelf.find().sort({ createdAt: -1 });
@@ -21,7 +21,7 @@ exports.getAllBookshelves = async (req, res) => {
   }
 };
 
-// Get a single bookshelf by ID
+// @done: Nhận một kệ sách duy nhất theo ID
 exports.getBookshelfById = async (req, res) => {
   try {
     const shelf = await Bookshelf.findById(req.params.id);
@@ -32,7 +32,7 @@ exports.getBookshelfById = async (req, res) => {
   }
 };
 
-// Update bookshelf
+// @done: Update bookshelf
 exports.updateBookshelf = async (req, res) => {
   try {
     const shelf = await Bookshelf.findByIdAndUpdate(
@@ -50,7 +50,7 @@ exports.updateBookshelf = async (req, res) => {
   }
 };
 
-// Delete bookshelf
+// @done: Delete bookshelf
 exports.deleteBookshelf = async (req, res) => {
   try {
     const shelf = await Bookshelf.findByIdAndDelete(req.params.id);
@@ -61,7 +61,7 @@ exports.deleteBookshelf = async (req, res) => {
   }
 };
 
-// Lấy thống kê sách theo từng giá sách
+// @done: Lấy thống kê sách theo từng giá sách
 exports.getBookshelfStats = async (req, res) => {
   try {
     const Book = require('../model/book');
@@ -116,7 +116,7 @@ exports.getBookshelfStats = async (req, res) => {
   }
 };
 
-//  Di chuyển sách từ giá sách này sang giá sách khác
+//  @done: Di chuyển sách từ giá sách này sang giá sách khác
 exports.moveBooks = async (req, res) => {
   try {
     const { fromBookshelfId, toBookshelfId, bookIds } = req.body;
@@ -146,6 +146,38 @@ exports.moveBooks = async (req, res) => {
       message: `Successfully moved ${result.modifiedCount} books from ${fromBookshelf.name} to ${toBookshelf.name}`,
       movedCount: result.modifiedCount,
     });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @done: Lấy tổng số sách trong mỗi kệ sách
+exports.getBooksCountInBookshelves = async (req, res) => {
+  try {
+    // Lấy tất cả các kệ sách
+    const bookshelves = await Bookshelf.find();
+
+    const bookshelfCounts = [];
+
+    // Duyệt qua tất cả các kệ sách và tính tổng số sách trong mỗi kệ
+    for (const bookshelf of bookshelves) {
+      const books = await Book.find({ bookshelf: bookshelf._id });
+
+      // Đếm số lượng sách trong kệ
+      const bookCount = books.length;
+
+      bookshelfCounts.push({
+        bookshelf: {
+          _id: bookshelf._id,
+          code: bookshelf.code,
+          name: bookshelf.name,
+          location: bookshelf.location,
+        },
+        totalBooks: bookCount,
+      });
+    }
+
+    res.status(200).json(bookshelfCounts);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

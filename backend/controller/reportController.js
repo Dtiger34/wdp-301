@@ -70,19 +70,19 @@ exports.getBorrowReturnReport = async (req, res) => {
 					_id:
 						period === 'day'
 							? {
-									year: { $year: '$returnDate' },
-									month: { $month: '$returnDate' },
-									day: { $dayOfMonth: '$returnDate' },
-							  }
+								year: { $year: '$returnDate' },
+								month: { $month: '$returnDate' },
+								day: { $dayOfMonth: '$returnDate' },
+							}
 							: period === 'week'
-							? {
+								? {
 									year: { $year: '$returnDate' },
 									week: { $week: '$returnDate' },
-							  }
-							: {
+								}
+								: {
 									year: { $year: '$returnDate' },
 									month: { $month: '$returnDate' },
-							  },
+								},
 					totalReturned: { $sum: 1 },
 					totalReturnedQuantity: { $sum: '$quantity' },
 				},
@@ -345,9 +345,9 @@ exports.getOverdueBooks = async (req, res) => {
 			averageDaysOverdue:
 				overdueWithDetails.length > 0
 					? Math.round(
-							overdueWithDetails.reduce((sum, record) => sum + record.daysOverdue, 0) /
-								overdueWithDetails.length
-					  )
+						overdueWithDetails.reduce((sum, record) => sum + record.daysOverdue, 0) /
+						overdueWithDetails.length
+					)
 					: 0,
 		};
 
@@ -597,7 +597,7 @@ exports.calculateFines = async (req, res) => {
 	}
 };
 
-// Bonus: Get comprehensive dashboard statistics
+// 7. Nhận số liệu thống kê bảng điều khiển toàn diện
 exports.getDashboardStats = async (req, res) => {
 	try {
 		const currentDate = new Date();

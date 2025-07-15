@@ -3,6 +3,8 @@ const router = express.Router();
 const BookController = require("../controller/BookController");
 const jwtConfig = require("../config/jwtconfig");
 const uploadImage = require('../middlewares/uploadImage');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 // ------------------- BOOK ROUTES --------------------
 router.get("/", jwtConfig.requireAuth, BookController.getAllBooks);
@@ -12,6 +14,7 @@ router.post('/', jwtConfig.requireAuth, uploadImage.single('image'), BookControl
 router.put('/:id', jwtConfig.requireAuth, uploadImage.single('image'), BookController.updateBook);
 router.delete("/:id", jwtConfig.requireAuth, BookController.deleteBook);
 router.get('/search', jwtConfig.requireAuth, BookController.searchBooks);
+router.post('/upload', jwtConfig.requireAdminOrStaff, upload.single('file'), BookController.uploadBooksFromFile); //tải sách hàng loạt
 
 // ------------------- BORROW ROUTES --------------------
 router.post('/borrow/request', jwtConfig.requireAuth, BookController.createBorrowRequest);

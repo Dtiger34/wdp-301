@@ -2,7 +2,12 @@ const Book = require('../model/book');
 const Inventory = require('../model/Inventory');
 const BorrowRecord = require('../model/borrowHistory');
 const Review = require('../model/review');
-const BookCopy = require('../model/bookcopies')
+const BookCopy = require('../model/bookcopies');
+const XLSX = require('xlsx');
+const csv = require('csv-parser');
+const fs = require('fs');
+const path = require('path');
+const mongoose = require('mongoose');
 
 ////////// book
 // @done: get all book
@@ -51,13 +56,20 @@ exports.getBookById = async (req, res) => {
       .populate('userId', 'name studentId')
       .sort({ createdAt: -1 });
 
+    // Get all book copies
+    const bookCopies = await BookCopy.find({ book: req.params.id })
+      .populate('currentBorrower', 'name studentId');
+
     // Calculate average rating
     const avgRating =
-      reviews.length > 0 ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0;
+      reviews.length > 0
+        ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+        : 0;
 
     const bookDetails = {
       ...book.toObject(),
       inventory: inventory || { available: 0, total: 0, borrowed: 0 },
+      bookCopies, // Thêm danh sách bản sao sách vào response
       reviews,
       averageRating: Math.round(avgRating * 10) / 10,
       totalReviews: reviews.length,
@@ -662,5 +674,176 @@ exports.getBookFilter = async (req, res) => {
   } catch (err) {
     console.error('Lỗi getBookFilter:', err);
     res.status(500).json({ message: 'Lỗi server', error: err.message });
+  }
+};
+
+// Tải lên sách từ tệp Excel
+exports.uploadBooksFromFile = async (req, res) => {
+  try {
+    const file = req.file;
+    console.log('📥 Received file:', file?.originalname);
+
+    if (!file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const fileExtension = path.extname(file.originalname).toLowerCase();
+    console.log('📄 File extension:', fileExtension);
+
+    let books = [];
+
+    // Đọc dữ liệu từ file Excel
+    if (fileExtension === '.xlsx' || fileExtension === '.xls') {
+      console.log('🔍 Reading Excel file...');
+      const workbook = XLSX.read(file.buffer, { type: 'buffer' }); // dùng path thay vì buffer
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      books = XLSX.utils.sheet_to_json(sheet);
+    }
+    // Đọc dữ liệu từ file CSV
+    else if (fileExtension === '.csv') {
+      console.log('🔍 Reading CSV file...');
+      books = await new Promise((resolve, reject) => {
+        const results = [];
+        fs.createReadStream(file.path)
+          .pipe(csv())
+          .on('data', (data) => results.push(data))
+          .on('end', () => {
+            console.log('✅ CSV parsing complete');
+            resolve(results);
+          })
+          .on('error', (err) => {
+            console.error('❌ CSV parsing error:', err);
+            reject(err);
+          });
+      });
+    } else {
+      return res.status(400).json({ message: 'Unsupported file format. Only CSV and Excel files are allowed.' });
+    }
+
+    console.log('📚 Parsed books:', books.length);
+
+    const insertedBooks = [];
+    const errors = [];
+
+    // Duyệt qua tất cả sách trong file
+    for (const [index, rawBookData] of books.entries()) {
+      // Chuẩn hóa key: lowercase, bỏ dấu cách
+      const bookData = {};
+      for (let key in rawBookData) {
+        const normalizedKey = key.toLowerCase().replace(/\s+/g, '');
+        bookData[normalizedKey] = rawBookData[key];
+      }
+
+      console.log(`📦 Processing book #${index + 1}`, bookData);
+
+      try {
+        const {
+          title,
+          isbn,
+          author,
+          publisher,
+          publishyear,
+          description,
+          price,
+          quantity,
+          categories,
+          bookshelf,
+        } = bookData;
+
+        // Kiểm tra các trường bắt buộc
+        if (!title || !isbn || !author || !publisher || !publishyear || !quantity || !categories || !bookshelf) {
+          const msg = `⚠️ Missing required fields for book: ${isbn}`;
+          console.warn(msg);
+          errors.push(msg);
+          continue;
+        }
+
+        // Kiểm tra và chuyển categories sang ObjectId
+        let categoryIds;
+        try {
+          const rawCategories = categories.toString().split(',').map(c => c.trim());
+          console.log('🔎 Raw category IDs:', rawCategories);
+
+          categoryIds = rawCategories.map(id => {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+              throw new Error(`Invalid category ID: ${id}`);
+            }
+            return new mongoose.Types.ObjectId(id);
+          });
+        } catch (err) {
+          throw new Error(err.message);
+        }
+
+        // Kiểm tra và chuyển bookshelf sang ObjectId
+        if (!mongoose.Types.ObjectId.isValid(bookshelf)) {
+          throw new Error(`Invalid bookshelf ID: ${bookshelf}`);
+        }
+        const bookshelfId = new mongoose.Types.ObjectId(bookshelf);
+
+        // Tạo book
+        const newBook = new Book({
+          title,
+          isbn,
+          author,
+          publisher,
+          publishYear: publishyear,
+          description,
+          price,
+          categories: categoryIds,
+          bookshelf: bookshelfId,
+        });
+
+        const savedBook = await newBook.save();
+        console.log(`✅ Book saved: ${savedBook.title} (${savedBook._id})`);
+
+        // Tạo inventory cho sách
+        await Inventory.create({
+          book: savedBook._id,
+          total: quantity,
+          available: quantity,
+          borrowed: 0,
+          damaged: 0,
+          lost: 0,
+        });
+        console.log('📦 Inventory created');
+
+        // Tạo BookCopy (bản sao sách) và lưu vào cơ sở dữ liệu
+        const bookCopies = [];
+        for (let i = 0; i < quantity; i++) {
+          const barcode = `BC-${savedBook._id.toString()}-${i + 1}`;
+          bookCopies.push({
+            book: savedBook._id,
+            barcode,
+            status: 'available',
+          });
+        }
+
+        // Lưu tất cả các BookCopy vào cơ sở dữ liệu
+        const savedBookCopies = await BookCopy.insertMany(bookCopies);
+        console.log(`🔄 Book copies inserted: ${savedBookCopies.length}`);
+
+        // Cập nhật trường bookcopies của sách với các ID bản sao sách đã lưu
+        savedBook.bookcopies = savedBookCopies.map(copy => copy._id);
+
+        // Lưu sách với trường bookcopies đã được cập nhật
+        await savedBook.save();
+        console.log(`✅ Book copies saved for book: ${savedBook.title} (${savedBook._id})`);
+
+        insertedBooks.push(savedBook);
+      } catch (error) {
+        const errMsg = `❌ Error saving book with ISBN ${bookData?.isbn || '[unknown]'}: ${error.message}`;
+        console.error(errMsg);
+        errors.push(errMsg);
+      }
+    }
+
+    res.status(200).json({
+      message: 'Books uploaded successfully',
+      insertedBooks,
+      errors,
+    });
+  } catch (error) {
+    console.error('❗ Unexpected error in uploadBooksFromFile:', error);
+    res.status(500).json({ message: error.message });
   }
 };
