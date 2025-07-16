@@ -136,6 +136,9 @@ exports.deleteBook = async (req, res) => {
     // Xoá cả inventory nếu có
     await Inventory.findOneAndDelete({ book: req.params.id });
 
+    // Xoá các bản sao sách
+    await BookCopy.deleteMany({ book: req.params.id });
+
     res.status(200).json({ message: 'Book deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -188,7 +191,7 @@ exports.createBook = async (req, res) => {
     // Tạo bản sao sách có mã vạch duy nhất
     const bookCopies = [];
     for (let i = 0; i < quantity; i++) {
-      const barcode = `BC-${book._id.toString()}-${i + 1}`;  // Mã vạch duy nhất cho mỗi bản sao
+      const barcode = `BC-${book._id.toString()}-${(i + 1).toString().padStart(3, '0')}`;
       const newBookCopy = new BookCopy({
         book: book._id,
         barcode,
