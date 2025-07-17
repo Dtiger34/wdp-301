@@ -100,3 +100,20 @@ export const returnBook = async (borrowId, data) => {
         throw error;
     }
 };
+export const extendBorrowPeriod = async (borrowId, days = 7) => {
+    try {
+        const response = await api.post(
+            `/borrows/extend-borrow/${borrowId}`,
+            { days },
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error extending borrow period:", error.response?.data || error.message);
+        throw error;
+    }
+};

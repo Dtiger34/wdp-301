@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { getBorrowRequests, returnBook } from "../../services/borrowApiService";
+import {
+  getBorrowRequests,
+  returnBook,
+  extendBorrowPeriod
+} from "../../services/borrowApiService";
 import StaffDashboard from "./StaffDashboard";
 
 const ViewListBorrowed = () => {
   const [borrowingList, setBorrowingList] = useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [condition, setCondition] = useState("good");
+  const [showExtendModal, setShowExtendModal] = useState(false);
+  const [quantities, setQuantities] = useState({ good: 0, damaged: 0, lost: 0 });
   const [notes, setNotes] = useState("");
   const [fineAmount, setFineAmount] = useState(0);
   const [isOverdue, setIsOverdue] = useState(false);
+  const [extendDays, setExtendDays] = useState(7);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchBorrowedBooks();
@@ -27,9 +34,9 @@ const ViewListBorrowed = () => {
 
   const handleReturnClick = (record) => {
     setSelectedRecord(record);
-    setCondition("good");
+    setQuantities({ good: 0, damaged: 0, lost: 0 });
     setNotes("");
-    setFineAmount(0);
+    setError("");
 
     const now = new Date();
     const due = new Date(record.dueDate);
@@ -38,7 +45,13 @@ const ViewListBorrowed = () => {
     setShowModal(true);
   };
 
-  const calculateFine = () => {
+  const handleExtendClick = (record) => {
+    setSelectedRecord(record);
+    setExtendDays(7);
+    setShowExtendModal(true);
+  };
+
+  useEffect(() => {
     if (!selectedRecord || !selectedRecord.bookId) return;
 
     const bookPrice = selectedRecord.bookId.price || 0;
@@ -51,27 +64,43 @@ const ViewListBorrowed = () => {
       total += daysLate * 5000;
     }
 
-    if (condition === "damaged") {
-      total += bookPrice * 0.3;
-    } else if (condition === "lost") {
-      total += bookPrice;
-    }
+    total += quantities.damaged * bookPrice * 0.3;
+    total += quantities.lost * bookPrice;
 
     setFineAmount(Math.round(total));
-  };
-
-  useEffect(() => {
-    calculateFine();
-  }, [condition, selectedRecord]);
+  }, [quantities, selectedRecord]);
 
   const handleSubmitReturn = async () => {
+  const totalEntered = quantities.good + quantities.damaged + quantities.lost;
+  const totalBorrowed = selectedRecord.quantity;
+
+  if (Object.values(quantities).some((q) => q < 0)) {
+    setError("Không được nhập số âm");
+    return;
+  }
+
+  if (totalEntered !== totalBorrowed) {
+    setError(`Tổng số lượng phải bằng ${totalBorrowed}`);
+    return;
+  }
     try {
-      await returnBook(selectedRecord._id, { condition, notes });
+      await returnBook(selectedRecord._id, { quantities, notes });
       alert("✅ Trả sách thành công!");
       setShowModal(false);
       fetchBorrowedBooks();
     } catch (error) {
       alert("❌ Lỗi khi trả sách: " + (error.response?.data?.message || error.message));
+    }
+  };
+
+  const handleSubmitExtend = async () => {
+    try {
+      await extendBorrowPeriod(selectedRecord._id, extendDays);
+      alert(`✅ Đã gia hạn mượn thêm ${extendDays} ngày`);
+      setShowExtendModal(false);
+      fetchBorrowedBooks();
+    } catch (error) {
+      alert("❌ Lỗi khi gia hạn: " + (error.response?.data?.message || error.message));
     }
   };
 
@@ -105,16 +134,14 @@ const ViewListBorrowed = () => {
                   <tr key={item._id} style={{ borderBottom: "1px solid #e5e7eb" }}>
                     <td style={tdStyle}>{item.userId?.name}</td>
                     <td style={tdStyle}>{item.bookId?.title}</td>
-                    <td style={tdStyle}>
-                      {item.createdRequestAt ? new Date(item.createdRequestAt).toLocaleDateString("vi-VN") : "--"}
-                    </td>
+                    <td style={tdStyle}>{new Date(item.createdRequestAt).toLocaleDateString("vi-VN")}</td>
                     <td style={tdStyle}>{new Date(item.dueDate).toLocaleDateString("vi-VN")}</td>
                     <td style={tdStyle}>
-                      <button
-                        style={returnBtnStyle}
-                        onClick={() => handleReturnClick(item)}
-                      >
+                      <button style={{ ...returnBtnStyle, marginRight: "8px" }} onClick={() => handleReturnClick(item)}>
                         ↩ Trả sách
+                      </button>
+                      <button style={extendBtnStyle} onClick={() => handleExtendClick(item)}>
+                        ⏳ Gia hạn
                       </button>
                     </td>
                   </tr>
@@ -124,6 +151,7 @@ const ViewListBorrowed = () => {
           </table>
         </div>
 
+        {/* Modal Trả sách */}
         {showModal && selectedRecord && (
           <div style={modalOverlay}>
             <div style={modalContent}>
@@ -137,16 +165,12 @@ const ViewListBorrowed = () => {
                 </div>
               )}
 
-              <label>Trạng thái sách:</label>
-              <select
-                value={condition}
-                onChange={(e) => setCondition(e.target.value)}
-                style={{ padding: "8px", width: "100%", marginBottom: "16px" }}
-              >
-                <option value="good">Tốt</option>
-                <option value="damaged">Hư hỏng</option>
-                <option value="lost">Mất sách</option>
-              </select>
+              <label>Sách tốt:</label>
+              <input type="number" value={quantities.good} onChange={(e) => setQuantities({...quantities, good: parseInt(e.target.value) || 0})} style={{ padding: "8px", width: "100%", marginBottom: "8px" }} />
+              <label>Sách hỏng:</label>
+              <input type="number" value={quantities.damaged} onChange={(e) => setQuantities({...quantities, damaged: parseInt(e.target.value) || 0})} style={{ padding: "8px", width: "100%", marginBottom: "8px" }} />
+              <label>Sách mất:</label>
+              <input type="number" value={quantities.lost} onChange={(e) => setQuantities({...quantities, lost: parseInt(e.target.value) || 0})} style={{ padding: "8px", width: "100%", marginBottom: "8px" }} />
 
               <label>Ghi chú (nếu có):</label>
               <textarea
@@ -155,6 +179,8 @@ const ViewListBorrowed = () => {
                 style={{ padding: "8px", width: "100%", marginBottom: "16px" }}
               />
 
+              {error && <div style={{ color: "red", marginBottom: "8px" }}>{error}</div>}
+
               <div style={{ marginBottom: "16px", fontWeight: "bold" }}>
                 Tổng tiền phạt: <span style={{ color: "#ef4444" }}>{fineAmount.toLocaleString()} VND</span>
               </div>
@@ -162,6 +188,32 @@ const ViewListBorrowed = () => {
               <div style={{ textAlign: "right" }}>
                 <button onClick={() => setShowModal(false)} style={cancelBtnStyle}>Hủy</button>
                 <button onClick={handleSubmitReturn} style={confirmBtnStyle}>Xác nhận trả</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal Gia hạn */}
+        {showExtendModal && selectedRecord && (
+          <div style={modalOverlay}>
+            <div style={modalContent}>
+              <h3 style={{ fontSize: "20px", marginBottom: "16px" }}>
+                Gia hạn sách: <strong>{selectedRecord.bookId?.title}</strong>
+              </h3>
+
+              <label>Gia hạn thêm (ngày):</label>
+              <input
+                type="number"
+                value={extendDays}
+                min={1}
+                max={30}
+                onChange={(e) => setExtendDays(parseInt(e.target.value))}
+                style={{ padding: "8px", width: "100%", marginBottom: "16px" }}
+              />
+
+              <div style={{ textAlign: "right" }}>
+                <button onClick={() => setShowExtendModal(false)} style={cancelBtnStyle}>Hủy</button>
+                <button onClick={handleSubmitExtend} style={confirmBtnStyle}>Xác nhận gia hạn</button>
               </div>
             </div>
           </div>
@@ -187,6 +239,15 @@ const tdStyle = {
 
 const returnBtnStyle = {
   backgroundColor: "#3b82f6",
+  color: "#fff",
+  padding: "6px 12px",
+  border: "none",
+  borderRadius: "4px",
+  cursor: "pointer",
+};
+
+const extendBtnStyle = {
+  backgroundColor: "#f59e0b",
   color: "#fff",
   padding: "6px 12px",
   border: "none",
