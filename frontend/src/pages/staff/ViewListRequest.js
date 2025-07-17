@@ -62,7 +62,7 @@ const ViewListRequest = () => {
                       <tr key={req._id} style={{ borderBottom: "1px solid #e5e7eb" }}>
                         <td style={tdStyle}>{req.userId?.name}</td>
                         <td style={tdStyle}>{req.bookId?.title}</td>
-                        <td style={tdStyle}>1</td>
+                        <td style={tdStyle}>{req.quantity}</td>
                         <td style={tdStyle}>
                           {new Date(req.dueDate).toLocaleDateString("vi-VN")}
                         </td>
