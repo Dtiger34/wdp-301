@@ -16,7 +16,11 @@ export const getAllInventory = async () => {
 
 export const getInventoryItemById = async (id) => {
     try {
-        const response = await api.get(`/inventory/getinventoryitembyid/${id}`);
+        const response = await api.get(`/inventory/getinventoryitembyid/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching inventory item:', error);
