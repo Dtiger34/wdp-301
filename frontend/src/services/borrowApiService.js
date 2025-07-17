@@ -28,7 +28,7 @@ export const requestBorrowBook = async ({
 
 export const getBorrowRequests = async () => {
     try {
-        const response = await api.get('/borrows/status-borrowed');
+        const response = await api.get('/borrows');
         return response.data;
     } catch (error) {
         console.error('Error fetching borrow requests:', error);
@@ -55,23 +55,6 @@ export const getPendingBorrowRequests = async () => {
         throw error;
     }
 };
-export const declineBorrowRequest = async (borrowId, reason = '') => {
-    try {
-        const response = await api.post(
-            `/borrows/decline-borrow-request/${borrowId}`,
-            { reason },
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            }
-        );
-        return response.data;
-    } catch (error) {
-        console.error('Error declining borrow request:', error.response?.data || error.message);
-        throw error;
-    }
-};
 
 
 export const getBorrowedHistory = async (userId) => {
@@ -80,23 +63,6 @@ export const getBorrowedHistory = async (userId) => {
         return response.data;
     } catch (error) {
         console.error('Error fetching borrow history:', error);
-        throw error;
-    }
-};
-export const returnBook = async (borrowId, data) => {
-    try {
-        const response = await api.post(
-            `/borrows/return-book/${borrowId}`,
-            data,
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            }
-        );
-        return response.data;
-    } catch (error) {
-        console.error("Error returning book:", error.response?.data || error.message);
         throw error;
     }
 };

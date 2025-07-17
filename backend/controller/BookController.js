@@ -146,9 +146,8 @@ exports.createBook = async (req, res) => {
       bookshelf,
       quantity
     } = req.body;
-        console.log('📷 Saved image:', req.file?.filename);
 
-    const imagePath = req.file ? `/images/book/${req.file.filename}` : '';
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
 
     const newBook = new Book({
       title,
@@ -255,9 +254,9 @@ exports.createBorrowRequest = async (req, res) => {
     });
 
     // Update inventory: giảm số lượng sách có sẵn
-    // inventory.available -= quantity;
-    // inventory.borrowed += quantity;
-    // await inventory.save();
+    inventory.available -= quantity;
+    inventory.borrowed += quantity;
+    await inventory.save();
 
     await borrowRequest.populate(['userId', 'bookId']);
 
