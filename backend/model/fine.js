@@ -14,7 +14,7 @@ const FineSchema = new mongoose.Schema({
     },
     reason: {
         type: String,
-        enum: ['overdue', 'lost'],
+        enum: ['overdue', 'lost', 'damaged'],
         required: true
     },
     amount: {

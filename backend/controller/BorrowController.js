@@ -73,7 +73,6 @@ exports.getAllBorrowedRequests = async (req, res) => {
 
         // Filter overdue books
         if (isOverdue === 'true') {
-            query.status = 'borrowed';
             query.dueDate = { $lt: new Date() };
         }
 
@@ -91,7 +90,7 @@ exports.getAllBorrowedRequests = async (req, res) => {
         res.status(200).json({
             borrowRequests,
             pagination: {
-                currentPage: page,
+                currentPage: parseInt(page),
                 totalPages: Math.ceil(total / limit),
                 totalRecords: total,
                 hasNext: page * limit < total,
@@ -143,7 +142,7 @@ exports.returnBook = async (req, res) => {
     try {
         const requestId = req.params.id;
         const staffId = req.user.id;
-        const { condition = 'good', notes } = req.body; // good, damaged, lost
+        const { condition = 'good', notes } = req.body;
 
         const borrowRequest = await BorrowRecord.findById(requestId)
             .populate('userId', 'name studentId')
@@ -154,75 +153,97 @@ exports.returnBook = async (req, res) => {
         }
 
         if (borrowRequest.status !== 'borrowed') {
-            return res.status(400).json({
-                message: 'Only borrowed books can be returned',
-            });
+            return res.status(400).json({ message: 'Only borrowed books can be returned' });
         }
 
         const returnDate = new Date();
         const isOverdue = returnDate > borrowRequest.dueDate;
 
-        // Update borrow record
+        // Cập nhật borrow record
         borrowRequest.status = condition === 'lost' ? 'lost' : 'returned';
         borrowRequest.returnDate = returnDate;
         borrowRequest.processedBy = staffId;
         if (notes) borrowRequest.notes = notes;
         await borrowRequest.save();
 
-        // Update inventory
+        // Cập nhật BookCopy
+        const bookCopies = await BookCopy.find({
+            book: borrowRequest.bookId._id,
+            currentBorrower: borrowRequest.userId._id,
+            status: 'borrowed',
+        }).limit(borrowRequest.quantity);
+
+        if (bookCopies.length !== borrowRequest.quantity) {
+            return res.status(400).json({
+                message: `Expected ${borrowRequest.quantity} book copies, but found ${bookCopies.length}`,
+            });
+        }
+
+        let actualReturnedCount = 0;
+        for (const bookCopy of bookCopies) {
+            bookCopy.status =
+                condition === 'damaged' ? 'damaged' :
+                    condition === 'lost' ? 'lost' : 'available';
+
+            bookCopy.currentBorrower = null;
+            bookCopy.dueDate = null;
+            await bookCopy.save();
+            actualReturnedCount++;
+        }
+
+        // Cập nhật inventory
         const inventory = await Inventory.findOne({ book: borrowRequest.bookId._id });
         if (inventory) {
-            inventory.borrowed -= 1;
+            inventory.borrowed -= actualReturnedCount;
 
             switch (condition) {
                 case 'good':
-                    inventory.available += 1;
+                    inventory.available += actualReturnedCount;
                     break;
                 case 'damaged':
-                    inventory.damaged += 1;
+                    inventory.damaged += actualReturnedCount;
                     break;
                 case 'lost':
-                    inventory.lost += 1;
+                    inventory.lost += actualReturnedCount;
                     break;
             }
+
             await inventory.save();
         }
 
-        // Create fine if needed
-        let fine = null;
+        // Tạo tiền phạt nếu cần
         if (isOverdue || condition === 'damaged' || condition === 'lost') {
             let fineAmount = 0;
             let fineReason = '';
+            let fineNote = [];
 
             if (isOverdue) {
                 const daysLate = Math.ceil((returnDate - borrowRequest.dueDate) / (1000 * 60 * 60 * 24));
-                fineAmount += daysLate * 5000; // 5000 VND per day
+                fineAmount += daysLate * 5000;
                 fineReason = 'overdue';
+                fineNote.push(`Late return: ${daysLate} days`);
             }
 
             if (condition === 'damaged') {
-                fineAmount += borrowRequest.bookId.price * 0.3; // 30% of book price
-                fineReason = fineReason ? 'overdue,damaged' : 'damaged';
+                fineAmount += borrowRequest.bookId.price * 0.3;
+                fineReason = fineReason || 'damaged';
+                fineNote.push('Book damaged');
             }
 
             if (condition === 'lost') {
-                fineAmount += borrowRequest.bookId.price; // Full book price
+                fineAmount += borrowRequest.bookId.price;
                 fineReason = 'lost';
+                fineNote.push('Book lost');
             }
 
             if (fineAmount > 0) {
-                fine = await Fine.create({
+                const fine = await Fine.create({
                     borrowRecord: borrowRequest._id,
                     user: borrowRequest.userId._id,
-                    reason: fineReason.split(',')[0], // Use primary reason
-                    amount: fineAmount,
+                    reason: fineReason,
+                    amount: Math.round(fineAmount),
                     processedBy: staffId,
-                    note: `${condition === 'lost' ? 'Book lost' : condition === 'damaged' ? 'Book damaged' : ''} ${isOverdue
-                        ? `Late return: ${Math.ceil(
-                            (returnDate - borrowRequest.dueDate) / (1000 * 60 * 60 * 24)
-                        )} days`
-                        : ''
-                        }`.trim(),
+                    note: fineNote.join(', '),
                 });
 
                 borrowRequest.fineId = fine._id;
@@ -230,11 +251,14 @@ exports.returnBook = async (req, res) => {
             }
         }
 
+        const updatedRecord = await BorrowRecord.findById(requestId)
+            .populate('userId', 'name studentId')
+            .populate('bookId', 'title author isbn')
+            .populate('fineId');
+
         res.status(200).json({
             message: 'Book returned successfully',
-            borrowRequest,
-            fine: fine || null,
-            isOverdue,
+            borrowRequest: updatedRecord,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
