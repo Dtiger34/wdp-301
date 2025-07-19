@@ -123,7 +123,7 @@ exports.markFineAsPaid = async (req, res) => {
 	}
 };
 
-// @done: Get fine statistics
+// @done: Lấy thống kê các khoản phạt (fines) trong hệ thống theo thời gian và các tiêu chí khác nhau.
 exports.getFineStatistics = async (req, res) => {
 	try {
 		const { fromDate, toDate } = req.query;
@@ -218,7 +218,7 @@ exports.getFineStatistics = async (req, res) => {
 	}
 };
 
-// @done: Nhận số liệu thống kê tốt
+// @done: Cho phép thủ thư/thủ kho tạo thủ công một khoản phạt cho sinh viên hoặc người mượn sách.
 exports.createManualFine = async (req, res) => {
 	try {
 		const { userId, borrowRecordId, reason, amount, note } = req.body;
@@ -271,7 +271,7 @@ exports.createManualFine = async (req, res) => {
 	}
 };
 
-// @done: Bản cập nhật tốt
+// @done:  Cho phép chỉnh sửa thông tin khoản phạt
 exports.updateFine = async (req, res) => {
 	try {
 		const fineId = req.params.id;

@@ -218,7 +218,7 @@ exports.createBook = async (req, res) => {
 // @done: Tạo yêu cầu mượn sách
 exports.createBorrowRequest = async (req, res) => {
   try {
-    const { bookId, isReadOnSite, notes, dueDate, quantity, borrowDuration } = req.body;
+    const { bookId, isReadOnSite, notes, dueDate, quantity } = req.body;
     const userId = req.user.id;
 
     // Kiểm tra xem sách có tồn tại không
@@ -259,7 +259,6 @@ exports.createBorrowRequest = async (req, res) => {
       isReadOnSite,
       notes,
       quantity,
-      borrowDuration,
       status: 'pending',
     });
 
