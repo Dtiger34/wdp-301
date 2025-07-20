@@ -56,7 +56,6 @@ const Header = () => {
     });
   }
 
-
   return (
     <div className="header-wrapper">
       <div className="page-header">
@@ -87,7 +86,15 @@ const Header = () => {
             </Dropdown>
           ) : (
             location.pathname !== "/login" && (
-              <Link to="/login" className="login-link">
+              <Link
+                style={{
+                  textDecoration: "none",
+                  color: "#44caf0ff",
+                  fontWeight: "bold",
+                }}
+                to="/login"
+                className="login-link"
+              >
                 Đăng nhập
               </Link>
             )
