@@ -8,7 +8,7 @@ const Book = require("./model/book");
 const Category = require("./model/categories");
 const Bookshelf = require("./model/bookshelf");
 const Inventory = require("./model/Inventory");
-
+const BookCopy = require("./model/bookcopies");
 const seedData = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -17,6 +17,7 @@ const seedData = async () => {
     // Clear existing data
     await User.deleteMany({});
     await Book.deleteMany({});
+    await BookCopy.deleteMany({});
     await Category.deleteMany({});
     await Bookshelf.deleteMany({});
     await Inventory.deleteMany({});
@@ -285,12 +286,13 @@ const seedData = async () => {
       },
     ];
 
-    // Create books and their inventory
     for (const bookData of books) {
       const { quantity, ...bookInfo } = bookData;
+
+      // Create Book
       const book = await Book.create(bookInfo);
 
-      // Create inventory for each book
+      // Create Inventory
       await Inventory.create({
         book: book._id,
         total: quantity,
@@ -299,6 +301,21 @@ const seedData = async () => {
         damaged: 0,
         lost: 0,
       });
+
+      // Create Book Copies
+      const bookCopies = [];
+      for (let i = 0; i < quantity; i++) {
+        const barcode = `BC-${book._id.toString().slice(-6)}-${(i + 1)
+          .toString()
+          .padStart(3, "0")}`;
+        bookCopies.push({
+          book: book._id,
+          barcode,
+          status: "available",
+        });
+      }
+
+      await BookCopy.insertMany(bookCopies);
     }
 
     console.log("✅ Books and inventory created:", books.length);

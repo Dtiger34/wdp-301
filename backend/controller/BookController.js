@@ -2,18 +2,22 @@ const Book = require('../model/book');
 const Inventory = require('../model/Inventory');
 const BorrowRecord = require('../model/borrowHistory');
 const Review = require('../model/review');
-const borrowController = require('../model/borrowHistory');
-const BookCopy = require('../model/bookcopies')
+const BookCopy = require('../model/bookcopies');
+const XLSX = require('xlsx');
+const csv = require('csv-parser');
+const fs = require('fs');
+const path = require('path');
 const mongoose = require('mongoose');
+
 ////////// book
 // @done: get all book
 exports.getAllBooks = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // Trang hiện tại (mặc định là 1)
+    const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    const totalBooks = await Book.countDocuments(); // Tổng số sách
+    const totalBooks = await Book.countDocuments();
     const totalPages = Math.ceil(totalBooks / limit);
 
     const books = await Book.find()
@@ -52,13 +56,20 @@ exports.getBookById = async (req, res) => {
       .populate('userId', 'name studentId')
       .sort({ createdAt: -1 });
 
+    // Get all book copies
+    const bookCopies = await BookCopy.find({ book: req.params.id })
+      .populate('currentBorrower', 'name studentId');
+
     // Calculate average rating
     const avgRating =
-      reviews.length > 0 ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0;
+      reviews.length > 0
+        ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+        : 0;
 
     const bookDetails = {
       ...book.toObject(),
       inventory: inventory || { available: 0, total: 0, borrowed: 0 },
+      bookCopies, // Thêm danh sách bản sao sách vào response
       reviews,
       averageRating: Math.round(avgRating * 10) / 10,
       totalReviews: reviews.length,
@@ -125,6 +136,9 @@ exports.deleteBook = async (req, res) => {
     // Xoá cả inventory nếu có
     await Inventory.findOneAndDelete({ book: req.params.id });
 
+    // Xoá các bản sao sách
+    await BookCopy.deleteMany({ book: req.params.id });
+
     res.status(200).json({ message: 'Book deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -146,9 +160,8 @@ exports.createBook = async (req, res) => {
       bookshelf,
       quantity
     } = req.body;
-        console.log('📷 Saved image:', req.file?.filename);
 
-    const imagePath = req.file ? `/images/book/${req.file.filename}` : '';
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
 
     const newBook = new Book({
       title,
@@ -178,7 +191,7 @@ exports.createBook = async (req, res) => {
     // Tạo bản sao sách có mã vạch duy nhất
     const bookCopies = [];
     for (let i = 0; i < quantity; i++) {
-      const barcode = `BC-${book._id.toString()}-${i + 1}`;  // Mã vạch duy nhất cho mỗi bản sao
+      const barcode = `BC-${book._id.toString()}-${(i + 1).toString().padStart(3, '0')}`;
       const newBookCopy = new BookCopy({
         book: book._id,
         barcode,
@@ -201,8 +214,10 @@ exports.createBook = async (req, res) => {
   }
 };
 
+
+
 /////////// borrow
-// @doing: Tạo yêu cầu mượn sách
+// @done: Tạo yêu cầu mượn sách
 exports.createBorrowRequest = async (req, res) => {
   try {
     const { bookId, isReadOnSite, notes, dueDate, quantity } = req.body;
@@ -216,12 +231,7 @@ exports.createBorrowRequest = async (req, res) => {
 
     // Kiểm tra tình trạng sẵn có của hàng tồn kho
     const inventory = await Inventory.findOne({ book: bookId });
-    if (!inventory || inventory.available <= 0) {
-      return res.status(400).json({ message: 'Book is not available for borrowing' });
-    }
-
-    // Kiểm tra xem số lượng yêu cầu có vượt quá số lượng có sẵn không
-    if (quantity > inventory.available) {
+    if (!inventory || inventory.available < quantity) {
       return res.status(400).json({ message: 'Not enough copies available for borrowing' });
     }
 
@@ -250,14 +260,9 @@ exports.createBorrowRequest = async (req, res) => {
       dueDate: new Date(dueDate),
       isReadOnSite,
       notes,
-      quantity, // Lưu quantity vào trong yêu cầu mượn
+      quantity,
       status: 'pending',
     });
-
-    // Update inventory: giảm số lượng sách có sẵn
-    // inventory.available -= quantity;
-    // inventory.borrowed += quantity;
-    // await inventory.save();
 
     await borrowRequest.populate(['userId', 'bookId']);
 
@@ -271,15 +276,13 @@ exports.createBorrowRequest = async (req, res) => {
 };
 
 //////////// Staff
-//  @done: Lấy danh sách yêu cầu mượn đang pending
+// @done: Lấy danh sách yêu cầu mượn đang pending
 exports.getPendingBorrowRequests = async (req, res) => {
   try {
-    const pendingRequests = await borrowController.find({ status: 'pending' })
+    const pendingRequests = await BorrowRecord.find({ status: 'pending' })
       .populate('userId')
       .populate('bookId')
-      .sort({ createdAt: -1 }); // Mới nhất lên đầu
-
-    const { page = 1, limit = 10, status } = req.query;
+      .sort({ createdRequestAt: -1 });
 
     res.status(200).json({
       message: 'Pending borrow requests fetched successfully',
@@ -290,34 +293,30 @@ exports.getPendingBorrowRequests = async (req, res) => {
   }
 };
 
-// @doing: hủy yêu cầu mượn sách của người dùng hiện tại
-// note: thêm của staff nào và lý do sao từ chối
+// @done: hủy yêu cầu mượn sách của người dùng hiện tại
 exports.cancelBorrowRequest = async (req, res) => {
   try {
     const requestId = req.params.id;
     const userId = req.user.id;
 
-    // Find the borrow request
     const borrowRequest = await BorrowRecord.findById(requestId);
 
     if (!borrowRequest) {
       return res.status(404).json({ message: 'Borrow request not found' });
     }
 
-    // Check if the request belongs to the current user
     if (borrowRequest.userId.toString() !== userId) {
       return res.status(403).json({ message: 'You can only cancel your own requests' });
     }
 
-    // Check if the request can be cancelled (only pending requests)
     if (borrowRequest.status !== 'pending') {
       return res.status(400).json({
         message: 'Only pending requests can be cancelled',
       });
     }
 
-    // Update status to declined
     borrowRequest.status = 'declined';
+    borrowRequest.notes = 'Cancelled by user';
     await borrowRequest.save();
 
     res.status(200).json({
@@ -387,19 +386,17 @@ exports.getUserBorrowRequests = async (req, res) => {
   }
 };
 
-////////// review
+// @done: create review
 exports.createReview = async (req, res) => {
   try {
     const { bookId, rating, comment } = req.body;
     const userId = req.user.id;
 
-    // Check if book exists
     const book = await Book.findById(bookId);
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
 
-    // Check if user has borrowed and returned this book
     const borrowRecord = await BorrowRecord.findOne({
       userId,
       bookId,
@@ -412,7 +409,6 @@ exports.createReview = async (req, res) => {
       });
     }
 
-    // Check if user has already reviewed this book
     const existingReview = await Review.findOne({ userId, bookId });
     if (existingReview) {
       return res.status(400).json({
@@ -420,7 +416,6 @@ exports.createReview = async (req, res) => {
       });
     }
 
-    // Create review
     const review = await Review.create({
       userId,
       bookId,
@@ -445,7 +440,6 @@ exports.updateReview = async (req, res) => {
     const { rating, comment } = req.body;
     const userId = req.user.id;
 
-    // Find and update review
     const review = await Review.findOneAndUpdate(
       { _id: reviewId, userId },
       { rating, comment },
@@ -472,7 +466,6 @@ exports.deleteReview = async (req, res) => {
     const reviewId = req.params.id;
     const userId = req.user.id;
 
-    // Find and delete review
     const review = await Review.findOneAndDelete({ _id: reviewId, userId });
 
     if (!review) {
@@ -487,9 +480,9 @@ exports.deleteReview = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
-///// 
+// @done: search books
 exports.searchBooks = async (req, res) => {
   try {
     const {
@@ -505,7 +498,6 @@ exports.searchBooks = async (req, res) => {
       sortOrder = 'desc',
     } = req.query;
 
-    // Build search query
     const searchQuery = {};
 
     if (query) {
@@ -533,7 +525,6 @@ exports.searchBooks = async (req, res) => {
       searchQuery.publishYear = publishYear;
     }
 
-    // Get books
     let booksQuery = Book.find(searchQuery)
       .populate('categories', 'name')
       .populate('bookshelf', 'code name location')
@@ -543,7 +534,6 @@ exports.searchBooks = async (req, res) => {
 
     let books = await booksQuery;
 
-    // Filter by availability if requested
     if (available === 'true') {
       const bookIds = books.map((book) => book._id);
       const availableInventory = await Inventory.find({
@@ -555,7 +545,6 @@ exports.searchBooks = async (req, res) => {
       books = books.filter((book) => availableBookIds.includes(book._id.toString()));
     }
 
-    // Get inventory information for each book
     const booksWithInventory = await Promise.all(
       books.map(async (book) => {
         const inventory = await Inventory.findOne({ book: book._id });
@@ -583,7 +572,7 @@ exports.searchBooks = async (req, res) => {
   }
 };
 
-//////////
+// @done: update book inventory
 exports.updateBookInventory = async (req, res) => {
   try {
     const bookId = req.params.id;
@@ -599,7 +588,6 @@ exports.updateBookInventory = async (req, res) => {
       return res.status(404).json({ message: 'Inventory not found for this book' });
     }
 
-    // Validate the numbers make sense
     const newTotal = total !== undefined ? total : inventory.total;
     const newAvailable = available !== undefined ? available : inventory.available;
     const newBorrowed = borrowed !== undefined ? borrowed : inventory.borrowed;
@@ -612,7 +600,6 @@ exports.updateBookInventory = async (req, res) => {
       });
     }
 
-    // Update inventory
     Object.assign(inventory, {
       total: newTotal,
       available: newAvailable,
@@ -632,69 +619,51 @@ exports.updateBookInventory = async (req, res) => {
   }
 };
 
-
+// @done: get book filter
 exports.getBookFilter = async (req, res) => {
   try {
-    // Lấy query params
-    const {
-      current = 1,
-      pageSize = 10,
-      mainText = "",
-      sort = "",
-      category = "",
-      price,
-    } = req.query;
+    const { current = 1, pageSize = 10, mainText = '', sort = '', category = '', price } = req.query;
 
-    // Chuyển đổi sang số nguyên
     const currentPage = parseInt(current);
     const limit = parseInt(pageSize);
     const skip = (currentPage - 1) * limit;
 
-    // Xây dựng query
     const query = {};
 
-    // Tìm kiếm toàn văn: tiêu đề, mô tả, tác giả
     if (mainText) {
       query.$or = [
-        { title: { $regex: mainText, $options: "i" } },
-        { author: { $regex: mainText, $options: "i" } },
-        { description: { $regex: mainText, $options: "i" } },
+        { title: { $regex: mainText, $options: 'i' } },
+        { author: { $regex: mainText, $options: 'i' } },
+        { description: { $regex: mainText, $options: 'i' } },
       ];
     }
 
-    // Lọc theo category (danh sách id phân tách bằng dấu phẩy)
     if (category) {
-      const categoryArray = category.split(",");
+      const categoryArray = category.split(',');
       query.categories = { $in: categoryArray };
     }
 
-    // Lọc theo khoảng giá
     if (price) {
-      const [min, max] = price.split("-").map(Number);
+      const [min, max] = price.split('-').map(Number);
       query.price = { $gte: min, $lte: max };
     }
 
-    // Sắp xếp (ví dụ: sort=-price hoặc sort=title)
     let sortOption = {};
     if (sort) {
-      const [field, order] = sort.startsWith("-")
-        ? [sort.slice(1), -1]
-        : [sort, 1];
+      const [field, order] = sort.startsWith('-') ? [sort.slice(1), -1] : [sort, 1];
       sortOption[field] = order;
     }
 
-    // Truy vấn đồng thời
     const [books, total] = await Promise.all([
       Book.find(query)
-        .populate("categories", "name")
-        .populate("bookshelf", "name")
+        .populate('categories', 'name')
+        .populate('bookshelf', 'name')
         .sort(sortOption)
         .skip(skip)
         .limit(limit),
       Book.countDocuments(query),
     ]);
 
-    // Trả về kết quả
     res.status(200).json({
       result: books,
       meta: {
@@ -707,7 +676,198 @@ exports.getBookFilter = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Lỗi getBookFilter:", err);
-    res.status(500).json({ message: "Lỗi server", error: err.message });
+    console.error('Lỗi getBookFilter:', err);
+    res.status(500).json({ message: 'Lỗi server', error: err.message });
+  }
+};
+
+// Tải lên sách từ tệp Excel
+exports.uploadBooksFromFile = async (req, res) => {
+  try {
+    const file = req.file;
+    console.log('📥 Received file:', file?.originalname);
+
+    if (!file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const fileExtension = path.extname(file.originalname).toLowerCase();
+    console.log('📄 File extension:', fileExtension);
+
+    let books = [];
+
+    // Đọc dữ liệu từ file Excel
+    if (fileExtension === '.xlsx' || fileExtension === '.xls') {
+      console.log('🔍 Reading Excel file...');
+      const workbook = XLSX.read(file.buffer, { type: 'buffer' }); // dùng path thay vì buffer
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      books = XLSX.utils.sheet_to_json(sheet);
+    }
+    // Đọc dữ liệu từ file CSV
+    else if (fileExtension === '.csv') {
+      console.log('🔍 Reading CSV file...');
+      books = await new Promise((resolve, reject) => {
+        const results = [];
+        fs.createReadStream(file.path)
+          .pipe(csv())
+          .on('data', (data) => results.push(data))
+          .on('end', () => {
+            console.log('✅ CSV parsing complete');
+            resolve(results);
+          })
+          .on('error', (err) => {
+            console.error('❌ CSV parsing error:', err);
+            reject(err);
+          });
+      });
+    } else {
+      return res.status(400).json({ message: 'Unsupported file format. Only CSV and Excel files are allowed.' });
+    }
+
+    console.log('📚 Parsed books:', books.length);
+
+    const insertedBooks = [];
+    const errors = [];
+
+    // Duyệt qua tất cả sách trong file
+    for (const [index, rawBookData] of books.entries()) {
+      // Chuẩn hóa key: lowercase, bỏ dấu cách
+      const bookData = {};
+      for (let key in rawBookData) {
+        const normalizedKey = key.toLowerCase().replace(/\s+/g, '');
+        bookData[normalizedKey] = rawBookData[key];
+      }
+
+      console.log(`📦 Processing book #${index + 1}`, bookData);
+
+      try {
+        const {
+          title,
+          isbn,
+          author,
+          publisher,
+          publishyear,
+          description,
+          price,
+          quantity,
+          categories,
+          bookshelf,
+        } = bookData;
+
+        // Kiểm tra các trường bắt buộc
+        if (!title || !isbn || !author || !publisher || !publishyear || !quantity || !categories || !bookshelf) {
+          const msg = `⚠️ Missing required fields for book: ${isbn}`;
+          console.warn(msg);
+          errors.push(msg);
+          continue;
+        }
+
+        // Kiểm tra và chuyển categories sang ObjectId
+        let categoryIds;
+        try {
+          const rawCategories = categories.toString().split(',').map(c => c.trim());
+          console.log('🔎 Raw category IDs:', rawCategories);
+
+          categoryIds = rawCategories.map(id => {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+              throw new Error(`Invalid category ID: ${id}`);
+            }
+            return new mongoose.Types.ObjectId(id);
+          });
+        } catch (err) {
+          throw new Error(err.message);
+        }
+
+        // Kiểm tra và chuyển bookshelf sang ObjectId
+        if (!mongoose.Types.ObjectId.isValid(bookshelf)) {
+          throw new Error(`Invalid bookshelf ID: ${bookshelf}`);
+        }
+        const bookshelfId = new mongoose.Types.ObjectId(bookshelf);
+
+        // Tạo book
+        const newBook = new Book({
+          title,
+          isbn,
+          author,
+          publisher,
+          publishYear: publishyear,
+          description,
+          price,
+          categories: categoryIds,
+          bookshelf: bookshelfId,
+        });
+
+        const savedBook = await newBook.save();
+        console.log(`✅ Book saved: ${savedBook.title} (${savedBook._id})`);
+
+        // Tạo inventory cho sách
+        await Inventory.create({
+          book: savedBook._id,
+          total: quantity,
+          available: quantity,
+          borrowed: 0,
+          damaged: 0,
+          lost: 0,
+        });
+        console.log('📦 Inventory created');
+
+        // Tạo BookCopy (bản sao sách) và lưu vào cơ sở dữ liệu
+        const bookCopies = [];
+        for (let i = 0; i < quantity; i++) {
+          const barcode = `BC-${savedBook._id.toString()}-${i + 1}`;
+          bookCopies.push({
+            book: savedBook._id,
+            barcode,
+            status: 'available',
+          });
+        }
+
+        // Lưu tất cả các BookCopy vào cơ sở dữ liệu
+        const savedBookCopies = await BookCopy.insertMany(bookCopies);
+        console.log(`🔄 Book copies inserted: ${savedBookCopies.length}`);
+
+        // Cập nhật trường bookcopies của sách với các ID bản sao sách đã lưu
+        savedBook.bookcopies = savedBookCopies.map(copy => copy._id);
+
+        // Lưu sách với trường bookcopies đã được cập nhật
+        await savedBook.save();
+        console.log(`✅ Book copies saved for book: ${savedBook.title} (${savedBook._id})`);
+
+        insertedBooks.push(savedBook);
+      } catch (error) {
+        const errMsg = `❌ Error saving book with ISBN ${bookData?.isbn || '[unknown]'}: ${error.message}`;
+        console.error(errMsg);
+        errors.push(errMsg);
+      }
+    }
+
+    res.status(200).json({
+      message: 'Books uploaded successfully',
+      insertedBooks,
+      errors,
+    });
+  } catch (error) {
+    console.error('❗ Unexpected error in uploadBooksFromFile:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/// get bookcopies by book id
+exports.getBookCopiesByBookId = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+
+    // Tìm tất cả bản sao sách theo bookId
+    const bookCopies = await BookCopy.find({ book: bookId })
+      .populate('book', 'title author isbn image')
+      .sort({ createdAt: -1 });
+
+    if (!bookCopies || bookCopies.length === 0) {
+      return res.status(404).json({ message: 'No book copies found for this book' });
+    }
+
+    res.status(200).json(bookCopies);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

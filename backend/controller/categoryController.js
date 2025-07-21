@@ -55,3 +55,43 @@ exports.deleteCategory = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Cập nhật hoặc gán lại sách cho thể loại khác
+exports.updateBookCategory = async (req, res) => {
+  try {
+    const { bookId, newCategoryIds } = req.body;
+
+    // Kiểm tra nếu thông tin truyền vào là hợp lệ
+    if (!bookId || !newCategoryIds || !Array.isArray(newCategoryIds)) {
+      return res.status(400).json({ message: 'Invalid request. bookId and newCategoryIds are required.' });
+    }
+
+    // Kiểm tra xem sách có tồn tại trong cơ sở dữ liệu không
+    const book = await Book.findById(bookId);
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    // Kiểm tra xem thể loại mới có tồn tại trong cơ sở dữ liệu không
+    const categories = await Category.find({ '_id': { $in: newCategoryIds } });
+    if (categories.length !== newCategoryIds.length) {
+      return res.status(404).json({ message: 'One or more categories not found' });
+    }
+
+    // Cập nhật thể loại cho sách
+    book.categories = newCategoryIds;
+    await book.save();
+
+    // Trả về thông tin sách sau khi cập nhật
+    const updatedBook = await Book.findById(bookId)
+      .populate('categories', 'name')
+      .populate('bookshelf', 'name');
+
+    res.status(200).json({
+      message: 'Book categories updated successfully',
+      updatedBook
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -172,3 +172,78 @@ exports.createAccount = async (req, res) => {
     }
 };
 
+// @done update user
+exports.updateUser = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const { name, email, phone, address, role, isActive } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Only admin can update role and isActive
+        if ((role || isActive !== undefined) && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Only admin can update role and active status' });
+        }
+
+        // Check for duplicate email if provided
+        if (email && email !== user.email) {
+            const existingEmail = await User.findOne({ email, _id: { $ne: userId } });
+            if (existingEmail) {
+                return res.status(400).json({ message: 'Email already exists' });
+            }
+        }
+
+        const updateData = {};
+        if (name) updateData.name = name;
+        if (email) updateData.email = email;
+        if (phone) updateData.phone = phone;
+        if (address) updateData.address = address;
+        if (role) updateData.role = role;
+        if (isActive !== undefined) updateData.isActive = isActive;
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
+
+        res.status(200).json({
+            message: 'User updated successfully',
+            user: updatedUser,
+        });
+    } catch (err) {
+        console.error('Update user error:', err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+// @done delete user
+exports.deleteUser = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if user has active borrow records
+        const BorrowRecord = require('../model/borrowHistory');
+        const activeBorrows = await BorrowRecord.countDocuments({
+            userId,
+            status: { $in: ['pending', 'borrowed'] },
+        });
+
+        if (activeBorrows > 0) {
+            return res.status(400).json({
+                message: 'Cannot delete user with active borrow records',
+            });
+        }
+
+        await User.findByIdAndDelete(userId);
+
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (err) {
+        console.error('Delete user error:', err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
