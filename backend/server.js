@@ -27,9 +27,8 @@ app.use("/api/v1/books", require("./routes/BookRoute"));
 app.use("/api/v1/bookshelves", require("./routes/bookshelfRoute"));
 app.use("/api/v1/categories", require("./routes/categoryRoute"));
 app.use("/api/v1/inventory", require("./routes/InventoryRoute"));
-// Nếu sau này bạn có route riêng cho borrow:
 app.use("/api/v1/borrows", require("./routes/BorrowRoute"));
-
+app.use("/api/v1/reports", require("./routes/ReportRoute"));
 // Fallback route not found
 app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found" });
