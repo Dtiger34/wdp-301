@@ -77,7 +77,6 @@ exports.getAllBorrowedRequests = async (req, res) => {
 
         // Filter overdue books
         if (isOverdue === 'true') {
-            query.status = 'borrowed';
             query.dueDate = { $lt: new Date() };
         }
 
@@ -95,7 +94,7 @@ exports.getAllBorrowedRequests = async (req, res) => {
         res.status(200).json({
             borrowRequests,
             pagination: {
-                currentPage: page,
+                currentPage: parseInt(page),
                 totalPages: Math.ceil(total / limit),
                 totalRecords: total,
                 hasNext: page * limit < total,

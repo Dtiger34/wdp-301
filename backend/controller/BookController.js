@@ -214,6 +214,8 @@ exports.createBook = async (req, res) => {
   }
 };
 
+
+
 /////////// borrow
 // @done: Tạo yêu cầu mượn sách
 exports.createBorrowRequest = async (req, res) => {
@@ -846,6 +848,26 @@ exports.uploadBooksFromFile = async (req, res) => {
     });
   } catch (error) {
     console.error('❗ Unexpected error in uploadBooksFromFile:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/// get bookcopies by book id
+exports.getBookCopiesByBookId = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+
+    // Tìm tất cả bản sao sách theo bookId
+    const bookCopies = await BookCopy.find({ book: bookId })
+      .populate('book', 'title author isbn image')
+      .sort({ createdAt: -1 });
+
+    if (!bookCopies || bookCopies.length === 0) {
+      return res.status(404).json({ message: 'No book copies found for this book' });
+    }
+
+    res.status(200).json(bookCopies);
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };

@@ -1,0 +1,2886 @@
+[
+  {
+    "_id": {
+      "$oid": "cc2677173ae04eccbe808079"
+    },
+    "title": "Lược sử thời gian 1",
+    "isbn": "978-0-165570-61",
+    "author": "Daniel Kahneman",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2011,
+    "description": "Tư duy phản biện và chiến lược lãnh đạo hiện đại trong kỷ nguyên số.",
+    "price": 150131,
+    "image": "1-img-e372df69da.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2025-09-07T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-09-07T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "5d38cec7cc234510a30cfb15"
+    },
+    "title": "Kỹ năng đàm phán 2",
+    "isbn": "978-0-986748-55",
+    "author": "Daniel Kahneman",
+    "publisher": "NXB Giáo Dục",
+    "publishYear": 2017,
+    "description": "Sách dành cho những ai đang tìm kiếm ý nghĩa và định hướng trong cuộc sống.",
+    "price": 112317,
+    "image": "2-img-e7e59568dd.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2024-09-11T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-09-11T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "d4549c960617480b8e5c258f"
+    },
+    "title": "Cuộc cách mạng công nghiệp lần thứ tư 3",
+    "isbn": "978-0-219028-56",
+    "author": "Yuval Noah Harari",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2014,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 133483,
+    "image": "3-img-652b74584a.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2024-06-19T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-06-19T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0aadaa4c262c425484815bb5"
+    },
+    "title": "Tuổi trẻ đáng giá bao nhiêu 4",
+    "isbn": "978-0-198514-65",
+    "author": "Nguyễn Nhật Ánh",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2023,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 272520,
+    "image": "4-img-e00c0d9518.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2025-05-13T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-05-13T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e0461a1c00f643dc914b5d3d"
+    },
+    "title": "Quẳng gánh lo đi và vui sống 5",
+    "isbn": "978-0-437944-52",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "NXB Trẻ",
+    "publishYear": 2001,
+    "description": "Sách dành cho những ai đang tìm kiếm ý nghĩa và định hướng trong cuộc sống.",
+    "price": 140526,
+    "image": "5-img-d48e5c06de.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2024-09-10T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-09-10T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "12c3bd7f9aa14dbba28f8b14"
+    },
+    "title": "Cuộc cách mạng công nghiệp lần thứ tư 6",
+    "isbn": "978-0-517493-47",
+    "author": "Trần Đình Hoành",
+    "publisher": "NXB Kim Đồng",
+    "publishYear": 2011,
+    "description": "Cẩm nang ứng xử thông minh trong thời đại kết nối.",
+    "price": 214716,
+    "image": "6-img-8be9b40961.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2025-02-27T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-02-27T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "d2bbdcc932234f04a043cc80"
+    },
+    "title": "Vũ khí, virus và thép 7",
+    "isbn": "978-0-488288-59",
+    "author": "Nguyễn Duy",
+    "publisher": "Tech Books",
+    "publishYear": 2018,
+    "description": "Khơi gợi khả năng sáng tạo tiềm ẩn qua câu chuyện giản dị mà sâu sắc.",
+    "price": 251434,
+    "image": "7-img-3a1254e0c2.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2021-05-20T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-05-20T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "7e6c34f93d634c4ea76fd43c"
+    },
+    "title": "Hành trình khám phá 8",
+    "isbn": "978-0-789890-49",
+    "author": "Trần Đình Hoành",
+    "publisher": "NXB Giáo Dục",
+    "publishYear": 2017,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 200007,
+    "image": "8-img-ec13e6d9db.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2023-11-07T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-11-07T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "dc41198171704a4898f4b945"
+    },
+    "title": "Bí ẩn vũ trụ 9",
+    "isbn": "978-0-276373-90",
+    "author": "Nguyễn Hiến Lê",
+    "publisher": "NXB Giáo Dục",
+    "publishYear": 2021,
+    "description": "Khơi gợi khả năng sáng tạo tiềm ẩn qua câu chuyện giản dị mà sâu sắc.",
+    "price": 280764,
+    "image": "9-img-f94d5c0884.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2021-06-05T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-06-05T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "4001a90edbc14ca093334497"
+    },
+    "title": "Vũ khí, virus và thép 10",
+    "isbn": "978-0-502472-51",
+    "author": "Daniel Kahneman",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2024,
+    "description": "Tác phẩm văn học kinh điển được tái hiện dưới góc nhìn đương đại.",
+    "price": 230745,
+    "image": "10-img-2bbd1bf184.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2023-07-26T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-07-26T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6b2f189e4afb4bf99ff0e826"
+    },
+    "title": "Hành trình khám phá 11",
+    "isbn": "978-0-871415-25",
+    "author": "Stephen Hawking",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2021,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 315774,
+    "image": "11-img-ac934511f6.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2024-06-30T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-06-30T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "64a713ef449745f491a6183f"
+    },
+    "title": "Quẳng gánh lo đi và vui sống 12",
+    "isbn": "978-0-392532-80",
+    "author": "Nguyễn Duy",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2021,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 87511,
+    "image": "12-img-8e9e1c0ec1.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2024-09-15T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-09-15T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "de12ef5613894dd196d102c9"
+    },
+    "title": "Hành trình khám phá 13",
+    "isbn": "978-0-979836-12",
+    "author": "Paulo Coelho",
+    "publisher": "NXB Kim Đồng",
+    "publishYear": 2008,
+    "description": "Tư duy phản biện và chiến lược lãnh đạo hiện đại trong kỷ nguyên số.",
+    "price": 298273,
+    "image": "13-img-0e75d4e7a3.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2025-05-13T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-05-13T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a4966d9af2944a3c8ac4d9e3"
+    },
+    "title": "Lược sử thời gian 14",
+    "isbn": "978-0-934765-39",
+    "author": "Nguyễn Hiến Lê",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2012,
+    "description": "Hướng dẫn kỹ năng sống và giao tiếp hiệu quả thông qua các tình huống thường gặp.",
+    "price": 270300,
+    "image": "14-img-d78d758a43.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2024-11-09T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-11-09T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "df1bf4e2bd814c5a82c9f4d1"
+    },
+    "title": "Nhật ký trong tù 15",
+    "isbn": "978-0-445690-89",
+    "author": "Nguyễn Nhật Ánh",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2019,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 169632,
+    "image": "15-img-d5b04f5960.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2022-06-17T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-06-17T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "3bd7f125a8454061b23ebe74"
+    },
+    "title": "Nghệ thuật lãnh đạo 16",
+    "isbn": "978-0-665256-13",
+    "author": "Nguyễn Hiến Lê",
+    "publisher": "NXB Giáo Dục",
+    "publishYear": 2023,
+    "description": "Khơi gợi khả năng sáng tạo tiềm ẩn qua câu chuyện giản dị mà sâu sắc.",
+    "price": 200412,
+    "image": "16-img-add099e799.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2021-10-10T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-10-10T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "c226db3044604a14b1560871"
+    },
+    "title": "Dạy con làm giàu 17",
+    "isbn": "978-0-801139-99",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "NXB Lao Động",
+    "publishYear": 2013,
+    "description": "Khơi gợi khả năng sáng tạo tiềm ẩn qua câu chuyện giản dị mà sâu sắc.",
+    "price": 282923,
+    "image": "17-img-146e0aa6a0.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2024-03-07T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-03-07T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "89a41cfdf6ba4b1086dc206c"
+    },
+    "title": "Kinh tế học hài hước 18",
+    "isbn": "978-0-970643-20",
+    "author": "Daniel Kahneman",
+    "publisher": "NXB Tổng Hợp",
+    "publishYear": 2002,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 176210,
+    "image": "18-img-37571d1f7f.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2021-08-20T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-08-20T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "3e275151ccf24f46adb07be0"
+    },
+    "title": "Quẳng gánh lo đi và vui sống 19",
+    "isbn": "978-0-760585-47",
+    "author": "Trần Đình Hoành",
+    "publisher": "NXB Trẻ",
+    "publishYear": 2009,
+    "description": "Khơi gợi khả năng sáng tạo tiềm ẩn qua câu chuyện giản dị mà sâu sắc.",
+    "price": 293325,
+    "image": "19-img-ff6c5ae2ca.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2025-06-07T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-06-07T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6522f1565f0f42ecb79e9c56"
+    },
+    "title": "Những người khốn khổ 20",
+    "isbn": "978-0-985043-16",
+    "author": "Stephen Hawking",
+    "publisher": "NXB Trẻ",
+    "publishYear": 2013,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 311984,
+    "image": "20-img-a85fa00357.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2021-05-22T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-05-22T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "78b3e7b6456845e2bf09b358"
+    },
+    "title": "Tuổi trẻ đáng giá bao nhiêu 21",
+    "isbn": "978-0-813800-88",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "Tech Books",
+    "publishYear": 2025,
+    "description": "Hướng dẫn kỹ năng sống và giao tiếp hiệu quả thông qua các tình huống thường gặp.",
+    "price": 156417,
+    "image": "21-img-b95cb14496.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2023-04-08T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-04-08T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "74e4d15a87cc41a38fa1a43b"
+    },
+    "title": "Tâm lý học đám đông 22",
+    "isbn": "978-0-947422-99",
+    "author": "Robin Sharma",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2014,
+    "description": "Tác phẩm văn học kinh điển được tái hiện dưới góc nhìn đương đại.",
+    "price": 220272,
+    "image": "22-img-2c886b673b.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2022-03-13T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-03-13T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "505b451b5be64461b829262f"
+    },
+    "title": "Cuộc cách mạng công nghiệp lần thứ tư 23",
+    "isbn": "978-0-756918-61",
+    "author": "Nguyễn Phan Quế Mai",
+    "publisher": "NXB Tổng Hợp",
+    "publishYear": 2008,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 231870,
+    "image": "23-img-c1d795ec72.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2021-08-25T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-08-25T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6fc228dfb41e492e876ddd85"
+    },
+    "title": "Dạy con làm giàu 24",
+    "isbn": "978-0-955057-86",
+    "author": "Yuval Noah Harari",
+    "publisher": "Tech Books",
+    "publishYear": 2016,
+    "description": "Tác phẩm văn học kinh điển được tái hiện dưới góc nhìn đương đại.",
+    "price": 154799,
+    "image": "24-img-d12cb18c75.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2025-03-22T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-03-22T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a5b723564104b9bb504659e"
+    },
+    "title": "Sáng tạo không giới hạn 25",
+    "isbn": "978-0-477535-80",
+    "author": "Paulo Coelho",
+    "publisher": "NXB Lao Động",
+    "publishYear": 2020,
+    "description": "Khơi gợi khả năng sáng tạo tiềm ẩn qua câu chuyện giản dị mà sâu sắc.",
+    "price": 128757,
+    "image": "25-img-cde891f238.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2022-09-29T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-09-29T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "96bd8bbd1f274a7d9a78ac98"
+    },
+    "title": "Nhật ký trong tù 26",
+    "isbn": "978-0-405219-78",
+    "author": "Paulo Coelho",
+    "publisher": "NXB Tổng Hợp",
+    "publishYear": 2002,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 343075,
+    "image": "26-img-37e6f8c938.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2025-05-06T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-05-06T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f48596330dca4730b0fe6229"
+    },
+    "title": "Nghệ thuật lãnh đạo 27",
+    "isbn": "978-0-297045-14",
+    "author": "Malcolm Gladwell",
+    "publisher": "NXB Lao Động",
+    "publishYear": 2010,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 272269,
+    "image": "27-img-4df793548b.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2025-02-23T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-02-23T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "bc4779bb351c4100bf865f52"
+    },
+    "title": "Hành trình khám phá 28",
+    "isbn": "978-0-552139-26",
+    "author": "Robin Sharma",
+    "publisher": "NXB Phụ Nữ",
+    "publishYear": 2016,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 168963,
+    "image": "28-img-e92348d6b1.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2020-06-25T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-06-25T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "7b0f2c14e1e84dc8acf47daf"
+    },
+    "title": "Nhật ký trong tù 29",
+    "isbn": "978-0-109023-28",
+    "author": "Malcolm Gladwell",
+    "publisher": "NXB Trẻ",
+    "publishYear": 2016,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 248536,
+    "image": "29-img-800f49de2b.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2022-05-27T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-05-27T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "3bdd8eb5056f4a7e90e3022b"
+    },
+    "title": "Kinh tế học hài hước 30",
+    "isbn": "978-0-793223-45",
+    "author": "Paulo Coelho",
+    "publisher": "Tech Books",
+    "publishYear": 2025,
+    "description": "Tư duy phản biện và chiến lược lãnh đạo hiện đại trong kỷ nguyên số.",
+    "price": 142670,
+    "image": "30-img-2cf4fb30b3.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2022-07-23T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-07-23T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "ac1f7d417ae2414d9505e46f"
+    },
+    "title": "Quẳng gánh lo đi và vui sống 31",
+    "isbn": "978-0-666253-56",
+    "author": "Paulo Coelho",
+    "publisher": "NXB Kim Đồng",
+    "publishYear": 2010,
+    "description": "Hướng dẫn kỹ năng sống và giao tiếp hiệu quả thông qua các tình huống thường gặp.",
+    "price": 131404,
+    "image": "31-img-5b6e5195b2.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2021-11-07T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-11-07T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f8363b48fa9c4af58cab608e"
+    },
+    "title": "Cuộc cách mạng công nghiệp lần thứ tư 32",
+    "isbn": "978-0-962620-59",
+    "author": "Paulo Coelho",
+    "publisher": "NXB Trẻ",
+    "publishYear": 2001,
+    "description": "Tác phẩm văn học kinh điển được tái hiện dưới góc nhìn đương đại.",
+    "price": 101410,
+    "image": "32-img-77efce7f4c.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2023-10-26T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-10-26T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "c4fd737c931c4ad2a6917bec"
+    },
+    "title": "Lược sử thời gian 33",
+    "isbn": "978-0-393939-83",
+    "author": "Robin Sharma",
+    "publisher": "Tech Books",
+    "publishYear": 2020,
+    "description": "Khơi gợi khả năng sáng tạo tiềm ẩn qua câu chuyện giản dị mà sâu sắc.",
+    "price": 202475,
+    "image": "33-img-128b48c0eb.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2020-09-22T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-09-22T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "2627426117a746a2af0136d6"
+    },
+    "title": "Sáng tạo không giới hạn 34",
+    "isbn": "978-0-491063-96",
+    "author": "Trần Đình Hoành",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2025,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 190274,
+    "image": "34-img-58563b28de.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2023-04-05T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-04-05T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "8ef4fbbfc0bf41809faba1b9"
+    },
+    "title": "Những người khốn khổ 35",
+    "isbn": "978-0-519353-22",
+    "author": "Stephen Hawking",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2000,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 310474,
+    "image": "35-img-a7155326e4.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2021-04-13T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-04-13T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "fc29c72fe4e549509704ef92"
+    },
+    "title": "Nghệ thuật lãnh đạo 36",
+    "isbn": "978-0-816942-94",
+    "author": "Nguyễn Phan Quế Mai",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2019,
+    "description": "Hướng dẫn kỹ năng sống và giao tiếp hiệu quả thông qua các tình huống thường gặp.",
+    "price": 264001,
+    "image": "36-img-7a4caa4986.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2022-01-08T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-01-08T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "5c0b3ba7dbc74560b5e4eac8"
+    },
+    "title": "Tư duy nhanh và chậm 37",
+    "isbn": "978-0-361521-51",
+    "author": "Yuval Noah Harari",
+    "publisher": "NXB Tổng Hợp",
+    "publishYear": 2005,
+    "description": "Khơi gợi khả năng sáng tạo tiềm ẩn qua câu chuyện giản dị mà sâu sắc.",
+    "price": 263627,
+    "image": "37-img-fcaac30f65.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2020-09-04T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-09-04T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "41ec67f09f4d466b9c47e549"
+    },
+    "title": "Tư duy nhanh và chậm 38",
+    "isbn": "978-0-179402-72",
+    "author": "Nguyễn Hiến Lê",
+    "publisher": "NXB Tổng Hợp",
+    "publishYear": 2012,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 314242,
+    "image": "38-img-fad1918de1.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2023-01-02T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-01-02T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "32dd6c23317a48b3ba14860f"
+    },
+    "title": "Vũ khí, virus và thép 39",
+    "isbn": "978-0-852677-67",
+    "author": "Stephen Hawking",
+    "publisher": "NXB Kim Đồng",
+    "publishYear": 2002,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 173330,
+    "image": "39-img-e15f39b440.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2020-06-03T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-06-03T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "fd9b1365023c461db8bf5fc2"
+    },
+    "title": "Việt Nam sử lược 40",
+    "isbn": "978-0-639739-46",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Tổng Hợp",
+    "publishYear": 2025,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 326242,
+    "image": "40-img-0d12920641.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2025-12-28T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-12-28T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f4b59edbd8bd4bef971bfed5"
+    },
+    "title": "Nghệ thuật lãnh đạo 41",
+    "isbn": "978-0-827130-46",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2006,
+    "description": "Sách dành cho những ai đang tìm kiếm ý nghĩa và định hướng trong cuộc sống.",
+    "price": 148618,
+    "image": "41-img-4f7779ba8b.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2024-01-13T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-01-13T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "cf2ce738199d443ba776f6e3"
+    },
+    "title": "Nhật ký trong tù 42",
+    "isbn": "978-0-139505-33",
+    "author": "Paulo Coelho",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2005,
+    "description": "Sách dành cho những ai đang tìm kiếm ý nghĩa và định hướng trong cuộc sống.",
+    "price": 125545,
+    "image": "42-img-17ba87c733.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2020-12-10T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-12-10T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "ba82df335a764818a3a092c0"
+    },
+    "title": "Lập trình tư duy tích cực 43",
+    "isbn": "978-0-499916-54",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Giáo Dục",
+    "publishYear": 2023,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 123346,
+    "image": "43-img-3d3a202e99.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2025-10-27T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-10-27T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "0471e349b6624f63a1ed991f"
+    },
+    "title": "Thiền trong đời sống 44",
+    "isbn": "978-0-803071-76",
+    "author": "Nguyễn Hiến Lê",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2006,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 124743,
+    "image": "44-img-cd02374f78.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2022-10-16T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-10-16T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "9a7ee089905f4d499a4273b1"
+    },
+    "title": "Tâm lý học đám đông 45",
+    "isbn": "978-0-850642-14",
+    "author": "Paulo Coelho",
+    "publisher": "Tech Books",
+    "publishYear": 2009,
+    "description": "Sách dành cho những ai đang tìm kiếm ý nghĩa và định hướng trong cuộc sống.",
+    "price": 150904,
+    "image": "45-img-31fc55ffc4.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2025-05-02T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-05-02T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f7630693f26d4d598626047f"
+    },
+    "title": "Cuộc cách mạng công nghiệp lần thứ tư 46",
+    "isbn": "978-0-728461-52",
+    "author": "Yuval Noah Harari",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2015,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 297984,
+    "image": "46-img-13527fde1f.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2023-03-03T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-03-03T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "4c8906ea14674afc9663b6e9"
+    },
+    "title": "Nghệ thuật lãnh đạo 47",
+    "isbn": "978-0-560566-26",
+    "author": "Paulo Coelho",
+    "publisher": "Tech Books",
+    "publishYear": 2003,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 227160,
+    "image": "47-img-2c958269e8.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2025-09-06T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-09-06T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "c8e68218f1de49b5b561eba4"
+    },
+    "title": "Tuổi trẻ đáng giá bao nhiêu 48",
+    "isbn": "978-0-639021-47",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "NXB Trẻ",
+    "publishYear": 2016,
+    "description": "Tác phẩm văn học kinh điển được tái hiện dưới góc nhìn đương đại.",
+    "price": 287588,
+    "image": "48-img-c1a1ca62c2.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2020-09-17T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-09-17T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "3d17542e64a44a0286e1191b"
+    },
+    "title": "Tư duy nhanh và chậm 49",
+    "isbn": "978-0-608679-65",
+    "author": "Nguyễn Duy",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2013,
+    "description": "Tác phẩm văn học kinh điển được tái hiện dưới góc nhìn đương đại.",
+    "price": 144376,
+    "image": "49-img-8342313a28.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2024-04-30T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-04-30T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "7e918fe7a29543a5a927e487"
+    },
+    "title": "Tư duy nhanh và chậm 50",
+    "isbn": "978-0-363571-25",
+    "author": "Nguyễn Duy",
+    "publisher": "NXB Kim Đồng",
+    "publishYear": 2020,
+    "description": "Tác phẩm văn học kinh điển được tái hiện dưới góc nhìn đương đại.",
+    "price": 239957,
+    "image": "50-img-8613753f0d.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2023-09-15T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-09-15T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e79b19cc7dbf46be850455c4"
+    },
+    "title": "Tư duy nhanh và chậm 51",
+    "isbn": "978-0-551499-13",
+    "author": "Paulo Coelho",
+    "publisher": "NXB Trẻ",
+    "publishYear": 2010,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 247283,
+    "image": "51-img-de39b1f663.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2022-04-18T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-04-18T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "7d867654025d4f61a3b2ac12"
+    },
+    "title": "Hành trình khám phá 52",
+    "isbn": "978-0-689622-17",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "NXB Tổng Hợp",
+    "publishYear": 2009,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 202016,
+    "image": "52-img-b0fc4f87df.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2021-02-27T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-02-27T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "c3a7ca256f7e4581bb169270"
+    },
+    "title": "Tâm lý học đám đông 53",
+    "isbn": "978-0-229332-53",
+    "author": "Nguyễn Phan Quế Mai",
+    "publisher": "Tech Books",
+    "publishYear": 2015,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 323366,
+    "image": "53-img-6cccce760c.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2024-03-07T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-03-07T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "78227365b0a14d1b8c3290bf"
+    },
+    "title": "Cuộc cách mạng công nghiệp lần thứ tư 54",
+    "isbn": "978-0-125016-99",
+    "author": "Paulo Coelho",
+    "publisher": "NXB Lao Động",
+    "publishYear": 2024,
+    "description": "Cẩm nang ứng xử thông minh trong thời đại kết nối.",
+    "price": 321582,
+    "image": "54-img-d9a5c737b0.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2023-07-29T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-07-29T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "ebc52042f84b4d7a8e239e0f"
+    },
+    "title": "Sáng tạo không giới hạn 55",
+    "isbn": "978-0-902485-33",
+    "author": "Yuval Noah Harari",
+    "publisher": "NXB Trẻ",
+    "publishYear": 2010,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 212204,
+    "image": "55-img-f13307d39f.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2022-02-09T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-02-09T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a3ac6b7c7d0348999b300ed4"
+    },
+    "title": "Kỹ năng đàm phán 56",
+    "isbn": "978-0-501566-62",
+    "author": "Nguyễn Hiến Lê",
+    "publisher": "NXB Trẻ",
+    "publishYear": 2020,
+    "description": "Hướng dẫn kỹ năng sống và giao tiếp hiệu quả thông qua các tình huống thường gặp.",
+    "price": 127973,
+    "image": "56-img-12cea3d288.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2024-05-27T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-05-27T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "4eb7b3f21f4b402b9ddd7137"
+    },
+    "title": "Tâm lý học đám đông 57",
+    "isbn": "978-0-423304-42",
+    "author": "Nguyễn Duy",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2008,
+    "description": "Sách dành cho những ai đang tìm kiếm ý nghĩa và định hướng trong cuộc sống.",
+    "price": 213017,
+    "image": "57-img-64c589375f.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2023-02-22T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-02-22T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "4c29079ff4c64eb3931fa073"
+    },
+    "title": "Việt Nam sử lược 58",
+    "isbn": "978-0-769218-20",
+    "author": "Nguyễn Nhật Ánh",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2003,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 335170,
+    "image": "58-img-3f1648c631.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2024-01-04T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-01-04T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e2fecdab760a4b8aa6b73b3a"
+    },
+    "title": "Tuổi trẻ đáng giá bao nhiêu 59",
+    "isbn": "978-0-490100-69",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Phụ Nữ",
+    "publishYear": 2010,
+    "description": "Hướng dẫn kỹ năng sống và giao tiếp hiệu quả thông qua các tình huống thường gặp.",
+    "price": 301954,
+    "image": "59-img-43ac0275e3.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2023-08-23T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-08-23T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e27d5aba2f824ce3bed9869c"
+    },
+    "title": "Kinh tế học hài hước 60",
+    "isbn": "978-0-791350-25",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "NXB Tổng Hợp",
+    "publishYear": 2011,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 243675,
+    "image": "60-img-dc69fcbf27.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2023-03-30T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-03-30T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "320c1b556fa84eecb55da1ae"
+    },
+    "title": "Nhật ký trong tù 61",
+    "isbn": "978-0-817338-12",
+    "author": "Nguyễn Duy",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2017,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 161675,
+    "image": "61-img-a46dee3b31.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2025-01-08T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-01-08T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a1d48d605a734eedb420c6bc"
+    },
+    "title": "Việt Nam sử lược 62",
+    "isbn": "978-0-791284-26",
+    "author": "Nguyễn Duy",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2002,
+    "description": "Hướng dẫn kỹ năng sống và giao tiếp hiệu quả thông qua các tình huống thường gặp.",
+    "price": 176543,
+    "image": "62-img-1dede0c692.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2020-03-08T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-03-08T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "206ce2142a3e4a08b9198c2f"
+    },
+    "title": "Tuổi trẻ đáng giá bao nhiêu 63",
+    "isbn": "978-0-591634-98",
+    "author": "Robin Sharma",
+    "publisher": "NXB Lao Động",
+    "publishYear": 2021,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 153922,
+    "image": "63-img-fc99bcf159.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2021-10-10T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-10-10T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "87016f9c09d64416aa5b3f1f"
+    },
+    "title": "Kinh tế học hài hước 64",
+    "isbn": "978-0-211373-40",
+    "author": "Robin Sharma",
+    "publisher": "NXB Lao Động",
+    "publishYear": 2006,
+    "description": "Tư duy phản biện và chiến lược lãnh đạo hiện đại trong kỷ nguyên số.",
+    "price": 89740,
+    "image": "64-img-0e3d069d4f.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2021-03-29T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-03-29T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "1a1871475b7241d981952bdc"
+    },
+    "title": "Kinh tế học hài hước 65",
+    "isbn": "978-0-545992-61",
+    "author": "Trần Đình Hoành",
+    "publisher": "NXB Kim Đồng",
+    "publishYear": 2023,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 302512,
+    "image": "65-img-70c2268cca.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2024-03-12T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-03-12T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a1d76906c2914cf79da5a8bf"
+    },
+    "title": "Tâm lý học đám đông 66",
+    "isbn": "978-0-517737-37",
+    "author": "Nguyễn Nhật Ánh",
+    "publisher": "Tech Books",
+    "publishYear": 2004,
+    "description": "Khơi gợi khả năng sáng tạo tiềm ẩn qua câu chuyện giản dị mà sâu sắc.",
+    "price": 201901,
+    "image": "66-img-01e0e5b72c.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2021-07-08T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-07-08T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "b52566ce740343d693abefd3"
+    },
+    "title": "Nghệ thuật lãnh đạo 67",
+    "isbn": "978-0-812403-35",
+    "author": "Robin Sharma",
+    "publisher": "NXB Lao Động",
+    "publishYear": 2005,
+    "description": "Tác phẩm văn học kinh điển được tái hiện dưới góc nhìn đương đại.",
+    "price": 207955,
+    "image": "67-img-05a37ede3e.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2020-08-25T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-08-25T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "04cac84f40b84d58b61754a1"
+    },
+    "title": "Nhật ký trong tù 68",
+    "isbn": "978-0-897540-32",
+    "author": "Nguyễn Phan Quế Mai",
+    "publisher": "NXB Phụ Nữ",
+    "publishYear": 2010,
+    "description": "Tư duy phản biện và chiến lược lãnh đạo hiện đại trong kỷ nguyên số.",
+    "price": 331809,
+    "image": "68-img-5a00147d0f.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2021-12-05T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-12-05T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e9e673f15ea74e5ca24f441a"
+    },
+    "title": "Ẩm thực Việt Nam 69",
+    "isbn": "978-0-406862-44",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Giáo Dục",
+    "publishYear": 2010,
+    "description": "Cẩm nang ứng xử thông minh trong thời đại kết nối.",
+    "price": 167682,
+    "image": "69-img-5693e0403e.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2025-06-20T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-06-20T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "2c48f6e80158462393ed274f"
+    },
+    "title": "Quẳng gánh lo đi và vui sống 70",
+    "isbn": "978-0-284557-90",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2015,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 287141,
+    "image": "70-img-f3b413e48a.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2022-03-07T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-03-07T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "26218a58440640e384a45dfa"
+    },
+    "title": "Bí ẩn vũ trụ 71",
+    "isbn": "978-0-870700-62",
+    "author": "Daniel Kahneman",
+    "publisher": "NXB Tổng Hợp",
+    "publishYear": 2000,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 293999,
+    "image": "71-img-298aff0cc5.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2022-07-08T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-07-08T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "e6393b112bb040f0a70965ff"
+    },
+    "title": "Hành trình khám phá 72",
+    "isbn": "978-0-728732-16",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2011,
+    "description": "Hướng dẫn kỹ năng sống và giao tiếp hiệu quả thông qua các tình huống thường gặp.",
+    "price": 274822,
+    "image": "72-img-22c496d43b.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2021-04-05T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-04-05T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "891ff1ba83c649f2baefb6d4"
+    },
+    "title": "Bí ẩn vũ trụ 73",
+    "isbn": "978-0-421460-63",
+    "author": "Trần Đình Hoành",
+    "publisher": "NXB Phụ Nữ",
+    "publishYear": 2010,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 319387,
+    "image": "73-img-77b37a4ce1.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2023-11-14T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-11-14T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "42d43ff9e94d47109d9286a0"
+    },
+    "title": "Hành trình khám phá 74",
+    "isbn": "978-0-840690-83",
+    "author": "Nguyễn Duy",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2021,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 162912,
+    "image": "74-img-d1673abb09.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2022-05-03T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-05-03T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "b78aca66ab2f485c88d2e286"
+    },
+    "title": "Bí ẩn vũ trụ 75",
+    "isbn": "978-0-309290-19",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "Tech Books",
+    "publishYear": 2003,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 338894,
+    "image": "75-img-cc8728a71e.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2021-08-29T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-08-29T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "b9c6a2e269c04c3da3791bb2"
+    },
+    "title": "Vũ khí, virus và thép 76",
+    "isbn": "978-0-975671-40",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2016,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 319959,
+    "image": "76-img-34607743d6.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2023-09-13T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-09-13T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "7e925a4710674ddd981f453c"
+    },
+    "title": "Cuộc cách mạng công nghiệp lần thứ tư 77",
+    "isbn": "978-0-484265-98",
+    "author": "Trần Đình Hoành",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2023,
+    "description": "Tác phẩm văn học kinh điển được tái hiện dưới góc nhìn đương đại.",
+    "price": 135452,
+    "image": "77-img-458101f9f9.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2022-03-12T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-03-12T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "5a3ddde3bc3e44c38821dab7"
+    },
+    "title": "Hành trình khám phá 78",
+    "isbn": "978-0-846034-40",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "NXB Giáo Dục",
+    "publishYear": 2022,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 245189,
+    "image": "78-img-8aea05a20b.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2020-10-05T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-10-05T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "cd21f6d480dc49e39b2d77a7"
+    },
+    "title": "Tuổi trẻ đáng giá bao nhiêu 79",
+    "isbn": "978-0-284036-70",
+    "author": "Nguyễn Nhật Ánh",
+    "publisher": "NXB Tổng Hợp",
+    "publishYear": 2010,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 182634,
+    "image": "79-img-2824e6ed98.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2024-08-15T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-08-15T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "9d019a7611024ea79cd36679"
+    },
+    "title": "Thiền trong đời sống 80",
+    "isbn": "978-0-572750-72",
+    "author": "Yuval Noah Harari",
+    "publisher": "NXB Lao Động",
+    "publishYear": 2015,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 85985,
+    "image": "80-img-d76896b617.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2024-10-30T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-10-30T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "dc96c45f37be4d078e2b0c1d"
+    },
+    "title": "Lược sử thời gian 81",
+    "isbn": "978-0-369505-51",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2016,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 233931,
+    "image": "81-img-685759c908.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2025-11-17T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-11-17T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "01e15070737f4e86b2544754"
+    },
+    "title": "Việt Nam sử lược 82",
+    "isbn": "978-0-724739-60",
+    "author": "Yuval Noah Harari",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2021,
+    "description": "Hướng dẫn kỹ năng sống và giao tiếp hiệu quả thông qua các tình huống thường gặp.",
+    "price": 125349,
+    "image": "82-img-581c0ad816.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2020-03-24T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-03-24T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "b8892cd28a4e4df8a4a5eb72"
+    },
+    "title": "Nghệ thuật lãnh đạo 83",
+    "isbn": "978-0-217544-50",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Kim Đồng",
+    "publishYear": 2018,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 112849,
+    "image": "83-img-5a80c2daea.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2020-06-20T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-06-20T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "d8836e8bf79a4daab5e4951e"
+    },
+    "title": "Tâm lý học đám đông 84",
+    "isbn": "978-0-110302-17",
+    "author": "Nguyễn Duy",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2018,
+    "description": "Cẩm nang ứng xử thông minh trong thời đại kết nối.",
+    "price": 157925,
+    "image": "84-img-fc872713d6.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2024-02-25T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-02-25T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a541ccadc92e4a0bb6fce138"
+    },
+    "title": "Việt Nam sử lược 85",
+    "isbn": "978-0-669980-24",
+    "author": "Malcolm Gladwell",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2000,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 126473,
+    "image": "85-img-bbb9eb17db.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2022-05-19T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-05-19T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "2d005ea13de1407484dbb2bf"
+    },
+    "title": "Ẩm thực Việt Nam 86",
+    "isbn": "978-0-258558-90",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Giáo Dục",
+    "publishYear": 2001,
+    "description": "Sách dành cho những ai đang tìm kiếm ý nghĩa và định hướng trong cuộc sống.",
+    "price": 151129,
+    "image": "86-img-269ac762d6.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2024-01-05T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-01-05T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "19da8da142e9492ab02fffb8"
+    },
+    "title": "Tâm lý học đám đông 87",
+    "isbn": "978-0-410250-94",
+    "author": "Daniel Kahneman",
+    "publisher": "NXB Lao Động",
+    "publishYear": 2006,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 339199,
+    "image": "87-img-607d0253b8.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2023-05-18T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2023-05-18T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "03bb01c74774448796a62abf"
+    },
+    "title": "Tư duy nhanh và chậm 88",
+    "isbn": "978-0-110815-10",
+    "author": "Nguyễn Hiến Lê",
+    "publisher": "NXB Phụ Nữ",
+    "publishYear": 2019,
+    "description": "Cẩm nang ứng xử thông minh trong thời đại kết nối.",
+    "price": 154067,
+    "image": "88-img-ed4eb6da68.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2022-08-12T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-08-12T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f73bb8b72fcb4e05b2fe765c"
+    },
+    "title": "Cuộc cách mạng công nghiệp lần thứ tư 89",
+    "isbn": "978-0-477653-18",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "NXB Phụ Nữ",
+    "publishYear": 2009,
+    "description": "Cẩm nang ứng xử thông minh trong thời đại kết nối.",
+    "price": 92116,
+    "image": "89-img-cdaefe8e79.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2024-08-26T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-08-26T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a819be6d61504140933ece54"
+    },
+    "title": "Thiền trong đời sống 90",
+    "isbn": "978-0-844334-15",
+    "author": "Paulo Coelho",
+    "publisher": "NXB Giáo Dục",
+    "publishYear": 2017,
+    "description": "Cẩm nang ứng xử thông minh trong thời đại kết nối.",
+    "price": 228837,
+    "image": "90-img-6494f46a17.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2021-06-08T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-06-08T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "af513d1d3fce4ecfb53622d6"
+    },
+    "title": "Lập trình tư duy tích cực 91",
+    "isbn": "978-0-489178-63",
+    "author": "Yuval Noah Harari",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2011,
+    "description": "Tổng hợp kiến thức nền tảng kết hợp các ví dụ thực tiễn sinh động.",
+    "price": 207713,
+    "image": "91-img-f23f74a48b.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2024-10-16T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-10-16T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "86fecd4980694e22b63972c4"
+    },
+    "title": "Bí ẩn vũ trụ 92",
+    "isbn": "978-0-818924-52",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Khoa Học",
+    "publishYear": 2014,
+    "description": "Sách dành cho những ai đang tìm kiếm ý nghĩa và định hướng trong cuộc sống.",
+    "price": 291173,
+    "image": "92-img-b1282772fe.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2025-04-05T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-04-05T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "2e25e34dea2849be8a578b12"
+    },
+    "title": "Thiền trong đời sống 93",
+    "isbn": "978-0-309017-84",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2010,
+    "description": "Hướng dẫn kỹ năng sống và giao tiếp hiệu quả thông qua các tình huống thường gặp.",
+    "price": 170966,
+    "image": "93-img-b500520c98.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2024-12-23T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-12-23T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "befc4cf22af643c890d54b2f"
+    },
+    "title": "Thiền trong đời sống 94",
+    "isbn": "978-0-804472-85",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Kim Đồng",
+    "publishYear": 2007,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 315788,
+    "image": "94-img-057f58d195.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2024-03-01T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-03-01T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "18de9f30062c402fa3f2f71d"
+    },
+    "title": "Nhật ký trong tù 95",
+    "isbn": "978-0-514040-92",
+    "author": "Nguyễn Duy",
+    "publisher": "NXB Lao Động",
+    "publishYear": 2010,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 218853,
+    "image": "95-img-2e98d58f8a.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2024-06-28T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-06-28T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "a77ec7b3f0ff403d9391d318"
+    },
+    "title": "Những người khốn khổ 96",
+    "isbn": "978-0-126869-20",
+    "author": "Yuval Noah Harari",
+    "publisher": "NXB Kim Đồng",
+    "publishYear": 2000,
+    "description": "Cẩm nang ứng xử thông minh trong thời đại kết nối.",
+    "price": 131877,
+    "image": "96-img-a35a10cdc4.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2022-09-18T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-09-18T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "efbc50728a604bcd98331d8c"
+    },
+    "title": "Nhật ký trong tù 97",
+    "isbn": "978-0-781803-27",
+    "author": "Stephen Hawking",
+    "publisher": "NXB Kim Đồng",
+    "publishYear": 2024,
+    "description": "Phân tích hành vi con người và cách thức xã hội vận hành.",
+    "price": 109133,
+    "image": "97-img-14c089525d.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2025-03-09T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-03-09T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "f9abb81fe5fc4b8fad1a3de5"
+    },
+    "title": "Nghệ thuật lãnh đạo 98",
+    "isbn": "978-0-573171-85",
+    "author": "Nguyễn Phan Quế Mai",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2021,
+    "description": "Cẩm nang ứng xử thông minh trong thời đại kết nối.",
+    "price": 99161,
+    "image": "98-img-22e549a3ff.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d52"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2022-01-25T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-01-25T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "5307d51036be4cb88a908bb5"
+    },
+    "title": "Kinh tế học hài hước 99",
+    "isbn": "978-0-518248-22",
+    "author": "Nguyễn Nhật Ánh",
+    "publisher": "NXB Phụ Nữ",
+    "publishYear": 2004,
+    "description": "Một tác phẩm đáng đọc trong hành trình phát triển bản thân.",
+    "price": 200688,
+    "image": "99-img-8352318d6a.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2020-05-30T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2020-05-30T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "1a4a1c96171c40b88300e927"
+    },
+    "title": "Việt Nam sử lược 100",
+    "isbn": "978-0-247106-27",
+    "author": "Malcolm Gladwell",
+    "publisher": "NXB Văn Hóa",
+    "publishYear": 2019,
+    "description": "Tác phẩm văn học kinh điển được tái hiện dưới góc nhìn đương đại.",
+    "price": 116017,
+    "image": "100-img-26814e5154.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d51"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2025-12-18T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2025-12-18T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "60183917472d4cbdaa807179"
+    },
+    "title": "Kỹ năng đàm phán 101",
+    "isbn": "978-0-568398-91",
+    "author": "Nguyễn Nhật Ánh",
+    "publisher": "NXB Phụ Nữ",
+    "publishYear": 2018,
+    "description": "Sách dành cho những ai đang tìm kiếm ý nghĩa và định hướng trong cuộc sống.",
+    "price": 256197,
+    "image": "101-img-b43fc60e52.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d55"
+    },
+    "createdAt": {
+      "$date": "2022-03-22T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2022-03-22T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "360536ba21104b3f80f39d46"
+    },
+    "title": "Lập trình tư duy tích cực 102",
+    "isbn": "978-0-665580-28",
+    "author": "Dale Carnegie",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2009,
+    "description": "Tư duy phản biện và chiến lược lãnh đạo hiện đại trong kỷ nguyên số.",
+    "price": 321266,
+    "image": "102-img-b78e6a4a90.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d56"
+    },
+    "createdAt": {
+      "$date": "2021-11-30T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2021-11-30T00:00:00"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "2d366f945b5b4c289fc234d0"
+    },
+    "title": "Tư duy nhanh và chậm 103",
+    "isbn": "978-0-529416-79",
+    "author": "Tôn Nữ Thụy Anh",
+    "publisher": "NXB Thế Giới",
+    "publishYear": 2019,
+    "description": "Cuốn sách đầy cảm hứng giúp bạn nhìn nhận thế giới bằng góc nhìn mới.",
+    "price": 331634,
+    "image": "103-img-3bcf469746.jpg",
+    "categories": [
+      {
+        "$oid": "685d026af3753927f3a65d53"
+      }
+    ],
+    "bookshelf": {
+      "$oid": "685d026af3753927f3a65d57"
+    },
+    "createdAt": {
+      "$date": "2024-07-10T00:00:00"
+    },
+    "updatedAt": {
+      "$date": "2024-07-10T00:00:00"
+    },
+    "__v": 0
+  }
+]

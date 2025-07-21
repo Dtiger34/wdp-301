@@ -1,0 +1,70 @@
+[{
+  "_id": {
+    "$oid": "685d026af3753927f3a65d4d"
+  },
+  "name": "Khoa học",
+  "description": "Sách khoa học và công nghệ",
+  "createdAt": {
+    "$date": "2025-06-26T08:18:50.694Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-26T08:18:50.694Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "685d026af3753927f3a65d4e"
+  },
+  "name": "Văn học",
+  "description": "Sách văn học trong và ngoài nước",
+  "createdAt": {
+    "$date": "2025-06-26T08:18:50.694Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-26T08:18:50.694Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "685d026af3753927f3a65d4f"
+  },
+  "name": "Lịch sử",
+  "description": "Sách lịch sử và địa lý",
+  "createdAt": {
+    "$date": "2025-06-26T08:18:50.694Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-26T08:18:50.694Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "685d026af3753927f3a65d50"
+  },
+  "name": "Kinh tế",
+  "description": "Sách kinh tế và quản lý",
+  "createdAt": {
+    "$date": "2025-06-26T08:18:50.695Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-26T08:18:50.695Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "685d026af3753927f3a65d51"
+  },
+  "name": "Công nghệ",
+  "description": "Sách lập trình và IT",
+  "createdAt": {
+    "$date": "2025-06-26T08:18:50.695Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-26T08:18:50.695Z"
+  },
+  "__v": 0
+}]

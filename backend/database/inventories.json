@@ -1,0 +1,422 @@
+[
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb01" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb00" },
+    "total": 7,
+    "available": 7,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-10T11:23:45.003Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb02" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb01" },
+    "total": 6,
+    "available": 4,
+    "borrowed": 2,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-08T14:11:22.219Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb03" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb02" },
+    "total": 5,
+    "available": 5,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-04T09:45:00.443Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb04" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb03" },
+    "total": 8,
+    "available": 7,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-13T15:32:10.187Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb05" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb04" },
+    "total": 4,
+    "available": 3,
+    "borrowed": 0,
+    "damaged": 1,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-12T16:59:39.800Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb06" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb05" },
+    "total": 9,
+    "available": 9,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-15T08:12:30.111Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb07" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb06" },
+    "total": 6,
+    "available": 5,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-17T13:14:59.101Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb08" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb07" },
+    "total": 10,
+    "available": 8,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 1,
+    "lastUpdated": { "$date": "2025-07-05T10:28:11.308Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb09" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb08" },
+    "total": 3,
+    "available": 3,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-09T17:44:23.932Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb0a" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb09" },
+    "total": 7,
+    "available": 6,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-03T10:17:53.654Z" },
+    "__v": 0
+  },
+   {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb97" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb97" },
+    "total": 6,
+    "available": 6,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-09T09:24:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb98" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb98" },
+    "total": 5,
+    "available": 3,
+    "borrowed": 2,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-02T15:30:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb99" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb99" },
+    "total": 8,
+    "available": 8,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-06-25T10:45:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb9a" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb9a" },
+    "total": 7,
+    "available": 6,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-16T13:50:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb9b" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb9b" },
+    "total": 4,
+    "available": 4,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-04T14:30:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb9c" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb9c" },
+    "total": 5,
+    "available": 4,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-12T11:20:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb9d" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb9d" },
+    "total": 6,
+    "available": 6,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-07T16:15:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb9e" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb9e" },
+    "total": 4,
+    "available": 3,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-06-26T13:40:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfb9f" },
+    "book": { "$oid": "5d38cec7cc234510a30cfb9f" },
+    "total": 6,
+    "available": 6,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-10T10:00:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfba0" },
+    "book": { "$oid": "5d38cec7cc234510a30cfba0" },
+    "total": 3,
+    "available": 3,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-05T12:30:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfba1" },
+    "book": { "$oid": "5d38cec7cc234510a30cfba1" },
+    "total": 8,
+    "available": 7,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-17T15:25:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfba2" },
+    "book": { "$oid": "5d38cec7cc234510a30cfba2" },
+    "total": 7,
+    "available": 7,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-06-29T09:40:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfba3" },
+    "book": { "$oid": "5d38cec7cc234510a30cfba3" },
+    "total": 5,
+    "available": 5,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-15T14:50:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfba4" },
+    "book": { "$oid": "5d38cec7cc234510a30cfba4" },
+    "total": 6,
+    "available": 6,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-01T16:05:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfba5" },
+    "book": { "$oid": "5d38cec7cc234510a30cfba5" },
+    "total": 5,
+    "available": 4,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-11T11:45:00.001Z" }
+  },
+   {
+    "_id": { "$oid": "5d38cec7cc234510a30cfba6" },
+    "book": { "$oid": "5d38cec7cc234510a30cfba6" },
+    "total": 4,
+    "available": 4,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-06T15:20:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfba7" },
+    "book": { "$oid": "5d38cec7cc234510a30cfba7" },
+    "total": 7,
+    "available": 6,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-06-25T10:55:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfba8" },
+    "book": { "$oid": "5d38cec7cc234510a30cfba8" },
+    "total": 3,
+    "available": 3,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-16T13:30:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfba9" },
+    "book": { "$oid": "5d38cec7cc234510a30cfba9" },
+    "total": 6,
+    "available": 5,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-13T14:35:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbaa" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbaa" },
+    "total": 9,
+    "available": 9,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-06-28T11:50:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbab" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbab" },
+    "total": 6,
+    "available": 6,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-09T10:15:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbac" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbac" },
+    "total": 4,
+    "available": 4,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-04T12:10:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbad" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbad" },
+    "total": 5,
+    "available": 5,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-17T10:55:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbae" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbae" },
+    "total": 6,
+    "available": 5,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-06-30T15:25:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbaf" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbaf" },
+    "total": 7,
+    "available": 7,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-02T16:45:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbb0" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbb0" },
+    "total": 4,
+    "available": 3,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-12T14:15:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbb1" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbb1" },
+    "total": 5,
+    "available": 4,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-03T11:35:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbb2" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbb2" },
+    "total": 3,
+    "available": 3,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-06-27T10:05:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbb3" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbb3" },
+    "total": 4,
+    "available": 4,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-14T09:50:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbb4" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbb4" },
+    "total": 5,
+    "available": 5,
+    "borrowed": 0,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-17T13:20:00.001Z" }
+  },
+  {
+    "_id": { "$oid": "5d38cec7cc234510a30cfbb5" },
+    "book": { "$oid": "5d38cec7cc234510a30cfbb5" },
+    "total": 6,
+    "available": 5,
+    "borrowed": 1,
+    "damaged": 0,
+    "lost": 0,
+    "lastUpdated": { "$date": "2025-07-08T14:10:00.001Z" }
+  }
+]
