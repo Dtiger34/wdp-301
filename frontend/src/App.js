@@ -35,6 +35,9 @@ import ViewListBorrowed from "./pages/staff/ViewListBorrowed";
 // User - Book Detail
 import ViewBookDetail from "./pages/user/ViewBookDetail";
 
+// Staff - Report
+import Report from "./pages/staff/Report";
+
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -90,6 +93,10 @@ function App() {
 
       {/* User - Book Detail */}
       <Route path="/detail-book/:id" element={<ViewBookDetail />} />
+
+      {/* Staff - Report */}
+      <Route path="/staff/report" element={user?.role === "staff" ? <Report /> : <Navigate to="/login" />} />
+
     </Routes>
   );
 }
