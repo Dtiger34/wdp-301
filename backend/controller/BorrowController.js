@@ -7,58 +7,52 @@ const mongoose = require('mongoose');
 
 // @done: duyệt một yêu cầu mượn sách
 exports.acceptBorrowRequest = async (req, res) => {
-    const session = await mongoose.startSession();
-
     try {
-        await session.withTransaction(async () => {
-            const { borrowId } = req.params;
-            const staffId = req.user.id;
+        const { borrowId } = req.params;
+        const staffId = req.user.id;
 
-            const borrowRecord = await BorrowRecord.findById(borrowId).session(session);
+        const borrowRecord = await BorrowRecord.findById(borrowId);
 
-            if (!borrowRecord) {
-                throw new Error('Borrow request not found');
-            }
+        if (!borrowRecord) {
+            throw new Error('Borrow request not found');
+        }
 
-            if (borrowRecord.status !== 'pending') {
-                throw new Error('Borrow request is not pending');
-            }
+        if (borrowRecord.status !== 'pending') {
+            throw new Error('Borrow request is not pending');
+        }
 
-            // Lấy các bản sao sách có sẵn
-            const bookCopies = await BookCopy.find({
-                book: borrowRecord.bookId,
-                status: 'available',
-            })
-                .limit(borrowRecord.quantity)
-                .session(session);
+        // Lấy các bản sao sách có sẵn
+        const bookCopies = await BookCopy.find({
+            book: borrowRecord.bookId,
+            status: 'available',
+        }).limit(borrowRecord.quantity);
 
-            if (bookCopies.length < borrowRecord.quantity) {
-                throw new Error('Not enough available copies');
-            }
+        if (bookCopies.length < borrowRecord.quantity) {
+            throw new Error('Not enough available copies');
+        }
 
-            // Cập nhật trạng thái bản sao sách
-            for (const bookCopy of bookCopies) {
-                bookCopy.status = 'borrowed';
-                bookCopy.currentBorrower = borrowRecord.userId;
-                bookCopy.borrowRecordId = borrowRecord._id; // FIX: Thêm liên kết
-                bookCopy.dueDate = borrowRecord.dueDate;
-                await bookCopy.save({ session });
-            }
+        // Cập nhật trạng thái bản sao sách
+        for (const bookCopy of bookCopies) {
+            bookCopy.status = 'borrowed';
+            bookCopy.currentBorrower = borrowRecord.userId;
+            bookCopy.borrowRecordId = borrowRecord._id; // FIX: Thêm liên kết
+            bookCopy.dueDate = borrowRecord.dueDate;
+            await bookCopy.save();
+        }
 
-            // Cập nhật borrow record
-            borrowRecord.status = 'borrowed';
-            borrowRecord.borrowDate = new Date();
-            borrowRecord.processedBy = staffId;
-            await borrowRecord.save({ session });
+        // Cập nhật borrow record
+        borrowRecord.status = 'borrowed';
+        borrowRecord.borrowDate = new Date();
+        borrowRecord.processedBy = staffId;
+        await borrowRecord.save();
 
-            // Cập nhật inventory
-            const inventory = await Inventory.findOne({ book: borrowRecord.bookId }).session(session);
-            if (inventory) {
-                inventory.available -= borrowRecord.quantity;
-                inventory.borrowed += borrowRecord.quantity;
-                await inventory.save({ session });
-            }
-        });
+        // Cập nhật inventory
+        const inventory = await Inventory.findOne({ book: borrowRecord.bookId });
+        if (inventory) {
+            inventory.available -= borrowRecord.quantity;
+            inventory.borrowed += borrowRecord.quantity;
+            await inventory.save();
+        }
 
         const updatedRecord = await BorrowRecord.findById(req.params.borrowId)
             .populate('userId', 'name studentId')
@@ -70,8 +64,6 @@ exports.acceptBorrowRequest = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
-    } finally {
-        await session.endSession();
     }
 };
 

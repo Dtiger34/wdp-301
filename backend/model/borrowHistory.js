@@ -60,13 +60,6 @@ const borrowRecordSchema = new mongoose.Schema({
         required: true,
         min: [1, 'Quantity must be at least 1']
     },
-
-    // thời gian mượn sách, tính bằng số ngày
-    borrowDuration: {
-        type: Number, // lưu số ngày mượn
-        required: true,
-        min: [1, 'Borrow duration must be at least 1 day'] // ít nhất là 1 ngày
-    }
 });
 
 module.exports = mongoose.model('BorrowRecord', borrowRecordSchema);
