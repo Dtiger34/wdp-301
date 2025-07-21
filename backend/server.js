@@ -28,7 +28,6 @@ app.use("/api/v1/bookshelves", require("./routes/bookshelfRoute"));
 app.use("/api/v1/categories", require("./routes/categoryRoute"));
 app.use("/api/v1/inventory", require("./routes/InventoryRoute"));
 app.use("/api/v1/borrows", require("./routes/BorrowRoute"));
-app.use("/api/v1/queue", require("./routes/queueRoute"));
 app.use("/api/v1/fine", require("./routes/fineRoute"));
 
 // Fallback route not found
