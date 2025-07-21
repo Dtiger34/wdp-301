@@ -8,60 +8,62 @@ const mongoose = require('mongoose');
 
 // @done: duyệt một yêu cầu mượn sách (đổi lại status, sửa lại số lượng)
 exports.acceptBorrowRequest = async (req, res) => {
-    try {
-        const { borrowId } = req.params;
-        const borrowRecord = await BorrowRecord.findById(borrowId);
+  try {
+    const { borrowId } = req.params;
+    const borrowRecord = await BorrowRecord.findById(borrowId);
 
-        if (!borrowRecord) {
-            return res.status(404).json({ message: 'Borrow request not found' });
-        }
-
-        if (borrowRecord.status !== 'pending') {
-            return res.status(400).json({ message: 'Borrow request is not pending' });
-        }
-
-        // Nhận các bản sao sách có sẵn
-        const bookCopies = await BookCopy.find({ book: borrowRecord.bookId, status: 'available' }).limit(borrowRecord.quantity); // assuming `quantity` is requested number of books
-
-        if (bookCopies.length < borrowRecord.quantity) {
-            return res.status(400).json({ message: 'Not enough available copies' });
-        }
-
-        // Cập nhật trạng thái của từng bản sao sách thành bản đã mượn
-        for (let i = 0; i < bookCopies.length; i++) {
-            bookCopies[i].status = 'borrowed';
-            bookCopies[i].currentBorrower = borrowRecord.userId;
-            await bookCopies[i].save();
-        }
-
-        // Cập nhật hồ sơ mượn thành 'đã mượn' và lưu ngày mượn
-        borrowRecord.status = 'borrowed';
-        borrowRecord.borrowedAt = new Date();
-        await borrowRecord.save();
-
-        // Update the inventory
-        const inventory = await Inventory.findOne({ book: borrowRecord.bookId });
-        if (inventory) {
-            // Tính toán số lượng sách còn lại và số sách đã mượn
-            const availableBooks = inventory.available - borrowRecord.quantity;
-            const borrowedBooks = inventory.borrowed + borrowRecord.quantity;
-
-            // Kiểm tra nếu các giá trị này không phải là NaN
-            if (isNaN(availableBooks) || isNaN(borrowedBooks)) {
-                return res.status(400).json({ message: "Invalid quantity for available or borrowed books." });
-            }
-
-            // Cập nhật lại số lượng sách trong kho
-            inventory.available = availableBooks;
-            inventory.borrowed = borrowedBooks;
-            await inventory.save();
-        }
-
-
-        res.status(200).json(borrowRecord);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    if (!borrowRecord) {
+      return res.status(404).json({ message: 'Borrow request not found' });
     }
+
+    if (borrowRecord.status !== 'pending') {
+      return res.status(400).json({ message: 'Borrow request is not pending' });
+    }
+
+    // Tìm các bản sao sách sẵn có
+    const bookCopies = await BookCopy.find({
+      book: borrowRecord.bookId,
+      status: 'available',
+    }).limit(borrowRecord.quantity);
+
+    if (bookCopies.length < borrowRecord.quantity) {
+      return res.status(400).json({ message: 'Not enough available copies' });
+    }
+
+    // Cập nhật trạng thái và người mượn cho từng bản sao
+    for (let i = 0; i < bookCopies.length; i++) {
+      bookCopies[i].status = 'borrowed';
+      bookCopies[i].currentBorrower = borrowRecord.userId;
+      bookCopies[i].dueDate = borrowRecord.dueDate; // gán sẵn ngày hết hạn cho BookCopy
+      await bookCopies[i].save();
+    }
+
+    // Gán các bản sao vào borrowRecord
+    borrowRecord.bookCopies = bookCopies.map(copy => copy._id);
+    borrowRecord.status = 'borrowed';
+    borrowRecord.borrowDate = new Date();
+    borrowRecord.processedBy = req.user.id;
+    await borrowRecord.save();
+
+    // Cập nhật inventory
+    const inventory = await Inventory.findOne({ book: borrowRecord.bookId });
+    if (inventory) {
+      const availableBooks = inventory.available - borrowRecord.quantity;
+      const borrowedBooks = inventory.borrowed + borrowRecord.quantity;
+
+      if (isNaN(availableBooks) || isNaN(borrowedBooks)) {
+        return res.status(400).json({ message: 'Invalid quantity for available or borrowed books.' });
+      }
+
+      inventory.available = availableBooks;
+      inventory.borrowed = borrowedBooks;
+      await inventory.save();
+    }
+
+    res.status(200).json(borrowRecord);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // @done: Lấy danh sách các yêu cầu mượn sách
@@ -141,147 +143,174 @@ exports.declineBorrowRequest = async (req, res) => {
 //Cập nhật kho(Inventory) tương ứng(giảm borrowed, tăng available, damaged hoặc lost).
 //Nếu trả muộn hoặc sách bị hư / mất → tạo bản ghi Fine để xử phạt.
 exports.returnBook = async (req, res) => {
-  try {
-    const requestId = req.params.id;
-    const staffId = req.user.id;
-    const { quantities = {}, notes } = req.body;
+    try {
+        const requestId = req.params.id;
+        const staffId = req.user.id;
+        const { bookConditions, notes } = req.body;
+        // bookConditions format: [{ barcode: "BC001", condition: "good" }, { barcode: "BC002", condition: "damaged" }]
+        // hoặc condition chung cho tất cả: { condition: "good", notes: "..." }
 
-    let conditions = [];
-    for (let [key, count] of Object.entries(quantities)) {
-         for (let i = 0; i < count; i++) {
-            conditions.push(key);
+        const borrowRequest = await BorrowRecord.findById(requestId)
+            .populate('userId', 'name studentId')
+            .populate('bookId', 'title author isbn price');
+
+        if (!borrowRequest) {
+            throw new Error('Borrow record not found');
         }
-    }
- // conditions là mảng trạng thái từng sách
 
-    const borrowRequest = await BorrowRecord.findById(requestId)
-      .populate('userId', 'name studentId')
-      .populate('bookId', 'title author isbn price');
+        if (borrowRequest.status !== 'borrowed') {
+            throw new Error('Only borrowed books can be returned');
+        }
 
-    if (!borrowRequest) {
-      return res.status(404).json({ message: 'Borrow record not found' });
-    }
+        const returnDate = new Date();
+        const isOverdue = returnDate > borrowRequest.dueDate;
 
-    if (borrowRequest.status !== 'borrowed') {
-      return res.status(400).json({ message: 'This book has already been returned or not yet borrowed' });
-    }
+        // Tìm tất cả BookCopy của borrow record này
+        const bookCopies = await BookCopy.find({
+            book: borrowRequest.bookId._id,
+            currentBorrower: borrowRequest.userId._id,
+            status: 'borrowed',
+        }).limit(borrowRequest.quantity);
 
-    const returnDate = new Date();
-    const isOverdue = returnDate > borrowRequest.dueDate;
-    const quantity = borrowRequest.quantity || 1;
+        // Xử lý condition cho từng cuốn sách
+        let conditionCounts = { good: 0, damaged: 0, lost: 0 };
+        let actualReturnedCount = 0;
 
-    if (conditions.length !== quantity) {
-      return res.status(400).json({ message: 'Number of conditions does not match borrowed quantity' });
-    }
+        // Nếu có bookConditions riêng lẻ
+        if (bookConditions && Array.isArray(bookConditions)) {
+            // Tạo map từ barcode đến condition
+            const conditionMap = {};
+            bookConditions.forEach((item) => {
+                conditionMap[item.barcode] = item.condition;
+            });
 
-    // Trả BookCopy
-    const bookCopies = await BookCopy.find({
-      book: borrowRequest.bookId._id,
-      currentBorrower: borrowRequest.userId._id,
-      status: 'borrowed',
-    }).limit(quantity);
+            for (const bookCopy of bookCopies) {
+                const condition = conditionMap[bookCopy.barcode] || 'good';
 
-    if (bookCopies.length !== quantity) {
-      return res.status(400).json({
-        message: `Expected ${quantity} book copies, but found ${bookCopies.length}`,
-      });
-    }
+                switch (condition) {
+                    case 'good':
+                        bookCopy.status = 'available';
+                        conditionCounts.good++;
+                        break;
+                    case 'damaged':
+                        bookCopy.status = 'damaged';
+                        conditionCounts.damaged++;
+                        break;
+                    case 'lost':
+                        bookCopy.status = 'lost';
+                        conditionCounts.lost++;
+                        break;
+                    default:
+                        bookCopy.status = 'available';
+                        conditionCounts.good++;
+                }
 
-    // Cập nhật từng BookCopy và tạo fine nếu cần
-    const inventory = await Inventory.findOne({ book: borrowRequest.bookId._id });
-    if (!inventory) {
-      return res.status(404).json({ message: 'Inventory not found' });
-    }
+                bookCopy.currentBorrower = null;
+                bookCopy.dueDate = null;
+                await bookCopy.save();
+                actualReturnedCount++;
+            }
+        } else {
+            // Sử dụng condition chung cho tất cả (backward compatibility)
+            const condition = req.body.condition || 'good';
 
-    let fines = [];
+            for (const bookCopy of bookCopies) {
+                switch (condition) {
+                    case 'good':
+                        bookCopy.status = 'available';
+                        conditionCounts.good++;
+                        break;
+                    case 'damaged':
+                        bookCopy.status = 'damaged';
+                        conditionCounts.damaged++;
+                        break;
+                    case 'lost':
+                        bookCopy.status = 'lost';
+                        conditionCounts.lost++;
+                        break;
+                }
 
-    for (let i = 0; i < bookCopies.length; i++) {
-      const copy = bookCopies[i];
-      const condition = conditions[i];
+                bookCopy.currentBorrower = null;
+                bookCopy.dueDate = null;
+                await bookCopy.save();
+                actualReturnedCount++;
+            }
+        }
 
-      copy.status =
-        condition === 'lost' ? 'lost' :
-        condition === 'damaged' ? 'damaged' : 'available';
+        // Cập nhật borrow record
+        borrowRequest.status = conditionCounts.lost > 0 ? 'lost' : 'returned';
+        borrowRequest.returnDate = returnDate;
+        borrowRequest.processedBy = staffId;
+        if (notes) borrowRequest.notes = notes;
+        await borrowRequest.save();
 
-      copy.currentBorrower = null;
-      copy.dueDate = null;
-      await copy.save();
+        // Cập nhật inventory dựa trên số lượng thực tế
+        const inventory = await Inventory.findOne({ book: borrowRequest.bookId._id });
+        if (inventory) {
+            inventory.borrowed -= actualReturnedCount;
+            inventory.available += conditionCounts.good;
+            inventory.damaged += conditionCounts.damaged;
+            inventory.lost += conditionCounts.lost;
+            await inventory.save();
+        }
 
-      // Update Inventory
-      inventory.borrowed = Math.max(0, inventory.borrowed - 1);
-      if (condition === 'good') {
-        inventory.available += 1;
-      } else if (condition === 'damaged') {
-        inventory.damaged += 1;
-      } else if (condition === 'lost') {
-        inventory.lost += 1;
-      }
+        // Tính fine dựa trên từng cuốn sách
+        let fine = null;
+        if (isOverdue || conditionCounts.damaged > 0 || conditionCounts.lost > 0) {
+            let fineAmount = 0;
+            let fineReasons = [];
 
-      // Tạo Fine nếu cần
-      let fineReason = null;
-      let fineAmount = 0;
+            // Fine cho quá hạn (áp dụng cho toàn bộ lô sách)
+            if (isOverdue) {
+                const daysLate = Math.ceil((returnDate - borrowRequest.dueDate) / (1000 * 60 * 60 * 24));
+                fineAmount += daysLate * 5000; // Fine cố định cho quá hạn
+                fineReasons.push(`Late return: ${daysLate} days`);
+            }
 
-      if (condition === 'damaged') {
-        fineReason = 'damaged';
-        fineAmount = borrowRequest.bookId.price * 0.3;
-      } else if (condition === 'lost') {
-        fineReason = 'lost';
-        fineAmount = borrowRequest.bookId.price;
-      }
+            // Fine cho sách hỏng (tính theo từng cuốn)
+            if (conditionCounts.damaged > 0) {
+                const damagedFine = borrowRequest.bookId.price * 0.3 * conditionCounts.damaged;
+                fineAmount += damagedFine;
+                fineReasons.push(`${conditionCounts.damaged} damaged book(s)`);
+            }
 
-      if (fineReason) {
-        const fine = await Fine.create({
-          borrowRecord: borrowRequest._id,
-          user: borrowRequest.userId._id,
-          reason: fineReason,
-          amount: Math.round(fineAmount),
-          processedBy: staffId,
-          note: `Book ${i + 1} ${fineReason}`,
+            // Fine cho sách mất (tính theo từng cuốn)
+            if (conditionCounts.lost > 0) {
+                const lostFine = borrowRequest.bookId.price * conditionCounts.lost;
+                fineAmount += lostFine;
+                fineReasons.push(`${conditionCounts.lost} lost book(s)`);
+            }
+
+            if (fineAmount > 0) {
+                fine = await Fine.create([
+                    {
+                        borrowRecord: borrowRequest._id,
+                        user: borrowRequest.userId._id,
+                        reason: conditionCounts.lost > 0 ? 'lost' : conditionCounts.damaged > 0 ? 'damaged' : 'overdue',
+                        amount: fineAmount,
+                        processedBy: staffId,
+                        note: fineReasons.join(', '),
+                    },
+                ]);
+
+                borrowRequest.fineId = fine[0]._id;
+                await borrowRequest.save();
+            }
+        }
+
+        const updatedRecord = await BorrowRecord.findById(requestId)
+            .populate('userId', 'name studentId')
+            .populate('bookId', 'title author isbn')
+            .populate('fineId');
+
+        res.status(200).json({
+            message: 'Book returned successfully',
+            borrowRequest: updatedRecord,
         });
-        fines.push(fine);
-      }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-
-    // Phạt quá hạn (chỉ tạo 1 lần)
-    if (isOverdue) {
-      const daysLate = Math.ceil((returnDate - borrowRequest.dueDate) / (1000 * 60 * 60 * 24));
-      const overdueFine = await Fine.create({
-        borrowRecord: borrowRequest._id,
-        user: borrowRequest.userId._id,
-        reason: 'overdue',
-        amount: daysLate * 5000,
-        processedBy: staffId,
-        note: `Overdue: ${daysLate} days`,
-      });
-      fines.push(overdueFine);
-    }
-
-    await inventory.save();
-
-    // Cập nhật borrowRequest
-    borrowRequest.status = 'returned';
-    borrowRequest.returnedDate = returnDate;
-    borrowRequest.returnedBy = staffId;
-    borrowRequest.notes = notes || '';
-    if (fines.length > 0) {
-      borrowRequest.fineId = fines.map(f => f._id); // lưu mảng fine nếu muốn
-    }
-    await borrowRequest.save();
-
-    res.status(200).json({
-      message: 'Books returned successfully',
-      borrowRequest,
-      fines,
-    });
-
-  } catch (error) {
-    console.error('Error in returnBook:', error);
-    res.status(500).json({ message: error.message });
-  }
 };
-
-
-
 
 // @doing: Gia hạn thời gian mượn sách (Đang mượn và không có phạt)
 exports.extendBorrowPeriod = async (req, res) => {

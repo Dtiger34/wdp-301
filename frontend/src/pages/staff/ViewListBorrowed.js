@@ -83,15 +83,35 @@ const ViewListBorrowed = () => {
     setError(`Tổng số lượng phải bằng ${totalBorrowed}`);
     return;
   }
-    try {
-      await returnBook(selectedRecord._id, { quantities, notes });
-      alert("✅ Trả sách thành công!");
-      setShowModal(false);
-      fetchBorrowedBooks();
-    } catch (error) {
-      alert("❌ Lỗi khi trả sách: " + (error.response?.data?.message || error.message));
-    }
-  };
+
+  try {
+    // Tạo giả danh sách bookConditions (nếu backend yêu cầu)
+    const bookCopies = selectedRecord.bookCopies; // phải được load từ API
+
+const bookConditions = [];
+
+let index = 0;
+for (let i = 0; i < quantities.good; i++) {
+  bookConditions.push({ barcode: bookCopies[index++].barcode, condition: "good" });
+}
+for (let i = 0; i < quantities.damaged; i++) {
+  bookConditions.push({ barcode: bookCopies[index++].barcode, condition: "damaged" });
+}
+for (let i = 0; i < quantities.lost; i++) {
+  bookConditions.push({ barcode: bookCopies[index++].barcode, condition: "lost" });
+}
+
+
+    await returnBook(selectedRecord._id, { bookConditions, notes });
+
+    alert("✅ Trả sách thành công!");
+    setShowModal(false);
+    fetchBorrowedBooks();
+  } catch (error) {
+    alert("❌ Lỗi khi trả sách: " + (error.response?.data?.message || error.message));
+  }
+};
+
 
   const handleSubmitExtend = async () => {
     try {
