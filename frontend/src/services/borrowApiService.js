@@ -93,7 +93,6 @@ export const returnBook = async (borrowId, data) => {
         console.error("Error returning book:", error.response?.data || error.message);
         throw error;
     }
-<<<<<<< HEAD
 };
 export const extendBorrowPeriod = async (borrowId, days = 7) => {
     try {
@@ -112,6 +111,3 @@ export const extendBorrowPeriod = async (borrowId, days = 7) => {
         throw error;
     }
 };
-=======
-};
->>>>>>> origin/dev/bao4
