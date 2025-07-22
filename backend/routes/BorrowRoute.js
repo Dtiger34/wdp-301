@@ -21,4 +21,10 @@ router.post('/extend-borrow/:id', jwtConfig.requireAuth, borrowController.extend
 // Lấy thống kê mượn/trả sách
 router.get('/borrow-statistics', jwtConfig.requireAuth, borrowController.getBorrowStatistics);
 
+// Lịch sử trả sách của tất cả user
+router.get('/borrow-history', jwtConfig.requireAuth, borrowController.getReturnHistory);
+
+// Lịch sử trả sách của 1 user cụ thể
+router.get('/return-history/:userId', jwtConfig.requireAuth, borrowController.getReturnHistoryByUser);
+
 module.exports = router;

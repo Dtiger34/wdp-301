@@ -145,6 +145,12 @@ exports.deleteBook = async (req, res) => {
   }
 };
 
+// Hàm kiểm tra định dạng ISBN (ISBN-10 hoặc ISBN-13)
+function isValidISBN(isbn) {
+  const regex = /^(?:\d{9}[\dX]|\d{13})$/;  // ISBN-10 hoặc ISBN-13
+  return regex.test(isbn);
+}
+
 // @done create book
 exports.createBook = async (req, res) => {
   try {
@@ -161,8 +167,20 @@ exports.createBook = async (req, res) => {
       quantity
     } = req.body;
 
+    // Kiểm tra định dạng ISBN hợp lệ (dạng 10 hoặc 13 ký tự số)
+    if (!isbn || !isValidISBN(isbn)) {
+      return res.status(400).json({ message: 'Invalid ISBN format. ISBN should be either 10 or 13 digits.' });
+    }
+
+    // Kiểm tra xem ISBN có bị trùng không
+    const existingBook = await Book.findOne({ isbn });
+    if (existingBook) {
+      return res.status(400).json({ message: 'A book with this ISBN already exists.' });
+    }
+
     const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
 
+    // Tạo cuốn sách mới
     const newBook = new Book({
       title,
       isbn,
@@ -190,8 +208,9 @@ exports.createBook = async (req, res) => {
 
     // Tạo bản sao sách có mã vạch duy nhất
     const bookCopies = [];
+    const isbnLast4Digits = isbn.slice(-4);  // Lấy 4 số cuối của ISBN
     for (let i = 0; i < quantity; i++) {
-      const barcode = `BC-${book._id.toString()}-${(i + 1).toString().padStart(3, '0')}`;
+      const barcode = `BC-${isbnLast4Digits}-${(i + 1).toString().padStart(3, '0')}`;
       const newBookCopy = new BookCopy({
         book: book._id,
         barcode,
@@ -203,7 +222,7 @@ exports.createBook = async (req, res) => {
     // Lưu tất cả các bản sao sách
     await BookCopy.insertMany(bookCopies);
 
-    // Thêm bản sao sách vào mảng bản sao sách
+    // Thêm bản sao sách vào mảng bản sao sách trong book
     book.bookcopies = bookCopies.map(copy => copy._id);
     await book.save();
 
@@ -253,6 +272,40 @@ exports.createBorrowRequest = async (req, res) => {
       return res.status(400).json({ message: 'Invalid or missing dueDate' });
     }
 
+    // Lấy các bản sao sách có sẵn
+    const bookCopies = await BookCopy.find({
+      book: bookId,
+      status: 'available',
+    }).limit(quantity);
+
+    // Nếu không đủ bản sao sách
+    if (bookCopies.length < quantity) {
+      return res.status(400).json({ message: 'Not enough available book copies' });
+    }
+
+    // Cập nhật trạng thái bản sao sách và lưu vào BorrowRecord
+    const updatedBookCopies = [];
+    for (const bookCopy of bookCopies) {
+      bookCopy.status = 'borrowed';
+      bookCopy.currentBorrower = userId; // Cập nhật người mượn
+      bookCopy.dueDate = new Date(dueDate); // Cập nhật hạn trả cho sách
+
+      // Lưu lại bản sao sách sau khi cập nhật
+      await bookCopy.save();
+
+      // Thêm ObjectId của BookCopy vào updatedBookCopies
+      updatedBookCopies.push({
+        _id: bookCopy._id,
+        barcode: bookCopy.barcode,
+        status: null,  // Trạng thái là null khi tạo yêu cầu mượn
+      });
+    }
+
+    // Cập nhật Inventory (số lượng sách mượn và sách còn lại trong kho)
+    inventory.available -= quantity;  // Giảm số lượng sách có sẵn
+    inventory.borrowed += quantity;  // Tăng số lượng sách đã mượn
+    await inventory.save();  // Lưu lại thay đổi trong inventory
+
     // Tạo yêu cầu mượn
     const borrowRequest = await BorrowRecord.create({
       userId,
@@ -262,6 +315,7 @@ exports.createBorrowRequest = async (req, res) => {
       notes,
       quantity,
       status: 'pending',
+      bookCopies: updatedBookCopies,  // Lưu thông tin các bản sao sách
     });
 
     await borrowRequest.populate(['userId', 'bookId']);

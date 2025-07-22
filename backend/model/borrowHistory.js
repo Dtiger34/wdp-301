@@ -60,6 +60,23 @@ const borrowRecordSchema = new mongoose.Schema({
         required: true,
         min: [1, 'Quantity must be at least 1']
     },
+
+    bookCopies: [{
+        _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'BookCopy',
+            required: true
+        },
+        barcode: {
+            type: String,
+            required: true
+        },
+        status: {
+            type: String,
+            enum: ["available", "borrowed", "lost", "damaged"],
+            default: "available",
+        },
+    }],
 });
 
 module.exports = mongoose.model('BorrowRecord', borrowRecordSchema);

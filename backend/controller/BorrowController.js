@@ -1,9 +1,8 @@
-const Book = require('../model/book');
 const Inventory = require('../model/Inventory');
 const BorrowRecord = require('../model/borrowHistory');
 const Fine = require('../model/fine');
 const BookCopy = require('../model/bookcopies');
-const mongoose = require('mongoose');
+const User = require('../model/user');
 
 // @done: duyệt một yêu cầu mượn sách
 exports.acceptBorrowRequest = async (req, res) => {
@@ -21,40 +20,14 @@ exports.acceptBorrowRequest = async (req, res) => {
             throw new Error('Borrow request is not pending');
         }
 
-        // Lấy các bản sao sách có sẵn
-        const bookCopies = await BookCopy.find({
-            book: borrowRecord.bookId,
-            status: 'available',
-        }).limit(borrowRecord.quantity);
-
-        if (bookCopies.length < borrowRecord.quantity) {
-            throw new Error('Not enough available copies');
-        }
-
-        // Cập nhật trạng thái bản sao sách
-        for (const bookCopy of bookCopies) {
-            bookCopy.status = 'borrowed';
-            bookCopy.currentBorrower = borrowRecord.userId;
-            bookCopy.borrowRecordId = borrowRecord._id; // FIX: Thêm liên kết
-            bookCopy.dueDate = borrowRecord.dueDate;
-            await bookCopy.save();
-        }
-
-        // Cập nhật borrow record
+        // Cập nhật BorrowRecord với trạng thái đã duyệt
         borrowRecord.status = 'borrowed';
         borrowRecord.borrowDate = new Date();
         borrowRecord.processedBy = staffId;
         await borrowRecord.save();
 
-        // Cập nhật inventory
-        const inventory = await Inventory.findOne({ book: borrowRecord.bookId });
-        if (inventory) {
-            inventory.available -= borrowRecord.quantity;
-            inventory.borrowed += borrowRecord.quantity;
-            await inventory.save();
-        }
-
-        const updatedRecord = await BorrowRecord.findById(req.params.borrowId)
+        // Lấy lại BorrowRecord đã được cập nhật
+        const updatedRecord = await BorrowRecord.findById(borrowId)
             .populate('userId', 'name studentId')
             .populate('bookId', 'title author isbn');
 
@@ -66,6 +39,7 @@ exports.acceptBorrowRequest = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // @done: Lấy danh sách các yêu cầu mượn sách
 exports.getAllBorrowedRequests = async (req, res) => {
@@ -125,9 +99,34 @@ exports.declineBorrowRequest = async (req, res) => {
             });
         }
 
+        // Cập nhật trạng thái yêu cầu mượn thành 'declined'
         borrowRequest.status = 'declined';
         borrowRequest.processedBy = staffId;
+
+        // Nếu có lý do từ chối, lưu vào ghi chú
         if (reason) borrowRequest.notes = reason;
+
+        // Cập nhật lại Inventory (số lượng sách có sẵn và sách đã mượn)
+        const inventory = await Inventory.findOne({ book: borrowRequest.bookId });
+        if (inventory) {
+            inventory.available += borrowRequest.quantity;  // Tăng số lượng sách có sẵn
+            inventory.borrowed -= borrowRequest.quantity;   // Giảm số lượng sách đã mượn
+            await inventory.save();  // Lưu lại thay đổi trong inventory
+        }
+
+        // Cập nhật trạng thái của các BookCopy
+        const bookCopies = await BookCopy.find({
+            _id: { $in: borrowRequest.bookCopies.map(copy => copy._id) }, // Tìm các BookCopy liên quan
+        });
+
+        for (const bookCopy of bookCopies) {
+            bookCopy.status = 'available';  // Đặt trạng thái là available
+            bookCopy.currentBorrower = null; // Xóa người mượn
+            bookCopy.borrowRecordId = null; // Xóa liên kết với BorrowRecord
+            await bookCopy.save(); // Lưu lại thay đổi cho BookCopy
+        }
+
+        // Lưu yêu cầu mượn đã được cập nhật
         await borrowRequest.save();
 
         res.status(200).json({
@@ -145,8 +144,6 @@ exports.returnBook = async (req, res) => {
         const requestId = req.params.id;
         const staffId = req.user.id;
         const { bookConditions, notes } = req.body;
-        // bookConditions format: [{ barcode: "BC001", condition: "good" }, { barcode: "BC002", condition: "damaged" }]
-        // hoặc condition chung cho tất cả: { condition: "good", notes: "..." }
 
         const borrowRequest = await BorrowRecord.findById(requestId)
             .populate('userId', 'name studentId')
@@ -170,7 +167,6 @@ exports.returnBook = async (req, res) => {
             status: 'borrowed',
         }).limit(borrowRequest.quantity);
 
-        // Xử lý condition cho từng cuốn sách
         let conditionCounts = { good: 0, damaged: 0, lost: 0 };
         let actualReturnedCount = 0;
 
@@ -182,6 +178,7 @@ exports.returnBook = async (req, res) => {
                 conditionMap[item.barcode] = item.condition;
             });
 
+            const updatedBookCopies = [];
             for (const bookCopy of bookCopies) {
                 const condition = conditionMap[bookCopy.barcode] || 'good';
 
@@ -205,13 +202,25 @@ exports.returnBook = async (req, res) => {
 
                 bookCopy.currentBorrower = null;
                 bookCopy.dueDate = null;
-                await bookCopy.save();
+                await bookCopy.save();  // Lưu lại bản sao sách sau khi cập nhật trạng thái
+
+                // Lưu đầy đủ thông tin ObjectId, barcode và status vào updatedBookCopies
+                updatedBookCopies.push({
+                    _id: bookCopy._id,
+                    barcode: bookCopy.barcode,
+                    status: bookCopy.status,
+                });
+
                 actualReturnedCount++;
             }
+
+            // update lại bookCopies trong BorrowRecord
+            borrowRequest.bookCopies = updatedBookCopies;
         } else {
             // Sử dụng condition chung cho tất cả (backward compatibility)
             const condition = req.body.condition || 'good';
 
+            const updatedBookCopies = [];
             for (const bookCopy of bookCopies) {
                 switch (condition) {
                     case 'good':
@@ -230,19 +239,30 @@ exports.returnBook = async (req, res) => {
 
                 bookCopy.currentBorrower = null;
                 bookCopy.dueDate = null;
-                await bookCopy.save();
+                await bookCopy.save();  // save
+
+                // Lưu đầy đủ thông tin ObjectId, barcode và status vào updatedBookCopies
+                updatedBookCopies.push({
+                    _id: bookCopy._id,
+                    barcode: bookCopy.barcode,
+                    status: bookCopy.status,
+                });
+
                 actualReturnedCount++;
             }
+
+            // update lại bookCopies trong BorrowRecord
+            borrowRequest.bookCopies = updatedBookCopies;
         }
 
-        // Cập nhật borrow record
+        // update borrow record
         borrowRequest.status = conditionCounts.lost > 0 ? 'lost' : 'returned';
         borrowRequest.returnDate = returnDate;
         borrowRequest.processedBy = staffId;
         if (notes) borrowRequest.notes = notes;
         await borrowRequest.save();
 
-        // Cập nhật inventory dựa trên số lượng thực tế
+        // update inventory dựa trên số lượng thực tế
         const inventory = await Inventory.findOne({ book: borrowRequest.bookId._id });
         if (inventory) {
             inventory.borrowed -= actualReturnedCount;
@@ -280,16 +300,15 @@ exports.returnBook = async (req, res) => {
             }
 
             if (fineAmount > 0) {
-                fine = await Fine.create([
-                    {
-                        borrowRecord: borrowRequest._id,
-                        user: borrowRequest.userId._id,
-                        reason: conditionCounts.lost > 0 ? 'lost' : conditionCounts.damaged > 0 ? 'damaged' : 'overdue',
-                        amount: fineAmount,
-                        processedBy: staffId,
-                        note: fineReasons.join(', '),
-                    },
-                ]);
+                fine = await Fine.create([{
+                    borrowRecord: borrowRequest._id,
+                    user: borrowRequest.userId._id,
+                    reason: conditionCounts.lost > 0 ? 'lost' : conditionCounts.damaged > 0 ? 'damaged' : 'overdue',
+                    amount: fineAmount,
+                    processedBy: staffId,
+                    note: fineReasons.join(', '),
+                }]);
+
 
                 borrowRequest.fineId = fine[0]._id;
                 await borrowRequest.save();
@@ -487,5 +506,92 @@ exports.getBorrowStatistics = async (req, res) => {
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+// @done: Lịch sử mượn và trả của user
+exports.getReturnHistory = async (req, res) => {
+    try {
+        const { page = 1, limit = 10 } = req.query;
+        const skip = (page - 1) * limit;
+
+        // Lấy tất cả các bản ghi mượn mà không lọc theo trạng thái (tất cả các trạng thái)
+        const borrowRecords = await BorrowRecord.find({})
+            .populate('userId', 'name studentId email')
+            .populate('bookId', 'title isbn author publisher publishYear description price image')
+            .skip(skip)
+            .limit(limit)
+            .sort({ returnDate: -1 });
+
+        // Lọc và loại bỏ bookcopies khỏi bookId
+        const result = borrowRecords.map(borrowRecord => {
+            const { bookcopies, ...bookIdWithoutCopies } = borrowRecord.bookId.toObject();
+
+            return {
+                ...borrowRecord.toObject(),
+                bookId: bookIdWithoutCopies,
+            };
+        });
+
+        const total = await BorrowRecord.countDocuments({});
+
+        res.status(200).json({
+            message: 'Return history fetched successfully',
+            data: result,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                totalRecords: total,
+                hasNext: page * limit < total,
+                hasPrev: page > 1,
+            },
+        });
+    } catch (error) {
+        console.error('Error fetching return history:', error);
+        res.status(500).json({ message: 'Failed to fetch return history', error: error.message });
+    }
+};
+
+// @done: Lịch sử mượn và trả sách của 1 user
+exports.getReturnHistoryByUser = async (req, res) => {
+    try {
+        const { userId } = req.params; // Get userId from the request parameters
+        const { page = 1, limit = 10 } = req.query; // Pagination parameters
+        const skip = (page - 1) * limit;
+
+        // Lấy tất cả các bản ghi mượn của userId với các trạng thái đã trả
+        const borrowRecords = await BorrowRecord.find({ userId })
+            .populate('userId', 'name studentId email')
+            .populate('bookId', 'title isbn author publisher publishYear description price image')
+            .skip(skip)
+            .limit(limit)
+            .sort({ returnDate: -1 });
+
+        // Lọc và loại bỏ bookcopies khỏi bookId
+        const result = borrowRecords.map(borrowRecord => {
+            const { bookcopies, ...bookIdWithoutCopies } = borrowRecord.bookId.toObject();
+
+            return {
+                ...borrowRecord.toObject(),
+                bookId: bookIdWithoutCopies,
+            };
+        });
+
+        const total = await BorrowRecord.countDocuments({ userId });
+
+        res.status(200).json({
+            message: 'Return history fetched successfully',
+            data: result,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                totalRecords: total,
+                hasNext: page * limit < total,
+                hasPrev: page > 1,
+            },
+        });
+    } catch (error) {
+        console.error('Error fetching return history for user:', error);
+        res.status(500).json({ message: 'Failed to fetch return history', error: error.message });
     }
 };
