@@ -47,26 +47,43 @@ exports.getAllBorrowedRequests = async (req, res) => {
         const { page = 1, limit = 10, isOverdue } = req.query;
 
         const query = { status: 'borrowed' };
-        // Build query
 
-        // Filter overdue books
+        // Lọc quá hạn nếu cần
         if (isOverdue === 'true') {
             query.dueDate = { $lt: new Date() };
         }
 
+        // Lấy danh sách yêu cầu mượn
         const borrowRequests = await BorrowRecord.find(query)
             .populate('userId', 'name studentId email phone')
-            .populate('bookId', 'title author isbn image')
+            .populate('bookId', 'title author isbn image price')
             .populate('processedBy', 'name studentId')
             .populate('fineId')
             .sort({ createdRequestAt: -1 })
             .limit(limit * 1)
-            .skip((page - 1) * limit);
+            .skip((page - 1) * limit)
+            .lean(); // để có thể gán thêm field mới
+
+        // Gắn thêm danh sách BookCopy cho từng yêu cầu
+        const updatedRequests = await Promise.all(
+            borrowRequests.map(async (record) => {
+                const bookCopies = await BookCopy.find({
+                    book: record.bookId._id,
+                    currentBorrower: record.userId._id,
+                    status: 'borrowed',
+                }).select('_id barcode status');
+
+                return {
+                    ...record,
+                    bookCopies, // chèn vào kết quả trả về
+                };
+            })
+        );
 
         const total = await BorrowRecord.countDocuments(query);
 
         res.status(200).json({
-            borrowRequests,
+            borrowRequests: updatedRequests,
             pagination: {
                 currentPage: parseInt(page),
                 totalPages: Math.ceil(total / limit),
