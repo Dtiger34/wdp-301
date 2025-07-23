@@ -17,7 +17,7 @@ import StaffDashboard from "./pages/staff/StaffDashboard";
 import ViewBookList from "./pages/staff/ViewBookList";
 import AddBook from "./pages/staff/AddBook";
 import UpdateBook from "./pages/staff/UpdateBook";
-
+import ViewDetailBook from "./pages/staff/ViewBookDetail"
 // Staff - Bookshelf
 import BookShelf from "./pages/staff/BookShelf";
 import AddBookshelf from "./pages/staff/AddBookshelf";
@@ -73,7 +73,8 @@ function App() {
       <Route path="/staff/view-books" element={<ViewBookList />} />
       <Route path="/staff/add-book" element={<AddBook />} />
       <Route path="/staff/update-book/:id" element={<UpdateBook />} />
-
+      <Route path="/staff/book/:id" element={<ViewDetailBook />} />
+      
       {/* Staff - Bookshelf CRUD */}
       <Route path="/staff/bookshelf" element={<BookShelf />} />
       <Route path="/staff/add-bookshelf" element={<AddBookshelf />} />

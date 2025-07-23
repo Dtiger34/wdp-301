@@ -95,7 +95,14 @@ const ViewBookList = () => {
                   ) : (
                     books.map((book) => (
                       <tr key={book._id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                        <td style={tdStyleTitle}>{book.title}</td>
+                        {/* <td style={tdStyleTitle}>{book.title}</td> */}
+                        <td style={{ ...tdStyleTitle, cursor: 'pointer', color: '#2563eb' }}
+                            onClick={() => navigate(`/staff/book/${book._id}`)}
+                            title="Xem chi tiết sách"
+                        >
+                            {book.title}
+                        </td>
+
                         <td style={tdStyleInfo}>
                           <div>Tác giả: {book.author || '-'}</div>
                           <div>NXB: {book.publisher || '-'}</div>
