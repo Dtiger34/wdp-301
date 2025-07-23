@@ -31,7 +31,7 @@ import UpdateCategory from "./pages/staff/UpdateCategory";
 // Staff - Request
 import ViewListRequest from "./pages/staff/ViewListRequest";
 import ViewListBorrowed from "./pages/staff/ViewListBorrowed";
-
+import HistoryReturnBook from "./pages/staff/HistoryReturnBook";
 // User - Book Detail
 import ViewBookDetail from "./pages/user/ViewBookDetail";
 
@@ -88,6 +88,7 @@ function App() {
       {/* Staff - Request */}
       <Route path="/staff/ViewListRequest" element={<ViewListRequest />} />
       <Route path="/staff/view-borrowing-books" element={<ViewListBorrowed />} />
+      <Route path="/staff/borrows/borrow-history" element={<HistoryReturnBook />} />
 
       {/* User - Book Detail */}
       <Route path="/detail-book/:id" element={<ViewBookDetail />} />

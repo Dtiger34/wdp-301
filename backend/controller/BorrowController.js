@@ -529,45 +529,68 @@ exports.getBorrowStatistics = async (req, res) => {
 
 // @done: Lịch sử mượn và trả của user
 exports.getReturnHistory = async (req, res) => {
-    try {
-        const { page = 1, limit = 10 } = req.query;
-        const skip = (page - 1) * limit;
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
 
-        // Lấy tất cả các bản ghi mượn mà không lọc theo trạng thái (tất cả các trạng thái)
-        const borrowRecords = await BorrowRecord.find({})
-            .populate('userId', 'name studentId email')
-            .populate('bookId', 'title isbn author publisher publishYear description price image')
-            .skip(skip)
-            .limit(limit)
-            .sort({ returnDate: -1 });
+   const borrowRecords = await BorrowRecord.find({ status: 'returned' })
+  .populate('userId', 'name studentId email')
+  .populate('bookId', 'title isbn author publisher publishYear description price image')
+  .skip(skip)
+  .limit(limit)
+  .sort({ returnDate: -1 });
 
-        // Lọc và loại bỏ bookcopies khỏi bookId
-        const result = borrowRecords.map(borrowRecord => {
-            const { bookcopies, ...bookIdWithoutCopies } = borrowRecord.bookId.toObject();
+    // Lấy danh sách tất cả các _id của borrowRecords
+    const borrowRecordIds = borrowRecords.map(record => record._id);
 
-            return {
-                ...borrowRecord.toObject(),
-                bookId: bookIdWithoutCopies,
-            };
-        });
+    // Truy vấn bảng Fine để lấy tiền phạt tương ứng
+    const fines = await Fine.find({ borrowRecord: { $in: borrowRecordIds } });
 
-        const total = await BorrowRecord.countDocuments({});
+    // Tạo Map để tra nhanh borrowRecordId => fine
+    const fineMap = new Map();
+    fines.forEach(f => {
+      fineMap.set(f.borrowRecord.toString(), {
+        amount: f.amount,
+        reason: f.reason,
+        paid: f.paid,
+        note: f.note,
+      });
+    });
 
-        res.status(200).json({
-            message: 'Return history fetched successfully',
-            data: result,
-            pagination: {
-                currentPage: page,
-                totalPages: Math.ceil(total / limit),
-                totalRecords: total,
-                hasNext: page * limit < total,
-                hasPrev: page > 1,
-            },
-        });
-    } catch (error) {
-        console.error('Error fetching return history:', error);
-        res.status(500).json({ message: 'Failed to fetch return history', error: error.message });
-    }
+    // Tạo kết quả cuối cùng
+    const result = borrowRecords.map(borrowRecord => {
+      const { bookcopies, ...bookIdWithoutCopies } = borrowRecord.bookId.toObject();
+      const fine = fineMap.get(borrowRecord._id.toString());
+
+      return {
+        ...borrowRecord.toObject(),
+        bookId: bookIdWithoutCopies,
+        fine: fine || null,
+        note: bookcopies?.[0]?.status === 'damaged' ? 'Hỏng sách' :
+            bookcopies?.[0]?.status === 'lost' ? 'Mất sách' :
+            bookcopies?.[0]?.status === 'available' ? 'Tốt' :
+      'Không xác định',
+
+      };
+    });
+
+    const total = await BorrowRecord.countDocuments({});
+
+    res.status(200).json({
+      message: 'Return history fetched successfully',
+      data: result,
+      pagination: {
+        currentPage: Number(page),
+        totalPages: Math.ceil(total / limit),
+        totalRecords: total,
+        hasNext: page * limit < total,
+        hasPrev: page > 1,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching return history:', error);
+    res.status(500).json({ message: 'Failed to fetch return history', error: error.message });
+  }
 };
 
 // @done: Lịch sử mượn và trả sách của 1 user
