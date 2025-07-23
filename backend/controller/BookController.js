@@ -128,16 +128,26 @@ exports.updateBook = async (req, res) => {
 // @done: delete book
 exports.deleteBook = async (req, res) => {
   try {
-    const book = await Book.findByIdAndDelete(req.params.id);
+    const bookId = req.params.id;
+
+    const activeBorrowRecords = await BorrowRecord.find({
+      bookId: bookId,
+      status: { $in: ['borrowed', 'pending'] }
+    });
+
+    if (activeBorrowRecords.length > 0) {
+      return res.status(400).json({
+        message: 'Cannot delete the book because it is currently borrowed or has pending requests.'
+      });
+    }
+
+    const book = await Book.findByIdAndDelete(bookId);
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
 
-    // Xoá cả inventory nếu có
-    await Inventory.findOneAndDelete({ book: req.params.id });
-
-    // Xoá các bản sao sách
-    await BookCopy.deleteMany({ book: req.params.id });
+    await Inventory.findOneAndDelete({ book: bookId });
+    await BookCopy.deleteMany({ book: bookId });
 
     res.status(200).json({ message: 'Book deleted successfully' });
   } catch (error) {
@@ -867,8 +877,9 @@ exports.uploadBooksFromFile = async (req, res) => {
 
         // Tạo BookCopy (bản sao sách) và lưu vào cơ sở dữ liệu
         const bookCopies = [];
+        const isbnLast4Digits = isbn.slice(-4);  // Lấy 4 số cuối của ISBN
         for (let i = 0; i < quantity; i++) {
-          const barcode = `BC-${savedBook._id.toString()}-${i + 1}`;
+          const barcode = `BC-${isbnLast4Digits}-${(i + 1).toString().padStart(3, '0')}`;
           bookCopies.push({
             book: savedBook._id,
             barcode,
