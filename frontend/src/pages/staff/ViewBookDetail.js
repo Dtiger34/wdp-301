@@ -32,6 +32,13 @@ const ViewDetailBook = () => {
   };
 
   if (!book) return <div>Đang tải dữ liệu...</div>;
+  const totalCopies = book.bookCopies?.length || 0;
+  const availableCount = book.bookCopies?.filter(c => c.status === 'available').length || 0;
+  const pendingCount = book.bookCopies?.filter(c => c.status === 'pending').length || 0;
+  const borrowedCount = book.bookCopies?.filter(c => c.status === 'borrowed').length || 0;
+  const lostCount = book.bookCopies?.filter(c => c.status === 'lost').length || 0;
+  const damagedCount = book.bookCopies?.filter(c => c.status === 'damaged').length || 0;
+
 
   return (
     <StaffDashboard>
@@ -79,12 +86,14 @@ const ViewDetailBook = () => {
         }}>
           <h3 style={{ fontSize: '18px', marginBottom: '12px' }}>Tình trạng sách</h3>
           <ul style={{ lineHeight: '1.8' }}>
-            <li><strong>Tổng số:</strong> {book.inventory?.total || 0}</li>
-            <li><strong>Có thể mượn:</strong> {book.inventory?.available || 0}</li>
-            <li><strong>Đang được mượn:</strong> {book.inventory?.borrowed || 0}</li>
-            <li><strong>Sách bị mất:</strong> {book.inventory?.lost || 0}</li>
-            <li><strong>Sách bị hỏng:</strong> {book.inventory?.damaged || 0}</li>
-          </ul>
+          <li><strong>Tổng số:</strong> {totalCopies}</li>
+          <li><strong>Có thể mượn:</strong> {availableCount}</li>
+          <li><strong>Có đang chờ duyệt:</strong> {pendingCount}</li>
+          <li><strong>Đang được mượn:</strong> {borrowedCount}</li>
+          <li><strong>Sách bị mất:</strong> {lostCount}</li>
+          <li><strong>Sách bị hỏng:</strong> {damagedCount}</li>
+</ul>
+
         </div>
 
         {/* Book copies list */}
@@ -120,6 +129,7 @@ const renderStatus = (status) => {
   switch (status) {
     case 'available': return 'Có sẵn';
     case 'borrowed': return 'Đang mượn';
+    case 'pending': return 'Đang chờ duyệt';
     case 'lost': return 'Đã mất';
     case 'damaged': return 'Hỏng';
     default: return status;

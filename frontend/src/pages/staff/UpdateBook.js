@@ -23,6 +23,7 @@ const UpdateBook = () => {
     bookshelf: '',
   });
 
+  const [formError, setFormError] = useState({});
   const [categories, setCategories] = useState([]);
   const [bookshelves, setBookshelves] = useState([]);
 
@@ -62,6 +63,7 @@ const UpdateBook = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+    setFormError((prev) => ({ ...prev, [name]: '' }));
   };
 
   const handleCheckbox = (categoryId) => {
@@ -71,6 +73,7 @@ const UpdateBook = () => {
         : [...prev.categories, categoryId];
       return { ...prev, categories: newCategories };
     });
+    setFormError((prev) => ({ ...prev, categories: '' }));
   };
 
   const handleImageChange = (e) => {
@@ -86,6 +89,37 @@ const UpdateBook = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const errors = {};
+    const currentYear = new Date().getFullYear();
+    const isPositiveNumber = (val) => /^[1-9]\d*$/.test(val);
+
+    if (!form.title.trim()) errors.title = 'Vui lòng nhập tiêu đề';
+    if (!form.isbn.trim()) errors.isbn = 'Vui lòng nhập ISBN';
+    if (!form.author.trim()) errors.author = 'Vui lòng nhập tác giả';
+    if (!form.publisher.trim()) errors.publisher = 'Vui lòng nhập nhà xuất bản';
+
+    if (!form.publishYear) {
+      errors.publishYear = 'Vui lòng nhập năm xuất bản';
+    } else if (!isPositiveNumber(form.publishYear)) {
+      errors.publishYear = 'Năm xuất bản phải là số nguyên dương';
+    } else if (parseInt(form.publishYear) > currentYear) {
+      errors.publishYear = `Năm xuất bản không được lớn hơn ${currentYear}`;
+    }
+
+    if (!form.description.trim()) errors.description = 'Vui lòng nhập mô tả';
+
+    if (!form.price) {
+      errors.price = 'Vui lòng nhập giá tiền';
+    } else if (!isPositiveNumber(form.price)) {
+      errors.price = 'Giá tiền phải là số dương';
+    }
+
+    if (!form.bookshelf) errors.bookshelf = 'Vui lòng chọn kệ sách';
+    if (form.categories.length === 0) errors.categories = 'Vui lòng chọn ít nhất một thể loại';
+
+    setFormError(errors);
+    if (Object.keys(errors).length > 0) return;
+
     try {
       await updateBook(id, {
         title: form.title,
@@ -102,8 +136,24 @@ const UpdateBook = () => {
       alert('Cập nhật thành công!');
       navigate('/staff/view-books');
     } catch (err) {
-      console.error(err);
-      alert('Cập nhật thất bại!');
+      if (err.response && err.response.data) {
+        const serverMessage = err.response.data.message;
+
+        // Nếu lỗi liên quan đến ISBN
+        if (serverMessage.includes('ISBN')) {
+          setFormError((prev) => ({
+            ...prev,
+            isbn: serverMessage,
+          }));
+        } else {
+          alert(serverMessage || 'Thêm sách thất bại!');
+        }
+
+        console.error('Lỗi từ server:', err.response.data);
+      } else {
+        console.error('Lỗi không xác định:', err);
+        alert('Đã xảy ra lỗi không xác định!');
+      }
     }
   };
 
@@ -111,7 +161,6 @@ const UpdateBook = () => {
     <>
       <Header />
 
-      {/* Nút quay lại */}
       <div style={{ position: 'absolute', top: '140px', left: '30px' }}>
         <button
           onClick={() => navigate(-1)}
@@ -151,8 +200,10 @@ const UpdateBook = () => {
                 value={form[field.name]}
                 onChange={handleChange}
                 style={{ padding: '8px', fontSize: '16px', borderRadius: '6px', border: '1px solid #ccc' }}
-                required
               />
+              {formError[field.name] && (
+                <span style={{ color: 'red', fontSize: '14px' }}>{formError[field.name]}</span>
+              )}
             </div>
           ))}
 
@@ -190,6 +241,9 @@ const UpdateBook = () => {
                 resize: 'vertical',
               }}
             />
+            {formError.description && (
+              <span style={{ color: 'red', fontSize: '14px' }}>{formError.description}</span>
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -206,6 +260,9 @@ const UpdateBook = () => {
                 </label>
               ))}
             </div>
+            {formError.categories && (
+              <span style={{ color: 'red', fontSize: '14px' }}>{formError.categories}</span>
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -214,7 +271,6 @@ const UpdateBook = () => {
               name="bookshelf"
               value={form.bookshelf}
               onChange={handleChange}
-              required
               style={{
                 padding: '8px',
                 fontSize: '16px',
@@ -229,6 +285,9 @@ const UpdateBook = () => {
                 </option>
               ))}
             </select>
+            {formError.bookshelf && (
+              <span style={{ color: 'red', fontSize: '14px' }}>{formError.bookshelf}</span>
+            )}
           </div>
 
           <button

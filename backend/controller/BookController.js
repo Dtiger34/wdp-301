@@ -98,20 +98,39 @@ exports.updateBook = async (req, res) => {
 
     const categories = req.body.categories || [];
 
+    // Kiểm tra định dạng ISBN hợp lệ (dạng 10 hoặc 13 ký tự số)
+    if (!isbn || !isValidISBN(isbn)) {
+      return res.status(400).json({ message: 'Invalid ISBN format. ISBN should be either 10 or 13 digits.' });
+    }
+
+    // Lấy sách cũ để kiểm tra nếu đổi ISBN
+    const existingBook = await Book.findById(id);
+    if (!existingBook) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    // Nếu ISBN thay đổi, kiểm tra trùng lặp
+    if (isbn !== existingBook.isbn) {
+      const duplicated = await Book.findOne({ isbn });
+      if (duplicated) {
+        return res.status(400).json({ message: 'A book with this ISBN already exists.' });
+      }
+    }
+
     const updatedData = {
       title,
       isbn,
       author,
       publisher,
-      publishYear,
+      publishYear: parseInt(publishYear),
       description,
-      price,
+      price: parseFloat(price),
       bookshelf,
       categories: Array.isArray(categories) ? categories : [categories],
     };
 
     if (req.file) {
-      updatedData.image = `/uploads/${req.file.filename}`; // ✅ nếu có ảnh mới
+      updatedData.image = `/images/book/${req.file.filename}`;
     }
 
     const updatedBook = await Book.findByIdAndUpdate(id, updatedData, { new: true })
@@ -124,6 +143,7 @@ exports.updateBook = async (req, res) => {
     res.status(500).json({ error: 'Failed to update book' });
   }
 };
+
 
 // @done: delete book
 exports.deleteBook = async (req, res) => {
@@ -178,7 +198,7 @@ exports.createBook = async (req, res) => {
       return res.status(400).json({ message: 'A book with this ISBN already exists.' });
     }
 
-    const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
+    const imagePath = req.file ? `/images/book/${req.file.filename}` : '';
 
     // Tạo cuốn sách mới
     const newBook = new Book({
@@ -286,7 +306,7 @@ exports.createBorrowRequest = async (req, res) => {
     // Cập nhật trạng thái bản sao sách và lưu vào BorrowRecord
     const updatedBookCopies = [];
     for (const bookCopy of bookCopies) {
-      bookCopy.status = 'borrowed';
+      bookCopy.status = 'pending';
       bookCopy.currentBorrower = userId; // Cập nhật người mượn
       bookCopy.dueDate = new Date(dueDate); // Cập nhật hạn trả cho sách
 

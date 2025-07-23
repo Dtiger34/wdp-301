@@ -13,20 +13,37 @@ exports.acceptBorrowRequest = async (req, res) => {
         const borrowRecord = await BorrowRecord.findById(borrowId);
 
         if (!borrowRecord) {
-            throw new Error('Borrow request not found');
+            return res.status(404).json({ message: 'Borrow request not found' });
         }
 
         if (borrowRecord.status !== 'pending') {
-            throw new Error('Borrow request is not pending');
+            return res.status(400).json({ message: 'Borrow request is not pending' });
         }
 
-        // Cập nhật BorrowRecord với trạng thái đã duyệt
+        const userId = borrowRecord.userId;
+        const dueDate = borrowRecord.dueDate;
+
+        // ✅ Cập nhật tất cả BookCopy sang trạng thái "borrowed"
+        const bookCopyIds = borrowRecord.bookCopies.map(copy => copy._id);
+
+        await BookCopy.updateMany(
+            { _id: { $in: bookCopyIds } },
+            {
+                $set: {
+                    status: 'borrowed',
+                    currentBorrower: userId,
+                    dueDate: dueDate,
+                }
+            }
+        );
+
+        // ✅ Cập nhật trạng thái borrowRecord
         borrowRecord.status = 'borrowed';
         borrowRecord.borrowDate = new Date();
         borrowRecord.processedBy = staffId;
         await borrowRecord.save();
 
-        // Lấy lại BorrowRecord đã được cập nhật
+        // ✅ Optional: populate kết quả trả về
         const updatedRecord = await BorrowRecord.findById(borrowId)
             .populate('userId', 'name studentId')
             .populate('bookId', 'title author isbn');
@@ -39,6 +56,7 @@ exports.acceptBorrowRequest = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 // @done: Lấy danh sách các yêu cầu mượn sách
