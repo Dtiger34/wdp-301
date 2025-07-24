@@ -18,9 +18,9 @@ const StaffDashboard = ({ children }) => {
                 }}>
                     <h3 style={{ color: '#ecf0f1', marginBottom: '20px' }}>📋 Quản trị</h3>
                     <ul style={{ listStyle: 'none', padding: 0 }}>
-                        <li style={{ marginBottom: '15px' }}>
+                        {/* <li style={{ marginBottom: '15px' }}>
                             <Link to="/" style={linkStyle}>👤 Quản lý người dùng</Link>
-                        </li>
+                        </li> */}
                         <li style={{ marginBottom: '15px' }}>
                             <Link to="/staff/view-books" style={linkStyle}>📚 Quản lý sách</Link>
                         </li>

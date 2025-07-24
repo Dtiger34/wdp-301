@@ -57,7 +57,7 @@ function App() {
   return (
     <Routes>
       {/* Common / Auth */}
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={user?.role === "staff" ? <StaffDashboard /> : <HomePage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={user?.role === "staff" ? <StaffDashboard /> : <HomePage />} />
       <Route path="/profile" element={user ? <ViewUserProfile /> : <Navigate to="/login" />} />

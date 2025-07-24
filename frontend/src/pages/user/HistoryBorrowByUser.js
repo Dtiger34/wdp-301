@@ -55,6 +55,20 @@ const HistoryBorrowByUser = () => {
         return isNaN(d) ? fallback : d.toLocaleDateString("vi-VN");
     };
 
+    const renderStatus = (status) => {
+        switch (status) {
+            case "pending":
+                return "Đang chờ duyệt";
+            case "borrowed":
+                return "Đang mượn";
+            case "returned":
+                return "Đã trả";
+            default:
+                return "Không rõ";
+        }
+    };
+
+
     return (
         <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", fontSize: "18px" }}>
             <Header />
@@ -88,7 +102,7 @@ const HistoryBorrowByUser = () => {
                                     <th style={{ padding: "15px", textAlign: "left", minWidth: "250px" }}>📖 Tên sách & Bản sao</th>
                                     <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}>📅 Ngày mượn</th>
                                     <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}>📦 Ngày trả</th>
-                                    <th style={{ padding: "15px", textAlign: "left", minWidth: "200px" }}>📝 Ghi chú</th>
+                                    <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}>🔥 Trạng thái</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -112,8 +126,8 @@ const HistoryBorrowByUser = () => {
                                         <td style={{ padding: "15px" }}>
                                             {formatDate(record.returnDate, "Chưa trả")}
                                         </td>
-                                        <td style={{ padding: "15px" }}>
-                                            {record.notes || "—"}
+                                        <td style={{ padding: "15px", color: record.status === 'pending' ? 'orange' : record.status === 'borrowed' ? 'blue' : 'green' }}>
+                                            {renderStatus(record.status)}
                                         </td>
                                     </tr>
                                 ))}
