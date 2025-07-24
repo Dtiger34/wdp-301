@@ -27,4 +27,10 @@ router.get('/borrow-history', jwtConfig.requireAuth, borrowController.getReturnH
 // Lịch sử trả sách của 1 user cụ thể
 router.get('/return-history/:userId', jwtConfig.requireAuth, borrowController.getReturnHistoryByUser);
 
+// xác nhận người dùng đã lấy sách
+router.post('/confirm-pickup/:borrowId', jwtConfig.requireAuth, borrowController.confirmBookPickup);
+
+// huỷ yêu cầu mượn sách
+router.post('/cancel/:borrowId', jwtConfig.requireAuth, borrowController.cancelBorrowRequest);
+
 module.exports = router;

@@ -21,7 +21,7 @@ exports.acceptBorrowRequest = async (req, res) => {
         }
 
         // Cập nhật BorrowRecord với trạng thái đã duyệt
-        borrowRecord.status = 'borrowed';
+        borrowRecord.status = 'pendingPickup'; // duyệt -> chờ lấy sách
         borrowRecord.borrowDate = new Date();
         borrowRecord.processedBy = staffId;
         await borrowRecord.save();
@@ -39,7 +39,6 @@ exports.acceptBorrowRequest = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
 
 // @done: Lấy danh sách các yêu cầu mượn sách
 exports.getAllBorrowedRequests = async (req, res) => {
@@ -593,5 +592,104 @@ exports.getReturnHistoryByUser = async (req, res) => {
     } catch (error) {
         console.error('Error fetching return history for user:', error);
         res.status(500).json({ message: 'Failed to fetch return history', error: error.message });
+    }
+};
+
+// @done: xác nhận người dùng đã lấy sách
+exports.confirmBookPickup = async (req, res) => {
+    try {
+        const { borrowId } = req.params;
+
+        // Tìm borrow record
+        const borrowRecord = await BorrowRecord.findById(borrowId);
+
+        if (!borrowRecord) {
+            return res.status(404).json({ message: 'Borrow record not found' });
+        }
+
+        if (borrowRecord.status !== 'pendingPickup') {
+            return res.status(400).json({ message: 'Borrow is not in pending pickup state' });
+        }
+
+        // Cập nhật trạng thái borrow record
+        borrowRecord.status = 'borrowed';
+        borrowRecord.pickupDate = new Date();
+        await borrowRecord.save();
+
+        // Cập nhật trạng thái các bản sao sách liên quan
+        const bookCopyIds = borrowRecord.bookCopies.map(copy => copy._id);
+        await BookCopy.updateMany(
+            { _id: { $in: bookCopyIds } },
+            { $set: { status: 'borrowed' } }
+        );
+
+        res.status(200).json({
+            message: 'Book pickup confirmed successfully',
+            borrowRecord,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @done: hủy yêu cầu mượn sách
+exports.cancelBorrowRequest = async (req, res) => {
+    try {
+        const { borrowId } = req.params;
+        const userId = req.user.id;
+
+        const borrowRecord = await BorrowRecord.findById(borrowId);
+
+        if (!borrowRecord) {
+            return res.status(404).json({ message: 'Borrow request not found' });
+        }
+
+        if (
+            borrowRecord.status !== 'pending' &&
+            borrowRecord.status !== 'pendingPickup'
+        ) {
+            return res.status(400).json({
+                message: 'Only pending or pendingPickup requests can be cancelled',
+            });
+        }
+
+        // Kiểm tra quyền hủy (user phải là chủ yêu cầu hoặc là staff)
+        if (
+            borrowRecord.userId.toString() !== userId &&
+            req.user.role !== 'staff'
+        ) {
+            return res.status(403).json({
+                message: 'You are not authorized to cancel this borrow request',
+            });
+        }
+
+        // Cập nhật trạng thái borrowRecord
+        borrowRecord.status = 'cancelled';
+        await borrowRecord.save();
+
+        // Trả các bản sao sách về trạng thái 'available'
+        const bookCopyIds = borrowRecord.bookCopies.map(copy => copy._id);
+        await BookCopy.updateMany(
+            { _id: { $in: bookCopyIds } },
+            {
+                $set: {
+                    status: 'available',
+                    currentBorrower: null,
+                    dueDate: null,
+                },
+            }
+        );
+
+        // Cập nhật lại Inventory
+        const inventory = await Inventory.findOne({ book: borrowRecord.bookId });
+        if (inventory) {
+            inventory.available += borrowRecord.quantity;
+            inventory.borrowed -= borrowRecord.quantity;
+            await inventory.save();
+        }
+
+        res.status(200).json({ message: 'Borrow request cancelled successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };

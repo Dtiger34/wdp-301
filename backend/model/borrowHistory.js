@@ -34,7 +34,9 @@ const borrowRecordSchema = new mongoose.Schema({
             'borrowed',   // đã mượn
             'returned',   // đã trả
             'overdue',    // quá hạn
-            'lost'        // làm mất
+            'lost',        // làm mất
+            'pendingPickup', // chờ user đến lấy sách
+            'cancelled' // huỷ yêu cầu mượn
         ],
         default: 'pending'
     },
@@ -73,7 +75,7 @@ const borrowRecordSchema = new mongoose.Schema({
         },
         status: {
             type: String,
-            enum: ["available", "borrowed", "lost", "damaged"],
+            enum: ["available", "borrowed", "lost", "damaged", "pending"],
             default: "available",
         },
     }],

@@ -296,7 +296,7 @@ exports.createBorrowRequest = async (req, res) => {
     // Cập nhật trạng thái bản sao sách và lưu vào BorrowRecord
     const updatedBookCopies = [];
     for (const bookCopy of bookCopies) {
-      bookCopy.status = 'borrowed';
+      bookCopy.status = 'pending';
       bookCopy.currentBorrower = userId; // Cập nhật người mượn
       bookCopy.dueDate = new Date(dueDate); // Cập nhật hạn trả cho sách
 
