@@ -113,3 +113,32 @@ export const extendBorrowPeriod = async (borrowId, days = 7) => {
         throw error;
     }
 };
+
+export const getAllReturnHistory = async (page = 1, limit = 10) => {
+    try {
+        const response = await api.get(`/borrows/borrow-history`, {
+            params: { page, limit },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching all return history:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+export const getBorrowedBooksByUser = async (userId) => {
+    try {
+        const response = await api.get(`/borrows/return-history/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching borrowed books by user:", error.response?.data || error.message);
+        throw error;
+    }
+}

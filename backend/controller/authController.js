@@ -10,9 +10,13 @@ exports.login = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: 'User not found' });
 
+
         const isMatch = await user.comparePassword(password);
         if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
 
+        if (user.isActive === false) {
+            return res.status(403).json({ message: 'Tài khoản đã bị vô hiệu hóa' });
+        }
         const token = jwtConfig.generateToken({ id: user._id, role: user.role });
 
         if (user.mustChangePassword) {

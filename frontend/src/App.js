@@ -34,6 +34,9 @@ import ViewListBorrowed from "./pages/staff/ViewListBorrowed";
 
 // User - Book Detail
 import ViewBookDetail from "./pages/user/ViewBookDetail";
+import HistoryBorrowByUser from "./pages/user/HistoryBorrowByUser";
+// Staff - Borrow History
+import HistoryReturnBook from "./pages/staff/HistoryReturnBook";
 
 // Staff - Report
 import Report from "./pages/staff/Report";
@@ -56,7 +59,7 @@ function App() {
       {/* Common / Auth */}
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/home" element={<HomePage />} />
+      <Route path="/home" element={user?.role === "staff" ? <StaffDashboard /> : <HomePage />} />
       <Route path="/profile" element={user ? <ViewUserProfile /> : <Navigate to="/login" />} />
       <Route path="/change-password" element={user ? <ChangePassword /> : <Navigate to="/login" />}
       />
@@ -69,6 +72,8 @@ function App() {
       <Route path="/admin/add-account" element={user?.role === "admin" ? <AddAccountPage /> : <Navigate to="/login" />
       }
       />
+
+      <Route path="/history-borrowed-user" element={user ? <HistoryBorrowByUser /> : <Navigate to="/login" />} />
 
       {/* Redirect if not logged in */}
       <Route path="/staff-dashboard" element={user?.role === "staff" ? <StaffDashboard /> : <Navigate to="/login" />} />
@@ -90,6 +95,7 @@ function App() {
       {/* Staff - Request */}
       <Route path="/staff/ViewListRequest" element={<ViewListRequest />} />
       <Route path="/staff/view-borrowing-books" element={<ViewListBorrowed />} />
+      <Route path="/staff/borrows/borrow-history" element={<HistoryReturnBook />} />
 
       {/* User - Book Detail */}
       <Route path="/detail-book/:id" element={<ViewBookDetail />} />

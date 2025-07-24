@@ -6,7 +6,7 @@ import '../css/Login.css';
 import Header from './Header';
 import Footer from './Footer';
 function Login() {
-    const [username, setUsername] = useState('');
+    const [username, setUsername, isActive] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -22,14 +22,17 @@ function Login() {
             setError('Vui lòng kiểm tra mật khẩu của bạn.');
             return;
         }
-
+        if (isActive === false) {
+            setError('Tài khoản của bạn đã bị vô hiệu hóa.');
+            return;
+        }
         setLoading(true);
         try {
             const token = await loginUser(username, password);
             saveToken(token);
             navigate('/home');
         } catch (err) {
-            setError('Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn.');
+            setError(err.response.data.message);
         } finally {
             setLoading(false);
         }

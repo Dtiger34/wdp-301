@@ -13,20 +13,37 @@ exports.acceptBorrowRequest = async (req, res) => {
         const borrowRecord = await BorrowRecord.findById(borrowId);
 
         if (!borrowRecord) {
-            throw new Error('Borrow request not found');
+            return res.status(404).json({ message: 'Borrow request not found' });
         }
 
         if (borrowRecord.status !== 'pending') {
-            throw new Error('Borrow request is not pending');
+            return res.status(400).json({ message: 'Borrow request is not pending' });
         }
 
-        // Cập nhật BorrowRecord với trạng thái đã duyệt
+        const userId = borrowRecord.userId;
+        const dueDate = borrowRecord.dueDate;
+
+        // ✅ Cập nhật tất cả BookCopy sang trạng thái "borrowed"
+        const bookCopyIds = borrowRecord.bookCopies.map(copy => copy._id);
+
+        await BookCopy.updateMany(
+            { _id: { $in: bookCopyIds } },
+            {
+                $set: {
+                    status: 'borrowed',
+                    currentBorrower: userId,
+                    dueDate: dueDate,
+                }
+            }
+        );
+
+        // ✅ Cập nhật trạng thái borrowRecord
         borrowRecord.status = 'borrowed';
         borrowRecord.borrowDate = new Date();
         borrowRecord.processedBy = staffId;
         await borrowRecord.save();
 
-        // Lấy lại BorrowRecord đã được cập nhật
+        // ✅ Optional: populate kết quả trả về
         const updatedRecord = await BorrowRecord.findById(borrowId)
             .populate('userId', 'name studentId')
             .populate('bookId', 'title author isbn');
@@ -39,7 +56,6 @@ exports.acceptBorrowRequest = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
 
 // @done: Lấy danh sách các yêu cầu mượn sách
 exports.getAllBorrowedRequests = async (req, res) => {
@@ -532,21 +548,44 @@ exports.getReturnHistory = async (req, res) => {
         const { page = 1, limit = 10 } = req.query;
         const skip = (page - 1) * limit;
 
-        // Lấy tất cả các bản ghi mượn mà không lọc theo trạng thái (tất cả các trạng thái)
-        const borrowRecords = await BorrowRecord.find({})
+        const borrowRecords = await BorrowRecord.find({ status: 'returned' })
             .populate('userId', 'name studentId email')
             .populate('bookId', 'title isbn author publisher publishYear description price image')
             .skip(skip)
             .limit(limit)
             .sort({ returnDate: -1 });
 
-        // Lọc và loại bỏ bookcopies khỏi bookId
+        // Lấy danh sách tất cả các _id của borrowRecords
+        const borrowRecordIds = borrowRecords.map(record => record._id);
+
+        // Truy vấn bảng Fine để lấy tiền phạt tương ứng
+        const fines = await Fine.find({ borrowRecord: { $in: borrowRecordIds } });
+
+        // Tạo Map để tra nhanh borrowRecordId => fine
+        const fineMap = new Map();
+        fines.forEach(f => {
+            fineMap.set(f.borrowRecord.toString(), {
+                amount: f.amount,
+                reason: f.reason,
+                paid: f.paid,
+                note: f.note,
+            });
+        });
+
+        // Tạo kết quả cuối cùng
         const result = borrowRecords.map(borrowRecord => {
             const { bookcopies, ...bookIdWithoutCopies } = borrowRecord.bookId.toObject();
+            const fine = fineMap.get(borrowRecord._id.toString());
 
             return {
                 ...borrowRecord.toObject(),
                 bookId: bookIdWithoutCopies,
+                fine: fine || null,
+                note: bookcopies?.[0]?.status === 'damaged' ? 'Hỏng sách' :
+                    bookcopies?.[0]?.status === 'lost' ? 'Mất sách' :
+                        bookcopies?.[0]?.status === 'available' ? 'Tốt' :
+                            'Không xác định',
+
             };
         });
 
@@ -556,7 +595,7 @@ exports.getReturnHistory = async (req, res) => {
             message: 'Return history fetched successfully',
             data: result,
             pagination: {
-                currentPage: page,
+                currentPage: Number(page),
                 totalPages: Math.ceil(total / limit),
                 totalRecords: total,
                 hasNext: page * limit < total,
@@ -568,6 +607,7 @@ exports.getReturnHistory = async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch return history', error: error.message });
     }
 };
+
 
 // @done: Lịch sử mượn và trả sách của 1 user
 exports.getReturnHistoryByUser = async (req, res) => {

@@ -37,6 +37,9 @@ const StaffDashboard = ({ children }) => {
                             <Link to="/staff/view-borrowing-books" style={linkStyle}>📚 Quản lý trả sách</Link>
                         </li>
                         <li style={{ marginBottom: '15px' }}>
+                            <Link to="/staff/borrows/borrow-history" style={linkStyle}>📚 Lịch sử trả sách</Link>
+                        </li>
+                        <li style={{ marginBottom: '15px' }}>
                             <Link to="/staff/report" style={linkStyle}>📈 Thống kê</Link>
                         </li>
                     </ul>

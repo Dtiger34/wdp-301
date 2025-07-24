@@ -26,13 +26,50 @@ const AddAccountPage = () => {
         setError('');
         setSuccess('');
 
+        const { name, studentId, email, phone, address, password } = formData;
+
+        // Validate
+        if (!name || name.length > 255) {
+            return setError('Họ tên bắt buộc và không vượt quá 255 ký tự.');
+        }
+
+        if (!studentId || !/^[a-zA-Z0-9]{1,10}$/.test(studentId)) {
+            return setError('Mã sinh viên chỉ được phép chứa chữ và số, tối đa 10 ký tự.');
+        }
+
+        if (!email || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+            return setError('Email không hợp lệ.');
+        }
+
+        if (!phone || !/^\d{1,10}$/.test(phone)) {
+            return setError('Số điện thoại chỉ được chứa tối đa 10 chữ số.');
+        }
+
+        if (!address || address.length > 255) {
+            return setError('Địa chỉ bắt buộc và không vượt quá 255 ký tự.');
+        }
+
+        if (!password) {
+            return setError('Mật khẩu không được để trống.');
+        }
+
         try {
             await createAccount(formData);
             setSuccess('✅ Tạo tài khoản thành công!');
+            setFormData({
+                name: '',
+                studentId: '',
+                email: '',
+                phone: '',
+                address: '',
+                password: '',
+                role: 'user',
+            });
         } catch (err) {
             setError(err.response?.data?.message || '❌ Có lỗi xảy ra!');
         }
     };
+
 
     return (
         <AdminDashboard>

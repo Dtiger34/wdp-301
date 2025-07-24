@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const BorrowModal = ({ open, onClose, onConfirm, maxQuantity }) => {
     const [quantity, setQuantity] = useState(1);
@@ -6,23 +6,44 @@ const BorrowModal = ({ open, onClose, onConfirm, maxQuantity }) => {
     const [dueDate, setDueDate] = useState('');
     const [error, setError] = useState('');
 
+    // Tự động gán ngày hôm nay nếu chọn "Đọc tại chỗ"
+    useEffect(() => {
+        if (isReadOnSite) {
+            const today = new Date().toISOString().split('T')[0];
+            setDueDate(today);
+        }
+    }, [isReadOnSite]);
+
     const handleSubmit = () => {
-        if (!dueDate) {
-            return setError('Vui lòng chọn ngày trả.');
+        const now = new Date();
+        const due = new Date(dueDate);
+        const oneMonthLater = new Date();
+        oneMonthLater.setMonth(now.getMonth() + 1);
+
+        if (!dueDate) return setError('Vui lòng chọn ngày trả.');
+        if (isNaN(due.getTime())) return setError('Ngày trả không hợp lệ.');
+
+        if (!isReadOnSite) {
+            if (due < new Date(now.setHours(0, 0, 0, 0)))
+                return setError('Ngày trả không được trước ngày hiện tại.');
+            if (due > oneMonthLater)
+                return setError('Chỉ được mượn tối đa trong vòng 1 tháng.');
+        } else {
+            // Phải là ngày hôm nay
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (dueDate !== todayStr)
+                return setError('Ngày đọc tại chỗ phải là ngày hôm nay.');
         }
 
-        const isoDueDate = new Date(dueDate).toISOString(); // ✅ chuẩn hóa ISO
-
-        if (isNaN(Date.parse(dueDate))) {
-            return setError('Ngày trả không hợp lệ.');
-        }
-
-        if (quantity < 1 || quantity > maxQuantity) {
+        if (quantity < 1 || quantity > maxQuantity)
             return setError(`Số lượng mượn phải từ 1 đến ${maxQuantity}`);
-        }
 
-        onConfirm({ quantity: Number(quantity), isReadOnSite, dueDate: isoDueDate });
         setError('');
+        onConfirm({
+            quantity: Number(quantity),
+            isReadOnSite,
+            dueDate: new Date(dueDate).toISOString(),
+        });
     };
 
     if (!open) return null;
@@ -38,7 +59,9 @@ const BorrowModal = ({ open, onClose, onConfirm, maxQuantity }) => {
                     value={quantity}
                     min={1}
                     max={maxQuantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value)))}
+                    onChange={(e) =>
+                        setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                    }
                     style={styles.input}
                 />
 
@@ -72,6 +95,7 @@ const BorrowModal = ({ open, onClose, onConfirm, maxQuantity }) => {
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
                     style={styles.input}
+                    readOnly={isReadOnSite}
                 />
 
                 {error && <p style={{ color: 'red' }}>{error}</p>}

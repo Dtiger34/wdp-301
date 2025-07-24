@@ -85,3 +85,46 @@ export const changePassword = async (userId, oldPassword, newPassword) => {
     throw error;
   }
 };
+
+export const importUsersFromExcel = async (file) => {
+  try {
+    const token = getToken();
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await api.post(
+      '/auth/admin/import-users',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error importing users:', error);
+    throw error;
+  }
+}
+
+export const updateuser = async (userId, userData) => {
+  try {
+    const token = getToken();
+    const response = await api.patch(
+      `/auth/admin/updateuser/${userId}`,
+      userData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+}

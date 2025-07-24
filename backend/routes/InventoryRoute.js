@@ -4,6 +4,6 @@ const inventoryController = require('../controller/InventoryController');
 const jwtConfig = require('../config/jwtconfig');
 
 router.get('/getallinventoryitems', jwtConfig.requireAuth, inventoryController.getAllInventoryItems);
-router.get('/getinventoryitembyid/:id', jwtConfig.requireAuth, inventoryController.getInventoryItemById);
+router.get('/getinventoryitembyid/:id', inventoryController.getInventoryItemById);
 
 module.exports = router;

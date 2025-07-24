@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "start": "npm run dev",
-    "dev": "concurrently  \"npm run start --workspace=backend\" \"npm run start --workspace=frontend\""
+    "dev": "concurrently  \"npm run start --workspace=backend\" \"npm run start --workspace=frontend\"",
+    "test": "jest --coverage"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +27,7 @@
     "csv-parser": "^3.2.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "framer-motion": "^12.23.7",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "mongoose": "^8.10.1",
@@ -41,6 +43,9 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@babel/core": "^7.28.0",
+    "jest": "^27.5.1",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
   }
 }

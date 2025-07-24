@@ -52,8 +52,6 @@ const ProfilePage = () => {
     >
       <Header />
 
-      {/* Nút quay lại ở góc trên trái */}
-
       <h2
         style={{
           marginBottom: "30px",
@@ -98,7 +96,7 @@ const ProfilePage = () => {
               ))}
             </div>
 
-            {/* Nút đổi mật khẩu bên ngoài */}
+            {/* Các nút bên dưới */}
             <div style={{ textAlign: "center", marginTop: "30px" }}>
               <a
                 href="/change-password"
@@ -108,10 +106,25 @@ const ProfilePage = () => {
                   color: "#fff",
                   borderRadius: "5px",
                   textDecoration: "none",
+                  marginRight: "15px",
                 }}
               >
-                Đổi mật khẩu
+                🔒 Đổi mật khẩu
               </a>
+
+              <button
+                onClick={() => navigate("/history-borrowed-user")}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#27ae60",
+                  color: "#fff",
+                  borderRadius: "5px",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                📚 Xem lịch sử mượn trả
+              </button>
             </div>
           </>
         ) : (
