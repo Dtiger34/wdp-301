@@ -96,7 +96,7 @@ export const getBooksFilter = async (params = {}) => {
   try {
     const token = getToken();
     const queryString = new URLSearchParams(params).toString();
-    const res = await api.get(`/books/filter?${queryString}`, {
+const res = await api.get(`/books/filter?${queryString}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -104,5 +104,29 @@ export const getBooksFilter = async (params = {}) => {
     return res.data;
   } catch (error) {
     console.error("getBooksFilter error:", error);
+  }
+};
+export const createReview = async (reviewData) => {
+  try {
+    const token = getToken();
+    const response = await api.post("/books/review", reviewData, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating review:", error);
+    throw error;
+  }
+};
+export const getReviewsByBookId = async (bookId) => {
+  try {
+    const token = getToken();
+    const response = await api.get(`/books/${bookId}/reviews`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching book reviews:", error);
+    throw error;
   }
 };
