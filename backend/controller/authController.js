@@ -188,9 +188,16 @@ exports.updateUser = async (req, res) => {
         }
 
         // Only admin can update role and isActive
-        if ((role || isActive !== undefined) && req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Only admin can update role and active status' });
+        if ((role || isActive !== undefined)) {
+            if (req.user.role !== 'admin') {
+                return res.status(403).json({ message: 'Only admin can update role and active status' });
+            }
+
+            if (req.user.id === userId && isActive === false) {
+                return res.status(400).json({ message: 'You cannot deactivate your own account' });
+            }
         }
+
 
         // Check for duplicate email if provided
         if (email && email !== user.email) {
