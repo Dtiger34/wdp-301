@@ -156,14 +156,48 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-// @done create account
 exports.createAccount = async (req, res) => {
-    const { studentId, name, password, email, phone, address, role } = req.body;
+    let { studentId, name, password, email, phone, address, role } = req.body;
 
     try {
         const existingUser = await User.findOne({ studentId });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
+        }
+
+        if (name) {
+            name = name
+                .trim()
+                .toLowerCase()
+                .split(' ')
+                .filter(Boolean)
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        const nameIsValid = name && /^[A-Za-zÀ-ỹà-ỹ\s]+$/.test(name) && name.trim().split(' ').length >= 2;
+        if (!nameIsValid) {
+            return res.status(400).json({ message: 'Tên không hợp lệ. Vui lòng nhập tên đầy đủ của bạn (ít nhất hai từ, chỉ chữ cái).' });
+        }
+
+        // Kiểm tra định dạng studentId
+        if (!/^[a-zA-Z]{2}\d+$/.test(studentId)) {
+            return res.status(400).json({ message: 'Mã sinh viên không hợp lệ. Phải bắt đầu bằng 2 chữ cái theo sau là các chữ số.' });
+        }
+
+        // Chuyển 2 chữ cái đầu thành in hoa
+        studentId = studentId.slice(0, 2).toUpperCase() + studentId.slice(2);
+
+        // Kiểm tra định dạng email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email && !emailRegex.test(email)) {
+            return res.status(400).json({ message: 'Email không hợp lệ.' });
+        }
+
+        // Kiểm tra định dạng số điện thoại: phải có đúng 10 chữ số
+        const phoneRegex = /^\d{10}$/;
+        if (phone && !phoneRegex.test(phone)) {
+            return res.status(400).json({ message: 'Số điện thoại không hợp lệ. Phải gồm đúng 10 chữ số.' });
         }
 
         const user = new User({ studentId, name, password, email, phone, address, role });
