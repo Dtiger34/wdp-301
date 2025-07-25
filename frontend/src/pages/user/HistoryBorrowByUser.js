@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { cancelBorrowRequest, getBorrowedBooksByUser } from "../../services/borrowApiService";
+import {
+  cancelBorrowRequest,
+  getBorrowedBooksByUser,
+} from "../../services/borrowApiService";
 import { getToken, checkUserAuth } from "../../utils/auth";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { createReview } from "../../services/bookService"; // 🆕
+import {
+  checkIfReviewedByUser,
+  createReview,
+} from "../../services/bookService"; // 🆕
 
 const HistoryBorrowByUser = () => {
   const [history, setHistory] = useState([]);
@@ -20,7 +26,7 @@ const HistoryBorrowByUser = () => {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
-
+  const [hasReviewed, setHasReviewed] = useState({});
   useEffect(() => {
     if (!userId) {
       setError("Người dùng chưa đăng nhập.");
@@ -42,15 +48,33 @@ const HistoryBorrowByUser = () => {
     fetchData();
   }, [userId]);
 
+  useEffect(() => {
+    if (history.length > 0) {
+      const checkReviews = async () => {
+        const reviewStatus = {};
+        for (const record of history) {
+          const res = await checkIfReviewedByUser(record.bookId._id, userId);
+          reviewStatus[record.bookId._id] = res.hasReviewed;
+        }
+        setHasReviewed(reviewStatus);
+      };
+
+      checkReviews();
+    }
+  }, [history, userId]);
+
   const totalPages = Math.ceil(history.length / itemsPerPage);
-  const paginatedData = history.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginatedData = history.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage(prev => prev - 1);
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
 
   const formatDate = (dateStr, fallback = "Không rõ") => {
@@ -77,7 +101,8 @@ const HistoryBorrowByUser = () => {
   };
 
   const handleCancelRequest = async (borrowId) => {
-    if (!window.confirm("Bạn có chắc chắn muốn huỷ yêu cầu mượn sách này?")) return;
+    if (!window.confirm("Bạn có chắc chắn muốn huỷ yêu cầu mượn sách này?"))
+      return;
     try {
       await cancelBorrowRequest(borrowId);
       alert("Đã huỷ yêu cầu mượn sách thành công.");
@@ -92,7 +117,7 @@ const HistoryBorrowByUser = () => {
     setSelectedBookId(bookId);
     setRating(5);
     setComment("");
-setIsPopupOpen(true);
+    setIsPopupOpen(true);
   };
 
   const closeReviewPopup = () => {
@@ -105,9 +130,12 @@ setIsPopupOpen(true);
     if (!selectedBookId) return;
 
     setSubmittingReview(true);
+
     try {
       await createReview({ bookId: selectedBookId, rating, comment });
       alert("Đánh giá thành công!");
+      const result = await getBorrowedBooksByUser(userId);
+      setHistory(result.data || []);
       closeReviewPopup();
     } catch (error) {
       alert("Gửi đánh giá thất bại!");
@@ -117,10 +145,32 @@ setIsPopupOpen(true);
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", fontSize: "18px" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        fontSize: "18px",
+      }}
+    >
       <Header />
-      <div style={{ flex: 1, padding: "40px 20px", maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "40px", fontSize: "28px", color: "#2c3e50" }}>
+      <div
+        style={{
+          flex: 1,
+          padding: "40px 20px",
+          maxWidth: "1200px",
+          margin: "0 auto",
+          width: "100%",
+        }}
+      >
+        <h2
+          style={{
+            textAlign: "center",
+            marginBottom: "40px",
+            fontSize: "28px",
+            color: "#2c3e50",
+          }}
+        >
           📚 Lịch sử mượn trả của bạn
         </h2>
 
@@ -132,55 +182,162 @@ setIsPopupOpen(true);
 
         {!loading && paginatedData.length > 0 && (
           <div style={{ overflowX: "auto" }}>
-            <table style={{
-              width: "100%", borderCollapse: "collapse", backgroundColor: "#fff",
-              boxShadow: "0 4px 16px rgba(0,0,0,0.1)", fontSize: "17px", borderRadius: "10px", overflow: "hidden"
-            }}>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                backgroundColor: "#fff",
+                boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+                fontSize: "17px",
+                borderRadius: "10px",
+                overflow: "hidden",
+              }}
+            >
               <thead style={{ backgroundColor: "#2c3e50", color: "white" }}>
                 <tr>
-                  <th style={{ padding: "15px", textAlign: "left", minWidth: "250px" }}>📖 Tên sách & Bản sao</th>
-                  <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}>📅 Ngày mượn</th>
-                  <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}>📦 Ngày trả</th>
-                  <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}> Trạng thái</th>
-                  <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}>🛑 Hành động</th>
+                  <th
+                    style={{
+                      padding: "15px",
+                      textAlign: "left",
+                      minWidth: "250px",
+                    }}
+                  >
+                    📖 Tên sách & Bản sao
+                  </th>
+                  <th
+                    style={{
+                      padding: "15px",
+                      textAlign: "left",
+                      minWidth: "160px",
+                    }}
+                  >
+                    📅 Ngày mượn
+                  </th>
+                  <th
+                    style={{
+                      padding: "15px",
+                      textAlign: "left",
+                      minWidth: "160px",
+                    }}
+                  >
+                    📦 Ngày trả
+                  </th>
+                  <th
+                    style={{
+                      padding: "15px",
+                      textAlign: "left",
+                      minWidth: "160px",
+                    }}
+                  >
+                    {" "}
+                    Trạng thái
+                  </th>
+                  <th
+                    style={{
+                      padding: "15px",
+                      textAlign: "left",
+                      minWidth: "160px",
+                    }}
+                  >
+                    🛑 Hành động
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedData.map((record, index) => (
-                  <tr key={index} style={{ backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#fff" }}>
+                  <tr
+                    key={index}
+                    style={{
+                      backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#fff",
+                    }}
+                  >
                     <td style={{ padding: "15px" }}>
                       <div>{record.bookId?.title || "Không rõ"}</div>
                       {record.bookCopies?.length > 0 && (
-                        <ul style={{ marginTop: "5px", paddingLeft: "20px", fontSize: "15px", color: "#555" }}>
+                        <ul
+                          style={{
+                            marginTop: "5px",
+                            paddingLeft: "20px",
+                            fontSize: "15px",
+                            color: "#555",
+                          }}
+                        >
                           {record.bookCopies.map((copy) => (
-                            <li key={copy._id}>📎 <strong>{copy.barcode}</strong> – {copy.status}</li>
+                            <li key={copy._id}>
+                              📎 <strong>{copy.barcode}</strong> – {copy.status}
+                            </li>
                           ))}
                         </ul>
-)}
+                      )}
                     </td>
-                    <td style={{ padding: "15px" }}>{formatDate(record.createdRequestAt)}</td>
-                    <td style={{ padding: "15px" }}>{formatDate(record.returnDate, "Chưa trả")}</td>
-                    <td style={{
-                      padding: "15px",
-                      color: record.status === 'pending' ? 'orange' :
-                        record.status === 'borrowed' ? 'blue' :
-                          record.status === 'cancelled' ? 'red' : 'green'
-                    }}>
+                    <td style={{ padding: "15px" }}>
+                      {formatDate(record.createdRequestAt)}
+                    </td>
+                    <td style={{ padding: "15px" }}>
+                      {formatDate(record.returnDate, "Chưa trả")}
+                    </td>
+                    <td
+                      style={{
+                        padding: "15px",
+                        color:
+                          record.status === "pending"
+                            ? "orange"
+                            : record.status === "borrowed"
+                            ? "blue"
+                            : record.status === "cancelled"
+                            ? "red"
+                            : "green",
+                      }}
+                    >
                       {renderStatus(record.status)}
                     </td>
                     <td style={{ padding: "15px" }}>
                       {record.status === "pending" && (
-                        <button onClick={() => handleCancelRequest(record._id)}
-                          style={{ padding: "6px 12px", backgroundColor: "#e74c3c", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}>
+                        <button
+                          onClick={() => handleCancelRequest(record._id)}
+                          style={{
+                            padding: "6px 12px",
+                            backgroundColor: "#e74c3c",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                          }}
+                        >
                           Huỷ yêu cầu
                         </button>
                       )}
-                      {record.status === "returned" && (
-                        <button onClick={() => openReviewPopup(record.bookId._id)}
-                          style={{ padding: "6px 12px", marginTop: "8px", backgroundColor: "#2ecc71", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}>
-                          📝 Đánh giá
-                        </button>
-                      )}
+                      {record.status === "returned" &&
+                        (hasReviewed[record.bookId._id] ? (
+                          <button
+                            style={{
+                              padding: "6px 12px",
+                              marginTop: "8px",
+                              backgroundColor: "#95a5a6",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            Đã đánh giá
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => openReviewPopup(record.bookId._id)}
+                            style={{
+                              padding: "6px 12px",
+                              marginTop: "8px",
+                              backgroundColor: "#2ecc71",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            📝 Đánh giá
+                          </button>
+                        ))}
                     </td>
                   </tr>
                 ))}
@@ -191,14 +348,43 @@ setIsPopupOpen(true);
       </div>
 
       {!loading && history.length > 0 && (
-        <div style={{ textAlign: "center", padding: "10px", borderTop: "1px solid #ddd", backgroundColor: "#f8f9fa" }}>
-          <button onClick={handlePrevPage} disabled={currentPage === 1}
-            style={{ marginRight: "10px", padding: "6px 14px", backgroundColor: "#3498db", color: "#fff", border: "none", borderRadius: "4px" }}>
+        <div
+          style={{
+            textAlign: "center",
+            padding: "10px",
+            borderTop: "1px solid #ddd",
+            backgroundColor: "#f8f9fa",
+          }}
+        >
+          <button
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            style={{
+              marginRight: "10px",
+              padding: "6px 14px",
+              backgroundColor: "#3498db",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+            }}
+          >
             ← Trước
           </button>
-          <span>Trang <strong>{currentPage}</strong> / {totalPages}</span>
-          <button onClick={handleNextPage} disabled={currentPage === totalPages}
-            style={{ marginLeft: "10px", padding: "6px 14px", backgroundColor: "#3498db", color: "#fff", border: "none", borderRadius: "4px" }}>
+          <span>
+            Trang <strong>{currentPage}</strong> / {totalPages}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            style={{
+              marginLeft: "10px",
+              padding: "6px 14px",
+              backgroundColor: "#3498db",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+            }}
+          >
             Tiếp →
           </button>
         </div>
@@ -206,32 +392,77 @@ setIsPopupOpen(true);
 
       {/* 🔽 Popup đánh giá */}
       {isPopupOpen && (
-        <div style={{
-          position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
-          backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999
-        }}>
-          <div style={{ backgroundColor: "#fff", padding: "30px", borderRadius: "10px", width: "400px", maxWidth: "90%" }}>
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 999,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#fff",
+              padding: "30px",
+              borderRadius: "10px",
+              width: "400px",
+              maxWidth: "90%",
+            }}
+          >
             <h3>Đánh giá sách</h3>
             <form onSubmit={handleSubmitReview}>
               <label>Số sao:</label>
-<select value={rating} onChange={(e) => setRating(Number(e.target.value))} style={{ width: "100%", padding: "6px", marginBottom: "12px" }}>
-                {[5, 4, 3, 2, 1].map(star => (
-                  <option key={star} value={star}>{star} sao</option>
+              <select
+                value={rating}
+                onChange={(e) => setRating(Number(e.target.value))}
+                style={{ width: "100%", padding: "6px", marginBottom: "12px" }}
+              >
+                {[5, 4, 3, 2, 1].map((star) => (
+                  <option key={star} value={star}>
+                    {star} sao
+                  </option>
                 ))}
               </select>
 
               <label>Bình luận:</label>
-              <textarea value={comment} onChange={(e) => setComment(e.target.value)}
-                placeholder="Viết cảm nhận..." rows={3}
-                style={{ width: "100%", padding: "8px", marginBottom: "12px", resize: "none" }} />
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Viết cảm nhận..."
+                rows={3}
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  marginBottom: "12px",
+                  resize: "none",
+                }}
+              />
 
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button type="button" onClick={closeReviewPopup}
-                  style={{ marginRight: "10px", padding: "6px 12px" }}>
+                <button
+                  type="button"
+                  onClick={closeReviewPopup}
+                  style={{ marginRight: "10px", padding: "6px 12px" }}
+                >
                   Huỷ
                 </button>
-                <button type="submit" disabled={submittingReview}
-                  style={{ backgroundColor: "#27ae60", color: "#fff", padding: "6px 12px", border: "none", borderRadius: "4px" }}>
+                <button
+                  type="submit"
+                  disabled={submittingReview}
+                  style={{
+                    backgroundColor: "#27ae60",
+                    color: "#fff",
+                    padding: "6px 12px",
+                    border: "none",
+                    borderRadius: "4px",
+                  }}
+                >
                   {submittingReview ? "Đang gửi..." : "Gửi"}
                 </button>
               </div>

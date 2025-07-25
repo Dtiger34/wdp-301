@@ -10,16 +10,19 @@ const app = express();
 
 // Swagger Docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
 
 // Middleware
 app.use(bodyParser.json());
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 app.use(cors());
 app.use(urlencoded({ extended: true }));
 const path = require("path");
 
-app.use("/images/book", express.static(path.join(__dirname, "public/images/book")));
+app.use(
+  "/images/book",
+  express.static(path.join(__dirname, "public/images/book"))
+);
 
 // Routes
 app.use("/api/v1/auth", require("./routes/authRoute"));
