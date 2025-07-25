@@ -1,6 +1,8 @@
 const User = require('../model/user');
 const XLSX = require('xlsx');
 const jwtConfig = require('../config/jwtconfig');
+const { sendReminderEmail } = require('../utils/nodemailer');
+const BorrowRecord = require('../model/borrowHistory');
 
 // @done loggin
 exports.login = async (req, res) => {
@@ -289,6 +291,73 @@ exports.deleteUser = async (req, res) => {
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (err) {
         console.error('Delete user error:', err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+// Gửi email nhắc nhở những người sắp đến hạn trả sách trong 48h
+exports.checkAndSendReminders = async (req, res) => {
+    try {
+        const now = new Date();
+        const in48Hours = new Date(now.getTime() + 48 * 60 * 60 * 1000); // +48 giờ
+
+        console.log('📌 Bắt đầu kiểm tra nhắc nhở mượn sách...');
+        console.log('🕒 Thời gian hiện tại:', now.toISOString());
+        console.log('⏳ Mốc nhắc nhở trước 48h:', in48Hours.toISOString());
+
+        const query = {
+            dueDate: { $lte: in48Hours, $gt: now },
+            status: 'borrowed',
+            hasReminderEmailSent: false,
+        };
+
+        console.log('🔍 Đang tìm bản ghi mượn sách có điều kiện:');
+        console.log(query);
+
+        const records = await BorrowRecord.find(query)
+            .populate('userId', 'email name')
+            .populate('bookId', 'title');
+
+        console.log(`📄 Tìm thấy ${records.length} bản ghi cần gửi nhắc nhở.`);
+
+        let successCount = 0;
+
+        for (const record of records) {
+            const { userId, bookId, dueDate } = record;
+            const userEmail = userId?.email;
+            const userName = userId?.name;
+            const bookTitle = bookId?.title;
+
+            if (!userEmail || !userName || !bookTitle) {
+                console.warn(`⚠️ Thiếu thông tin trong bản ghi ${record._id}:`, {
+                    userEmail,
+                    userName,
+                    bookTitle
+                });
+                continue;
+            }
+
+            try {
+                await sendReminderEmail(userEmail, userName, bookTitle, dueDate);
+
+                // Cập nhật đã gửi email
+                record.hasReminderEmailSent = true;
+                await record.save();
+
+                console.log(`✅ Đã gửi email nhắc nhở tới: ${userEmail}`);
+                successCount++;
+            } catch (err) {
+                console.error(`❌ Lỗi gửi email tới ${userEmail}:`, err.message);
+            }
+        }
+
+        console.log(`🎉 Hoàn tất. Tổng số email gửi thành công: ${successCount}`);
+
+        res.status(200).json({
+            message: `Reminder emails sent: ${successCount}`,
+        });
+    } catch (err) {
+        console.error('❌ Lỗi kiểm tra nhắc nhở:', err);
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 };

@@ -22,7 +22,7 @@ const path = require("path");
 app.use("/images/book", express.static(path.join(__dirname, "public/images/book")));
 
 // Routes
-app.use("/api/v1/auth", require("./routes/AuthRoute"));
+app.use("/api/v1/auth", require("./routes/authRoute"));
 app.use("/api/v1/books", require("./routes/BookRoute"));
 app.use("/api/v1/bookshelves", require("./routes/bookshelfRoute"));
 app.use("/api/v1/categories", require("./routes/categoryRoute"));

@@ -326,6 +326,7 @@ exports.createBorrowRequest = async (req, res) => {
       quantity,
       status: 'pending',
       bookCopies: updatedBookCopies,  // Lưu thông tin các bản sao sách
+      hasReminderEmailSent: false,
     });
 
     await borrowRequest.populate(['userId', 'bookId']);
