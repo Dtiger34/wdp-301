@@ -17,7 +17,6 @@ export const getAllBooks = async (params = {}) => {
   }
 };
 
-
 // Get a single book by ID
 export const getBook = async (id) => {
   try {
@@ -35,44 +34,43 @@ export const getBook = async (id) => {
 // Add new book
 export const addBook = async (bookData) => {
   const formData = new FormData();
-  formData.append('title', bookData.title);
-  formData.append('isbn', bookData.isbn);
-  formData.append('author', bookData.author);
-  formData.append('publisher', bookData.publisher);
-  formData.append('publishYear', bookData.publishYear);
-  formData.append('description', bookData.description);
-  formData.append('price', bookData.price);
-  formData.append('bookshelf', bookData.bookshelf);
-  bookData.categories.forEach((cat) => formData.append('categories[]', cat));
-  formData.append('image', bookData.imageFile); // file thực
+  formData.append("title", bookData.title);
+  formData.append("isbn", bookData.isbn);
+  formData.append("author", bookData.author);
+  formData.append("publisher", bookData.publisher);
+  formData.append("publishYear", bookData.publishYear);
+  formData.append("description", bookData.description);
+  formData.append("price", bookData.price);
+  formData.append("bookshelf", bookData.bookshelf);
+  bookData.categories.forEach((cat) => formData.append("categories[]", cat));
+  formData.append("image", bookData.imageFile); // file thực
 
-  const response = await api.post('/books', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+  const response = await api.post("/books", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
   });
 
   return response.data;
 };
 
-
 // Update book by ID
 export const updateBook = async (id, bookData) => {
   const formData = new FormData();
-  formData.append('title', bookData.title);
-  formData.append('isbn', bookData.isbn);
-  formData.append('author', bookData.author);
-  formData.append('publisher', bookData.publisher);
-  formData.append('publishYear', bookData.publishYear);
-  formData.append('description', bookData.description);
-  formData.append('price', bookData.price);
-  formData.append('bookshelf', bookData.bookshelf);
-  bookData.categories.forEach((cat) => formData.append('categories[]', cat));
+  formData.append("title", bookData.title);
+  formData.append("isbn", bookData.isbn);
+  formData.append("author", bookData.author);
+  formData.append("publisher", bookData.publisher);
+  formData.append("publishYear", bookData.publishYear);
+  formData.append("description", bookData.description);
+  formData.append("price", bookData.price);
+  formData.append("bookshelf", bookData.bookshelf);
+  bookData.categories.forEach((cat) => formData.append("categories[]", cat));
 
   if (bookData.imageFile) {
-    formData.append('image', bookData.imageFile); // Gửi ảnh mới nếu có
+    formData.append("image", bookData.imageFile); // Gửi ảnh mới nếu có
   }
 
   const response = await api.put(`/books/${id}`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: { "Content-Type": "multipart/form-data" },
   });
 
   return response.data;
@@ -96,7 +94,7 @@ export const getBooksFilter = async (params = {}) => {
   try {
     const token = getToken();
     const queryString = new URLSearchParams(params).toString();
-const res = await api.get(`/books/filter?${queryString}`, {
+    const res = await api.get(`/books/filter?${queryString}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -127,6 +125,26 @@ export const getReviewsByBookId = async (bookId) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching book reviews:", error);
+    throw error;
+  }
+};
+
+export const checkIfReviewedByUser = async (bookId, userId) => {
+  try {
+    const token = getToken();
+
+    const response = await api.get("/books/check-if-reviewed", {
+      headers: {
+        Authorization: `Bearer ${token}`, // Truyền token trong header
+      },
+      params: { bookId, userId },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error checking if user has reviewed:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
