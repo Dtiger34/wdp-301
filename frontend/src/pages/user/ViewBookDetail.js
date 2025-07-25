@@ -1,3 +1,4 @@
+// ⚠️ Giữ nguyên import gốc
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getBook } from '../../services/bookService';
@@ -5,7 +6,13 @@ import { requestBorrowBook } from '../../services/borrowApiService';
 import { getInventoryItemById } from '../../services/InventoryServicesApi';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+<<<<<<< Updated upstream
 import BorrowModal from '../../components/BorrowModal'; // Đảm bảo đúng đường dẫn
+=======
+import BorrowModal from '../../components/BorrowModal';
+import { checkCanReview, getReviewsByBook } from '../../services/reviewService';
+import { useNavigate } from 'react-router-dom';
+>>>>>>> Stashed changes
 
 const ViewBookDetail = () => {
   const { id } = useParams();
@@ -16,6 +23,12 @@ const ViewBookDetail = () => {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+<<<<<<< Updated upstream
+=======
+  const [canReview, setCanReview] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const navigate = useNavigate();
+>>>>>>> Stashed changes
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,6 +38,15 @@ const ViewBookDetail = () => {
 
         const inventoryData = await getInventoryItemById(id);
         setAvailable(inventoryData.available || 0);
+
+        // ✅ Gọi kiểm tra có thể review không
+        const reviewPermission = await checkCanReview(id);
+        setCanReview(reviewPermission);
+
+        // ✅ Lấy danh sách review
+        const fetchedReviews = await getReviewsByBook(id);
+        setReviews(fetchedReviews);
+
       } catch (err) {
         setError('Không thể tải dữ liệu sách hoặc kho.');
       }
@@ -62,6 +84,21 @@ const ViewBookDetail = () => {
     }
   };
 
+<<<<<<< Updated upstream
+=======
+  const getSafeImage = (url) => {
+    if (!url || url.startsWith('blob:')) {
+      return 'https://via.placeholder.com/200x300?text=No+Image';
+    }
+
+    if (url.startsWith('/images/book/')) {
+      return `http://localhost:9999${url}`;
+    }
+
+    return url;
+  };
+
+>>>>>>> Stashed changes
   if (!book) return <div style={{ padding: '20px' }}>Đang tải...</div>;
 
   return (
@@ -99,6 +136,7 @@ const ViewBookDetail = () => {
             <p><strong>Số lượng còn lại:</strong> {available}</p>
 
             <div style={{ marginTop: '20px' }}>
+<<<<<<< Updated upstream
               <label><strong>Số lượng mượn:</strong></label><br />
               <input
                 type="number"
@@ -118,6 +156,8 @@ const ViewBookDetail = () => {
                   marginTop: '8px'
                 }}
               />
+=======
+>>>>>>> Stashed changes
               <button
                 onClick={() => setModalOpen(true)}
                 disabled={loading}
@@ -132,13 +172,54 @@ const ViewBookDetail = () => {
               >
                 {loading ? 'Đang gửi...' : '📚 Mượn sách'}
               </button>
+
+<<<<<<< Updated upstream
+=======
+              {/* ✅ Nút Đánh giá */}
+              {canReview && (
+                <button
+                  style={{
+                    marginLeft: '10px',
+                    padding: '10px 18px',
+                    backgroundColor: '#27ae60',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => navigate(`/review/${book._id}`)}
+                >
+                  ✍️ Đánh giá sách
+                </button>
+              )}
             </div>
 
+>>>>>>> Stashed changes
             {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
             {success && <p style={{ color: 'green', marginTop: '10px' }}>{success}</p>}
           </div>
         </div>
       </main>
+
+      {/* ✅ Hiển thị đánh giá */}
+      <section style={{ padding: '20px 60px' }}>
+        <h3>Đánh giá của người dùng</h3>
+        {reviews.length === 0 ? (
+          <p>Chưa có đánh giá nào.</p>
+        ) : (
+          reviews.map((r, i) => (
+            <div key={i} style={{
+              marginTop: '10px',
+              padding: '15px',
+              background: '#f4f4f4',
+              borderRadius: '8px'
+            }}>
+              <p><strong>{r.userId?.name || 'Người dùng'}</strong> - {r.rating}⭐</p>
+              <p>{r.comment}</p>
+            </div>
+          ))
+        )}
+      </section>
 
       <BorrowModal
         open={modalOpen}

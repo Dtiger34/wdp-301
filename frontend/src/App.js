@@ -32,6 +32,7 @@ import UpdateCategory from "./pages/staff/UpdateCategory";
 import ViewListRequest from "./pages/staff/ViewListRequest";
 
 // User - Book Detail
+import ReviewForm from './components/ReviewForm';
 import ViewBookDetail from "./pages/user/ViewBookDetail";
 
 function App() {
@@ -87,7 +88,16 @@ function App() {
       <Route path="/staff/ViewListRequest" element={<ViewListRequest />} />
 
       {/* User - Book Detail */}
+      <Route path="/review/:bookId" element={<ReviewForm />} />
       <Route path="/detail-book/:id" element={<ViewBookDetail />} />
+<<<<<<< Updated upstream
+=======
+      <Route path="/review/:id" element={<ReviewForm />} />
+
+      {/* Staff - Report */}
+      <Route path="/staff/report" element={user?.role === "staff" ? <Report /> : <Navigate to="/login" />} />
+
+>>>>>>> Stashed changes
     </Routes>
   );
 }
