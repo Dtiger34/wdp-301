@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getBook } from "../../services/bookService";
-import { requestBorrowBook } from "../../services/borrowApiService";
-import { getInventoryItemById } from "../../services/InventoryServicesApi";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import BorrowModal from "../../components/BorrowModal";
-// import { getToken, checkUserAuth } from '../../utils/auth';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getBook, getReviewsByBookId } from '../../services/bookService';
+import { requestBorrowBook } from '../../services/borrowApiService';
+import { getInventoryItemById } from '../../services/InventoryServicesApi';
+
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import BorrowModal from '../../components/BorrowModal';
 
 const ViewBookDetail = () => {
   const { id } = useParams();
@@ -17,11 +17,7 @@ const ViewBookDetail = () => {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-
-  // Lấy thông tin người dùng và kiểm tra role
-  // const token = getToken();
-  // const user = token ? checkUserAuth(token) : null;
-  // const isUser = user?.role === 'user';
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +33,19 @@ const ViewBookDetail = () => {
     };
 
     fetchData();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await getReviewsByBookId(id);
+        setReviews(res.data);
+      } catch (err) {
+        console.error('Lỗi khi tải đánh giá:', err);
+      }
+    };
+
+    fetchReviews();
   }, [id]);
 
   useEffect(() => {
@@ -60,8 +69,7 @@ const ViewBookDetail = () => {
       setError("");
       setModalOpen(false);
     } catch (err) {
-      const message =
-        err.response?.data?.message || "Đã xảy ra lỗi khi gửi yêu cầu";
+      const message = err.response?.data?.message || "Đã xảy ra lỗi khi gửi yêu cầu";
       setError(message);
       setSuccess("");
     } finally {
@@ -74,100 +82,35 @@ const ViewBookDetail = () => {
       return "https://via.placeholder.com/200x300?text=No+Image";
     }
 
-    // Nếu là ảnh trong thư mục public/images/book
-    if (url.startsWith("/images/book/")) {
+    if (url.startsWith('/images/book/')) {
       return `http://localhost:9999${url}`;
     }
 
-    // Trường hợp khác
     return url;
   };
 
-  if (!book) return <div style={{ padding: "20px" }}>Đang tải...</div>;
+  if (!book) return <div style={{ padding: '20px' }}>Đang tải...</div>;
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        background: "#efefef",
-        paddingTop: "20px",
-      }}
-    >
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#efefef", paddingTop: "20px" }}>
       <Header />
 
-      <main
-        style={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "40px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            backgroundColor: "#fff",
-            borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            padding: "30px",
-            maxWidth: "1000px",
-            width: "100%",
-            gap: "30px",
-          }}
-        >
+      <main style={{ flex: 1, padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', padding: '30px', gap: '30px' }}>
           <img
             src={getSafeImage(book.image)}
             alt={book.title}
-            style={{
-              width: "300px",
-              height: "auto",
-              borderRadius: "8px",
-              objectFit: "cover",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-            }}
+            style={{ width: "300px", height: "auto", borderRadius: "8px", objectFit: "cover", boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}
           />
 
           <div style={{ flex: 1 }}>
             <h2>{book.title}</h2>
-            <p>
-              <strong>Tác giả:</strong> {book.author}
-            </p>
-            <p>
-              <strong>Thể loại:</strong>{" "}
-              {Array.isArray(book.categories)
-                ? book.categories.map((c) => c.name).join(", ")
-                : "Không xác định"}
-            </p>
-            <p>
-              <strong>Mô tả:</strong> {book.description || "Chưa có mô tả"}
-            </p>
-            <p>
-              <strong>Số lượng còn lại:</strong> {available}
-            </p>
+            <p><strong>Tác giả:</strong> {book.author}</p>
+            <p><strong>Thể loại:</strong> {Array.isArray(book.categories) ? book.categories.map(c => c.name).join(', ') : 'Không xác định'}</p>
+            <p><strong>Mô tả:</strong> {book.description || 'Chưa có mô tả'}</p>
+            <p><strong>Số lượng còn lại:</strong> {available}</p>
 
-            <div style={{ marginTop: "20px" }}>
-              {/* <label><strong>Số lượng mượn:</strong></label><br />
-              <input
-                type="number"
-                value={quantity}
-                min={1}
-                max={available}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  setQuantity(isNaN(val) ? 1 : val);
-                }}
-                style={{
-                  padding: '10px',
-                  width: '80px',
-                  borderRadius: '4px',
-                  border: '1px solid #ccc',
-                  marginRight: '10px',
-                  marginTop: '8px'
-                }}
-              /> */}
+            <div style={{ marginTop: '20px' }}>
               <button
                 onClick={() => setModalOpen(true)}
                 disabled={loading}
@@ -184,13 +127,63 @@ const ViewBookDetail = () => {
               </button>
             </div>
 
-            {error && (
-              <p style={{ color: "red", marginTop: "10px" }}>{error}</p>
-            )}
-            {success && (
-              <p style={{ color: "green", marginTop: "10px" }}>{success}</p>
-            )}
+            {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
+            {success && <p style={{ color: 'green', marginTop: '10px' }}>{success}</p>}
           </div>
+        </div>
+
+        {/* Đánh giá */}
+        <div style={{
+          marginTop: '60px',
+          backgroundColor: '#fff',
+          borderRadius: '12px',
+          padding: '30px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+        }}>
+          <h3 style={{ marginBottom: '20px' }}>📖 Đánh giá từ người dùng</h3>
+          {reviews.length === 0 ? (
+            <p>Chưa có đánh giá nào cho cuốn sách này.</p>
+          ) : (
+            <div style={{ marginTop: '10px' }}>
+              {reviews.map((review) => (
+                <div key={review._id} style={{
+                  border: '1px solid #ddd',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  marginBottom: '16px',
+                  backgroundColor: '#fafafa',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <strong>{review.userId?.name || 'Ẩn danh'}</strong> ({review.userId?.studentId || 'N/A'})
+                    </div>
+                    <small style={{ color: '#888' }}>
+                      {new Date(review.createdAt).toLocaleDateString('vi-VN', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </small>
+                  </div>
+
+                  <div style={{ marginTop: '6px' }}>
+                    {[...Array(5)].map((_, index) => (
+                      <span key={index} style={{ color: index < review.rating ? '#f1c40f' : '#ccc', fontSize: '18px' }}>
+                        ★
+                      </span>
+                    ))}
+                  </div>
+
+                  <p style={{ marginTop: '10px', fontSize: '15px', lineHeight: '1.5', color: '#333' }}>
+                    {review.comment}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
 

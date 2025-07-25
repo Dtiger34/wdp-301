@@ -1,0 +1,46 @@
+[
+{
+    "_id": { "$oid": "685ce72525b08a81aecc5400" },
+    "userId": { "$oid": "685ce699f93bc376f9a19190" },
+    "bookId": { "$oid": "685ce699f93bc376f9a191a5" },
+    "dueDate": { "$date": "2025-07-01T00:00:00.000Z" },
+    "status": "pending",
+    "isReadOnSite": false,
+    "notes": "Chờ xử lý yêu cầu mượn sách.",
+    "createdRequestAt": { "$date": "2025-06-27T00:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "685ce72525b08a81aecc5401" },
+    "userId": { "$oid": "685ce699f93bc376f9a19191" },
+    "bookId": { "$oid": "685ce699f93bc376f9a191a6" },
+    "dueDate": { "$date": "2025-06-30T00:00:00.000Z" },
+    "status": "approved",
+    "isReadOnSite": true,
+    "notes": "Yêu cầu mượn đã được phê duyệt.",
+    "createdRequestAt": { "$date": "2025-06-26T00:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "685ce72525b08a81aecc5402" },
+    "userId": { "$oid": "685ce699f93bc376f9a19192" },
+    "bookId": { "$oid": "685ce699f93bc376f9a191a7" },
+    "dueDate": { "$date": "2025-06-20T00:00:00.000Z" },
+    "status": "returned",
+    "isReadOnSite": false,
+    "notes": "Đã trả sách đúng hạn.",
+    "createdRequestAt": { "$date": "2025-06-15T00:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "685ce72525b08a81aecc5403" },
+    "userId": { "$oid": "685ce699f93bc376f9a19193" },
+    "bookId": { "$oid": "685ce699f93bc376f9a191a8" },
+    "dueDate": { "$date": "2025-06-25T00:00:00.000Z" },
+    "status": "overdue",
+    "isReadOnSite": false,
+    "notes": "Đã quá hạn trả sách.",
+    "createdRequestAt": { "$date": "2025-06-20T00:00:00.000Z" },
+    "__v": 0
+  }
+]
