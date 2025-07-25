@@ -1,6 +1,8 @@
 const User = require('../model/user');
 const XLSX = require('xlsx');
 const jwtConfig = require('../config/jwtconfig');
+const { sendReminderEmail } = require('../utils/nodemailer');
+const BorrowRecord = require('../model/borrowHistory');
 
 // @done loggin
 exports.login = async (req, res) => {
@@ -156,14 +158,48 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-// @done create account
 exports.createAccount = async (req, res) => {
-    const { studentId, name, password, email, phone, address, role } = req.body;
+    let { studentId, name, password, email, phone, address, role } = req.body;
 
     try {
         const existingUser = await User.findOne({ studentId });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
+        }
+
+        if (name) {
+            name = name
+                .trim()
+                .toLowerCase()
+                .split(' ')
+                .filter(Boolean)
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        const nameIsValid = name && /^[A-Za-zÀ-ỹà-ỹ\s]+$/.test(name) && name.trim().split(' ').length >= 2;
+        if (!nameIsValid) {
+            return res.status(400).json({ message: 'Tên không hợp lệ. Vui lòng nhập tên đầy đủ của bạn (ít nhất hai từ, chỉ chữ cái).' });
+        }
+
+        // Kiểm tra định dạng studentId
+        if (!/^[a-zA-Z]{2}\d+$/.test(studentId)) {
+            return res.status(400).json({ message: 'Mã sinh viên không hợp lệ. Phải bắt đầu bằng 2 chữ cái theo sau là các chữ số.' });
+        }
+
+        // Chuyển 2 chữ cái đầu thành in hoa
+        studentId = studentId.slice(0, 2).toUpperCase() + studentId.slice(2);
+
+        // Kiểm tra định dạng email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email && !emailRegex.test(email)) {
+            return res.status(400).json({ message: 'Email không hợp lệ.' });
+        }
+
+        // Kiểm tra định dạng số điện thoại: phải có đúng 10 chữ số
+        const phoneRegex = /^\d{10}$/;
+        if (phone && !phoneRegex.test(phone)) {
+            return res.status(400).json({ message: 'Số điện thoại không hợp lệ. Phải gồm đúng 10 chữ số.' });
         }
 
         const user = new User({ studentId, name, password, email, phone, address, role });
@@ -188,9 +224,16 @@ exports.updateUser = async (req, res) => {
         }
 
         // Only admin can update role and isActive
-        if ((role || isActive !== undefined) && req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Only admin can update role and active status' });
+        if ((role || isActive !== undefined)) {
+            if (req.user.role !== 'admin') {
+                return res.status(403).json({ message: 'Only admin can update role and active status' });
+            }
+
+            if (req.user.id === userId && isActive === false) {
+                return res.status(400).json({ message: 'You cannot deactivate your own account' });
+            }
         }
+
 
         // Check for duplicate email if provided
         if (email && email !== user.email) {
@@ -248,6 +291,73 @@ exports.deleteUser = async (req, res) => {
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (err) {
         console.error('Delete user error:', err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+// Gửi email nhắc nhở những người sắp đến hạn trả sách trong 48h
+exports.checkAndSendReminders = async (req, res) => {
+    try {
+        const now = new Date();
+        const in48Hours = new Date(now.getTime() + 48 * 60 * 60 * 1000); // +48 giờ
+
+        console.log('📌 Bắt đầu kiểm tra nhắc nhở mượn sách...');
+        console.log('🕒 Thời gian hiện tại:', now.toISOString());
+        console.log('⏳ Mốc nhắc nhở trước 48h:', in48Hours.toISOString());
+
+        const query = {
+            dueDate: { $lte: in48Hours, $gt: now },
+            status: 'borrowed',
+            hasReminderEmailSent: false,
+        };
+
+        console.log('🔍 Đang tìm bản ghi mượn sách có điều kiện:');
+        console.log(query);
+
+        const records = await BorrowRecord.find(query)
+            .populate('userId', 'email name')
+            .populate('bookId', 'title');
+
+        console.log(`📄 Tìm thấy ${records.length} bản ghi cần gửi nhắc nhở.`);
+
+        let successCount = 0;
+
+        for (const record of records) {
+            const { userId, bookId, dueDate } = record;
+            const userEmail = userId?.email;
+            const userName = userId?.name;
+            const bookTitle = bookId?.title;
+
+            if (!userEmail || !userName || !bookTitle) {
+                console.warn(`⚠️ Thiếu thông tin trong bản ghi ${record._id}:`, {
+                    userEmail,
+                    userName,
+                    bookTitle
+                });
+                continue;
+            }
+
+            try {
+                await sendReminderEmail(userEmail, userName, bookTitle, dueDate);
+
+                // Cập nhật đã gửi email
+                record.hasReminderEmailSent = true;
+                await record.save();
+
+                console.log(`✅ Đã gửi email nhắc nhở tới: ${userEmail}`);
+                successCount++;
+            } catch (err) {
+                console.error(`❌ Lỗi gửi email tới ${userEmail}:`, err.message);
+            }
+        }
+
+        console.log(`🎉 Hoàn tất. Tổng số email gửi thành công: ${successCount}`);
+
+        res.status(200).json({
+            message: `Reminder emails sent: ${successCount}`,
+        });
+    } catch (err) {
+        console.error('❌ Lỗi kiểm tra nhắc nhở:', err);
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 };

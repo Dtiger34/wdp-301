@@ -79,6 +79,11 @@ const borrowRecordSchema = new mongoose.Schema({
             default: "available",
         },
     }],
+
+    hasReminderEmailSent: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 module.exports = mongoose.model('BorrowRecord', borrowRecordSchema);
