@@ -436,6 +436,22 @@ exports.getBorrowHistory = async (req, res) => {
   }
 };
 
+exports.getReviewsByBookId = async (req, res) => {
+  try {
+    const { id: bookId } = req.params;
+
+    const reviews = await Review.find({ bookId })
+      .populate('userId', 'name studentId') // lấy thông tin người review
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: 'Reviews fetched successfully',
+      data: reviews,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // @done: lấy danh sách tất cả các yêu cầu mượn sách của người dùng hiện tại
 exports.getUserBorrowRequests = async (req, res) => {
   try {
@@ -458,11 +474,26 @@ exports.createReview = async (req, res) => {
     const { bookId, rating, comment } = req.body;
     const userId = req.user.id;
 
+    // Validate input
+    if (!bookId || typeof rating === 'undefined') {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+    }
+
+    if (comment && comment.trim().length === 0) {
+      return res.status(400).json({ message: 'Comment cannot be empty' });
+    }
+
+    // Kiểm tra sách tồn tại
     const book = await Book.findById(bookId);
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
 
+    // Kiểm tra người dùng đã mượn và trả sách chưa
     const borrowRecord = await BorrowRecord.findOne({
       userId,
       bookId,
@@ -475,6 +506,7 @@ exports.createReview = async (req, res) => {
       });
     }
 
+    // Kiểm tra người dùng đã review sách này chưa
     const existingReview = await Review.findOne({ userId, bookId });
     if (existingReview) {
       return res.status(400).json({
@@ -482,21 +514,34 @@ exports.createReview = async (req, res) => {
       });
     }
 
+    // Tạo review
     const review = await Review.create({
       userId,
       bookId,
       rating,
-      comment,
+      comment: comment?.trim(),
     });
 
     await review.populate('userId', 'name studentId');
+
+    // Tính lại điểm trung bình và tổng số đánh giá
+    const allReviews = await Review.find({ bookId });
+    const totalReviews = allReviews.length;
+    const totalRating = allReviews.reduce((sum, r) => sum + r.rating, 0);
+    const averageRating = totalRating / totalReviews;
+
+    // Cập nhật sách
+    book.averageRating = averageRating;
+    book.totalReviews = totalReviews;
+    await book.save();
 
     res.status(201).json({
       message: 'Review created successfully',
       review,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error creating review:', error);
+    res.status(500).json({ message: 'Failed to create review', error: error.message });
   }
 };
 

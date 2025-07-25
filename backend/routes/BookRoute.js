@@ -27,6 +27,8 @@ router.get('/history/user', jwtConfig.requireAuth, BookController.getBorrowHisto
 router.post("/review", jwtConfig.requireAuth, BookController.createReview);
 router.put("/review/:id", jwtConfig.requireAuth, BookController.updateReview);
 router.delete("/review/:id", jwtConfig.requireAuth, BookController.deleteReview);
+router.get("/:id/reviews",jwtConfig.requireAuth, BookController.getReviewsByBookId);
+
 
 // ------------------- INVENTORY ROUTES --------------------
 router.put('/:id/inventory', jwtConfig.requireAdminOrStaff, BookController.updateBookInventory);
