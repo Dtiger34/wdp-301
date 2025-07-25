@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getBorrowedBooksByUser } from "../../services/borrowApiService";
+import { cancelBorrowRequest, getBorrowedBooksByUser } from "../../services/borrowApiService";
 import { getToken, checkUserAuth } from "../../utils/auth";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -59,12 +59,29 @@ const HistoryBorrowByUser = () => {
         switch (status) {
             case "pending":
                 return "Đang chờ duyệt";
+            case "pendingPickup":
+                return "Chờ lấy sách";
             case "borrowed":
                 return "Đang mượn";
             case "returned":
                 return "Đã trả";
+            case "cancelled":
+                return "Đã hủy";
             default:
                 return "Không rõ";
+        }
+    };
+    const handleCancelRequest = async (borrowId) => {
+        if (!window.confirm("Bạn có chắc chắn muốn huỷ yêu cầu mượn sách này?")) return;
+
+        try {
+            await cancelBorrowRequest(borrowId);
+            alert("Đã huỷ yêu cầu mượn sách thành công.");
+            // Tải lại danh sách sau khi huỷ
+            const result = await getBorrowedBooksByUser(userId);
+            setHistory(result.data || []);
+        } catch (err) {
+            alert("Không thể huỷ yêu cầu. Vui lòng thử lại sau.");
         }
     };
 
@@ -102,7 +119,9 @@ const HistoryBorrowByUser = () => {
                                     <th style={{ padding: "15px", textAlign: "left", minWidth: "250px" }}>📖 Tên sách & Bản sao</th>
                                     <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}>📅 Ngày mượn</th>
                                     <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}>📦 Ngày trả</th>
-                                    <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}>🔥 Trạng thái</th>
+                                    <th style={{ padding: "15px", textAlign: "left", minWidth: "160px" }}> Trạng thái</th>
+                                    <th style={{ padding: "15px", textAlign: "left", minWidth: "120px" }}>🛑 Hành động</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -126,9 +145,27 @@ const HistoryBorrowByUser = () => {
                                         <td style={{ padding: "15px" }}>
                                             {formatDate(record.returnDate, "Chưa trả")}
                                         </td>
-                                        <td style={{ padding: "15px", color: record.status === 'pending' ? 'orange' : record.status === 'borrowed' ? 'blue' : 'green' }}>
+                                        <td style={{ padding: "15px", color: record.status === 'pending' ? 'orange' : record.status === 'borrowed' ? 'blue' : record.status === 'cancelled' ? 'red' : 'green' }}>
                                             {renderStatus(record.status)}
                                         </td>
+                                        <td style={{ padding: "15px" }}>
+                                            {record.status === "pending" && (
+                                                <button
+                                                    onClick={() => handleCancelRequest(record._id)}
+                                                    style={{
+                                                        padding: "6px 12px",
+                                                        backgroundColor: "#e74c3c",
+                                                        color: "white",
+                                                        border: "none",
+                                                        borderRadius: "4px",
+                                                        cursor: "pointer"
+                                                    }}
+                                                >
+                                                    Huỷ yêu cầu
+                                                </button>
+                                            )}
+                                        </td>
+
                                     </tr>
                                 ))}
                             </tbody>
@@ -137,58 +174,60 @@ const HistoryBorrowByUser = () => {
                 )}
             </div>
 
-            {!loading && history.length > 0 && (
-                <div
-                    style={{
-                        position: "sticky",
-                        bottom: 0,
-                        backgroundColor: "#f8f9fa",
-                        padding: "10px 0",
-                        borderTop: "1px solid #ddd",
-                        textAlign: "center",
-                        fontSize: "16px",
-                        zIndex: 999
-                    }}
-                >
-                    <button
-                        onClick={handlePrevPage}
-                        disabled={currentPage === 1}
+            {
+                !loading && history.length > 0 && (
+                    <div
                         style={{
-                            padding: "6px 14px",
-                            marginRight: "10px",
-                            backgroundColor: "#3498db",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            cursor: currentPage === 1 ? "not-allowed" : "pointer"
+                            position: "sticky",
+                            bottom: 0,
+                            backgroundColor: "#f8f9fa",
+                            padding: "10px 0",
+                            borderTop: "1px solid #ddd",
+                            textAlign: "center",
+                            fontSize: "16px",
+                            zIndex: 999
                         }}
                     >
-                        ← Trước
-                    </button>
-                    <span style={{ margin: "0 10px" }}>
-                        Trang <strong>{currentPage}</strong> / {totalPages}
-                    </span>
-                    <button
-                        onClick={handleNextPage}
-                        disabled={currentPage === totalPages}
-                        style={{
-                            padding: "6px 14px",
-                            marginLeft: "10px",
-                            backgroundColor: "#3498db",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            cursor: currentPage === totalPages ? "not-allowed" : "pointer"
-                        }}
-                    >
-                        Tiếp →
-                    </button>
-                </div>
-            )}
+                        <button
+                            onClick={handlePrevPage}
+                            disabled={currentPage === 1}
+                            style={{
+                                padding: "6px 14px",
+                                marginRight: "10px",
+                                backgroundColor: "#3498db",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "4px",
+                                fontSize: "14px",
+                                cursor: currentPage === 1 ? "not-allowed" : "pointer"
+                            }}
+                        >
+                            ← Trước
+                        </button>
+                        <span style={{ margin: "0 10px" }}>
+                            Trang <strong>{currentPage}</strong> / {totalPages}
+                        </span>
+                        <button
+                            onClick={handleNextPage}
+                            disabled={currentPage === totalPages}
+                            style={{
+                                padding: "6px 14px",
+                                marginLeft: "10px",
+                                backgroundColor: "#3498db",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "4px",
+                                fontSize: "14px",
+                                cursor: currentPage === totalPages ? "not-allowed" : "pointer"
+                            }}
+                        >
+                            Tiếp →
+                        </button>
+                    </div>
+                )
+            }
             <Footer />
-        </div>
+        </div >
     );
 };
 

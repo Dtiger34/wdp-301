@@ -296,7 +296,7 @@ exports.createBorrowRequest = async (req, res) => {
     // Cập nhật trạng thái bản sao sách và lưu vào BorrowRecord
     const updatedBookCopies = [];
     for (const bookCopy of bookCopies) {
-      bookCopy.status = 'borrowed';
+      bookCopy.status = 'pending';
       bookCopy.currentBorrower = userId; // Cập nhật người mượn
       bookCopy.dueDate = new Date(dueDate); // Cập nhật hạn trả cho sách
 
@@ -343,7 +343,9 @@ exports.createBorrowRequest = async (req, res) => {
 // @done: Lấy danh sách yêu cầu mượn đang pending
 exports.getPendingBorrowRequests = async (req, res) => {
   try {
-    const pendingRequests = await BorrowRecord.find({ status: 'pending' })
+    const pendingRequests = await BorrowRecord.find({
+      status: { $in: ['pending', 'pendingPickup'] }
+    })
       .populate('userId')
       .populate('bookId')
       .sort({ createdRequestAt: -1 });

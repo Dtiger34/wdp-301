@@ -142,3 +142,39 @@ export const getBorrowedBooksByUser = async (userId) => {
         throw error;
     }
 }
+
+export const confirmBookPickup = async (borrowId) => {
+    try {
+        const response = await api.post(
+            `/borrows/confirm-pickup/${borrowId}`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error confirming book pickup:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+export const cancelBorrowRequest = async (borrowId) => {
+    try {
+        const response = await api.post(
+            `/borrows/cancel/${borrowId}`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error cancelling borrow request:", error.response?.data || error.message);
+        throw error;
+    }
+}

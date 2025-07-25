@@ -13,7 +13,7 @@ const bookCopySchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["available", "pending", "borrowed", "lost", "damaged"],
+        enum: ["available", "pending", "borrowed", "lost", "damaged", "pending"],
         default: "available",
     },
     currentBorrower: { // người dùng hiện tại đang mượn

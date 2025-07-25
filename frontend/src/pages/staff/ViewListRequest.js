@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { getPendingBorrowRequests, acceptBorrowRequest } from "../../services/borrowApiService";
-
+import {
+  getPendingBorrowRequests,
+  acceptBorrowRequest,
+  confirmBookPickup
+} from "../../services/borrowApiService";
 import StaffDashboard from '../staff/StaffDashboard';
+
 const ViewListRequest = () => {
   const [requests, setRequests] = useState([]);
 
@@ -21,18 +25,26 @@ const ViewListRequest = () => {
   const handleAcceptBorrowRequest = async (borrowId) => {
     try {
       await acceptBorrowRequest(borrowId);
-      alert("Chắc chắn chấp nhận yêu cầu mượn sau?");
+      alert("Đã chấp nhận yêu cầu mượn");
       fetchRequests();
     } catch (error) {
-      alert(error.response?.data?.message);
+      alert(error.response?.data?.message || "Có lỗi xảy ra");
+    }
+  };
+
+  const handleConfirmPickup = async (borrowId) => {
+    try {
+      await confirmBookPickup(borrowId);
+      alert("Đã xác nhận người dùng đến lấy sách");
+      fetchRequests();
+    } catch (error) {
+      alert(error.response?.data?.message || "Có lỗi xảy ra");
     }
   };
 
   return (
     <StaffDashboard>
       <div style={{ display: "flex", flexDirection: "column", minHeight: "250vh", backgroundColor: "#f9fafb" }}>
-
-
         <main style={{ flex: 1 }}>
           <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "40px" }}>
             <h2 style={{ fontSize: "24px", fontWeight: "600", color: "#374151", marginBottom: "24px" }}>
@@ -46,7 +58,7 @@ const ViewListRequest = () => {
                     <th style={thStyle}>Tên người mượn</th>
                     <th style={thStyle}>Tên sách</th>
                     <th style={thStyle}>Số lượng</th>
-                    <th style={thStyle}>Trạng thái mượn</th>
+                    <th style={thStyle}>Hình thức</th>
                     <th style={thStyle}>Thời hạn trả</th>
                     <th style={{ ...thStyle, textAlign: "center", width: "300px" }}>Hành động</th>
                   </tr>
@@ -54,8 +66,8 @@ const ViewListRequest = () => {
                 <tbody>
                   {requests.length === 0 ? (
                     <tr>
-                      <td colSpan="5" style={{ textAlign: "center", padding: "24px", color: "#9ca3af" }}>
-                        Không có yêu cầu nào đang chờ duyệt
+                      <td colSpan="6" style={{ textAlign: "center", padding: "24px", color: "#9ca3af" }}>
+                        Không có yêu cầu nào đang chờ xử lý
                       </td>
                     </tr>
                   ) : (
@@ -64,19 +76,24 @@ const ViewListRequest = () => {
                         <td style={tdStyle}>{req.userId?.name}</td>
                         <td style={tdStyle}>{req.bookId?.title}</td>
                         <td style={tdStyle}>{req.quantity}</td>
-                        <td style={tdStyle}>
-                          {req.isReadOnSite ? "Đọc tại chỗ" : "Mượn mang về"}
-                        </td>
-                        <td style={tdStyle}>
-                          {new Date(req.dueDate).toLocaleDateString("vi-VN")}
-                        </td>
+                        <td style={tdStyle}>{req.isReadOnSite ? "Đọc tại chỗ" : "Mượn mang về"}</td>
+                        <td style={tdStyle}>{new Date(req.dueDate).toLocaleDateString("vi-VN")}</td>
                         <td style={{ ...tdStyle, textAlign: "center" }}>
-                          <button
-                            style={approveBtnStyle}
-                            onClick={() => handleAcceptBorrowRequest(req._id)}
-                          >
-                            ✔ Chấp nhận
-                          </button>
+                          {req.status === "pending" ? (
+                            <button
+                              style={approveBtnStyle}
+                              onClick={() => handleAcceptBorrowRequest(req._id)}
+                            >
+                              ✔ Chấp nhận
+                            </button>
+                          ) : req.status === "pendingPickup" ? (
+                            <button
+                              style={pickupBtnStyle}
+                              onClick={() => handleConfirmPickup(req._id)}
+                            >
+                              📦 Xác nhận đến lấy
+                            </button>
+                          ) : null}
                           <button style={rejectBtnStyle}>✖ Hủy</button>
                         </td>
                       </tr>
@@ -107,6 +124,16 @@ const tdStyle = {
 
 const approveBtnStyle = {
   backgroundColor: "#10b981",
+  color: "#fff",
+  padding: "6px 12px",
+  marginRight: "8px",
+  border: "none",
+  borderRadius: "4px",
+  cursor: "pointer",
+};
+
+const pickupBtnStyle = {
+  backgroundColor: "#3b82f6",
   color: "#fff",
   padding: "6px 12px",
   marginRight: "8px",
