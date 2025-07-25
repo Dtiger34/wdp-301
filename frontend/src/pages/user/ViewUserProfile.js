@@ -48,7 +48,13 @@ const ProfilePage = () => {
 
   return (
     <div
-      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        background: "#efefef",
+        paddingTop: "20px",
+      }}
     >
       <Header />
 
