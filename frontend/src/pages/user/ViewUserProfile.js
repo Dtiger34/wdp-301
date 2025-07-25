@@ -48,20 +48,16 @@ const ProfilePage = () => {
 
   return (
     <div
-      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        background: "#efefef",
+        paddingTop: "20px",
+      }}
     >
       <Header />
 
-      <h2
-        style={{
-          marginBottom: "30px",
-          color: "#2c3e50",
-          textAlign: "center",
-          marginTop: "50px",
-        }}
-      >
-        📄 Thông tin người dùng
-      </h2>
       <div
         style={{
           flex: 1,
@@ -80,6 +76,15 @@ const ProfilePage = () => {
                 boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
               }}
             >
+              <h2
+                style={{
+                  marginBottom: "50px",
+                  color: "#2c3e50",
+                  textAlign: "center",
+                }}
+              >
+                📄 Thông tin người dùng
+              </h2>
               {[
                 { label: "👤 Họ tên", value: user.name },
                 { label: "🎓 Mã sinh viên", value: user.studentId },
@@ -94,38 +99,38 @@ const ProfilePage = () => {
                   <span>{item.value}</span>
                 </div>
               ))}
+              <div style={{ textAlign: "center", marginTop: "80px" }}>
+                <a
+                  href="/change-password"
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#2980b9",
+                    color: "#fff",
+                    borderRadius: "5px",
+                    textDecoration: "none",
+                    marginRight: "15px",
+                  }}
+                >
+                  🔒 Đổi mật khẩu
+                </a>
+
+                <button
+                  onClick={() => navigate("/history-borrowed-user")}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#27ae60",
+                    color: "#fff",
+                    borderRadius: "5px",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  📚 Xem lịch sử mượn trả
+                </button>
+              </div>
             </div>
 
             {/* Các nút bên dưới */}
-            <div style={{ textAlign: "center", marginTop: "30px" }}>
-              <a
-                href="/change-password"
-                style={{
-                  padding: "10px 20px",
-                  backgroundColor: "#2980b9",
-                  color: "#fff",
-                  borderRadius: "5px",
-                  textDecoration: "none",
-                  marginRight: "15px",
-                }}
-              >
-                🔒 Đổi mật khẩu
-              </a>
-
-              <button
-                onClick={() => navigate("/history-borrowed-user")}
-                style={{
-                  padding: "10px 20px",
-                  backgroundColor: "#27ae60",
-                  color: "#fff",
-                  borderRadius: "5px",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                📚 Xem lịch sử mượn trả
-              </button>
-            </div>
           </>
         ) : (
           <p>Không tìm thấy thông tin người dùng</p>

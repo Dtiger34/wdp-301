@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getBook } from '../../services/bookService';
+import { getBook, getReviewsByBookId } from '../../services/bookService';
 import { requestBorrowBook } from '../../services/borrowApiService';
 import { getInventoryItemById } from '../../services/InventoryServicesApi';
-import { getReviewsByBookId } from '../../services/bookService';
 
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -14,8 +13,8 @@ const ViewBookDetail = () => {
   const [book, setBook] = useState(null);
   const [available, setAvailable] = useState(0);
   const [quantity] = useState(1);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [reviews, setReviews] = useState([]);
@@ -29,7 +28,7 @@ const ViewBookDetail = () => {
         const inventoryData = await getInventoryItemById(id);
         setAvailable(inventoryData.available || 0);
       } catch (err) {
-        setError('Không thể tải dữ liệu sách hoặc kho.');
+        setError("Không thể tải dữ liệu sách hoặc kho.");
       }
     };
 
@@ -51,7 +50,7 @@ const ViewBookDetail = () => {
 
   useEffect(() => {
     if (error || success) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [error, success]);
 
@@ -63,24 +62,24 @@ const ViewBookDetail = () => {
         isReadOnSite,
         dueDate,
         notes: `Trả trước ngày ${dueDate}`,
-        quantity
+        quantity,
       });
 
       setSuccess(`Đã gửi yêu cầu mượn ${quantity} cuốn "${book.title}"`);
-      setError('');
+      setError("");
       setModalOpen(false);
     } catch (err) {
-      const message = err.response?.data?.message || 'Đã xảy ra lỗi khi gửi yêu cầu';
+      const message = err.response?.data?.message || "Đã xảy ra lỗi khi gửi yêu cầu";
       setError(message);
-      setSuccess('');
+      setSuccess("");
     } finally {
       setLoading(false);
     }
   };
 
   const getSafeImage = (url) => {
-    if (!url || url.startsWith('blob:')) {
-      return 'https://via.placeholder.com/200x300?text=No+Image';
+    if (!url || url.startsWith("blob:")) {
+      return "https://via.placeholder.com/200x300?text=No+Image";
     }
 
     if (url.startsWith('/images/book/')) {
@@ -93,29 +92,15 @@ const ViewBookDetail = () => {
   if (!book) return <div style={{ padding: '20px' }}>Đang tải...</div>;
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#efefef", paddingTop: "20px" }}>
       <Header />
 
       <main style={{ flex: 1, padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
-        {/* Chi tiết sách */}
-        <div style={{
-          display: 'flex',
-          backgroundColor: '#fff',
-          borderRadius: '12px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          padding: '30px',
-          gap: '30px',
-        }}>
+        <div style={{ display: 'flex', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', padding: '30px', gap: '30px' }}>
           <img
             src={getSafeImage(book.image)}
             alt={book.title}
-            style={{
-              width: '300px',
-              height: 'auto',
-              borderRadius: '8px',
-              objectFit: 'cover',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
-            }}
+            style={{ width: "300px", height: "auto", borderRadius: "8px", objectFit: "cover", boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}
           />
 
           <div style={{ flex: 1 }}>
@@ -130,15 +115,15 @@ const ViewBookDetail = () => {
                 onClick={() => setModalOpen(true)}
                 disabled={loading}
                 style={{
-                  padding: '10px 18px',
-                  backgroundColor: loading ? '#95a5a6' : '#2c3e50',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: loading ? 'not-allowed' : 'pointer'
+                  padding: "10px 18px",
+                  backgroundColor: loading ? "#95a5a6" : "#2c3e50",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: loading ? "not-allowed" : "pointer",
                 }}
               >
-                {loading ? 'Đang gửi...' : '📚 Mượn sách'}
+                {loading ? "Đang gửi..." : "📚 Mượn sách"}
               </button>
             </div>
 
@@ -147,7 +132,7 @@ const ViewBookDetail = () => {
           </div>
         </div>
 
-        {/* Danh sách đánh giá bên dưới */}
+        {/* Đánh giá */}
         <div style={{
           marginTop: '60px',
           backgroundColor: '#fff',
@@ -169,7 +154,6 @@ const ViewBookDetail = () => {
                   backgroundColor: '#fafafa',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
                 }}>
-                  {/* Header */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                       <strong>{review.userId?.name || 'Ẩn danh'}</strong> ({review.userId?.studentId || 'N/A'})
@@ -185,7 +169,6 @@ const ViewBookDetail = () => {
                     </small>
                   </div>
 
-                  {/* Rating */}
                   <div style={{ marginTop: '6px' }}>
                     {[...Array(5)].map((_, index) => (
                       <span key={index} style={{ color: index < review.rating ? '#f1c40f' : '#ccc', fontSize: '18px' }}>
@@ -194,13 +177,7 @@ const ViewBookDetail = () => {
                     ))}
                   </div>
 
-                  {/* Comment */}
-                  <p style={{
-                    marginTop: '10px',
-                    fontSize: '15px',
-                    lineHeight: '1.5',
-                    color: '#333'
-                  }}>
+                  <p style={{ marginTop: '10px', fontSize: '15px', lineHeight: '1.5', color: '#333' }}>
                     {review.comment}
                   </p>
                 </div>
