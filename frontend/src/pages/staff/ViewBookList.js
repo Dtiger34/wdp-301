@@ -27,15 +27,20 @@ const ViewBookList = () => {
   }, [fetchBooks]);
 
   const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa sách này?')) {
-      try {
-        await deleteBook(id);
-        fetchBooks();
-      } catch (err) {
+  if (window.confirm('Bạn có chắc chắn muốn xóa sách này?')) {
+    try {
+      await deleteBook(id);
+      fetchBooks();
+    } catch (err) {
+      if (err.response && err.response.status === 400) {
+        alert(err.response.data.message); // Hiển thị thông báo từ server
+      } else {
+        alert('Đã xảy ra lỗi khi xóa sách.');
         console.error('Delete failed:', err);
       }
     }
-  };
+  }
+};
 
   const getSafeImage = (url) => {
     if (!url || url.startsWith('blob:')) {
