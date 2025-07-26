@@ -46,6 +46,7 @@ const ViewListRequest = () => {
                     <th style={thStyle}>Tên người mượn</th>
                     <th style={thStyle}>Tên sách</th>
                     <th style={thStyle}>Số lượng</th>
+                    <th style={thStyle}>Hình thức</th>
                     <th style={thStyle}>Thời hạn trả</th>
                     <th style={{ ...thStyle, textAlign: "center" }}>Hành động</th>
                   </tr>
@@ -63,6 +64,10 @@ const ViewListRequest = () => {
                         <td style={tdStyle}>{req.userId?.name}</td>
                         <td style={tdStyle}>{req.bookId?.title}</td>
                         <td style={tdStyle}>{req.quantity}</td>
+                        <td style={tdStyle}>
+                          {req.isReadOnSite ? "Đọc tại chỗ" : "Mượn mang về"}
+                        </td>
+
                         <td style={tdStyle}>
                           {new Date(req.dueDate).toLocaleDateString("vi-VN")}
                         </td>

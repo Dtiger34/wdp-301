@@ -22,17 +22,22 @@ const BookShelf = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa kệ sách này không?')) {
-      try {
-        await deleteBookshelf(id);
-        alert('Đã xóa kệ sách!');
-        fetchBookshelves();
-      } catch (error) {
-        console.error('Lỗi khi xóa:', error);
+  if (window.confirm('Bạn có chắc chắn muốn xóa kệ sách này không?')) {
+    try {
+      await deleteBookshelf(id);
+      alert('Đã xóa kệ sách!');
+      fetchBookshelves();
+    } catch (error) {
+      console.error('Lỗi khi xóa:', error);
+      if (error.response && error.response.data?.error === 'Sách vẫn còn trong kệ, không thể xóa.') {
+        alert('Không thể xóa vì kệ sách vẫn còn sách bên trong.');
+      } else {
         alert('Xóa thất bại!');
       }
     }
-  };
+  }
+};
+
 
   return (
     <>

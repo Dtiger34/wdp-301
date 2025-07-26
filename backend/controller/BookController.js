@@ -507,6 +507,20 @@ exports.createReview = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+exports.getAllReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find()
+      .populate('userId', 'name studentId')
+      .populate('bookId', 'title isbn');
+
+    res.status(200).json({
+      message: 'All reviews fetched successfully',
+      data: reviews,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 exports.updateReview = async (req, res) => {
   try {

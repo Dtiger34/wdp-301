@@ -6,6 +6,7 @@ import Footer from '../../components/Footer';
 
 const UpdateCategory = () => {
   const [form, setForm] = useState({ name: '', description: '' });
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
   const categoryId = new URLSearchParams(location.search).get('id');
@@ -26,10 +27,26 @@ const UpdateCategory = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' });
+    }
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!form.name.trim()) newErrors.name = 'Tên thể loại không được để trống';
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
       await updateCategory(categoryId, form);
       alert('Cập nhật thể loại thành công!');
@@ -44,7 +61,6 @@ const UpdateCategory = () => {
     <>
       <Header />
 
-      {/* Nút quay lại */}
       <div style={{ position: 'absolute', top: '140px', left: '30px' }}>
         <button
           onClick={() => navigate(-1)}
@@ -69,6 +85,8 @@ const UpdateCategory = () => {
           background: '#f9f9f9',
           border: '1px solid #ddd',
           borderRadius: '10px',
+          marginTop: '100px',
+          marginBottom: '100px',
         }}
       >
         <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>Cập nhật thể loại</h2>
@@ -83,7 +101,6 @@ const UpdateCategory = () => {
               name="name"
               value={form.name}
               onChange={handleChange}
-              required
               style={{
                 padding: '8px',
                 fontSize: '16px',
@@ -91,6 +108,9 @@ const UpdateCategory = () => {
                 border: '1px solid #ccc',
               }}
             />
+            {errors.name && (
+              <span style={{ color: 'red', marginTop: '4px' }}>{errors.name}</span>
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -108,6 +128,9 @@ const UpdateCategory = () => {
                 resize: 'vertical',
               }}
             />
+            {errors.description && (
+              <span style={{ color: 'red', marginTop: '4px' }}>{errors.description}</span>
+            )}
           </div>
 
           <button

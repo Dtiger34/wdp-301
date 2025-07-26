@@ -16,16 +16,23 @@ const ViewCategoryList = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa thể loại này?')) {
-      try {
-        await deleteCategory(id);
-        fetchCategories();
-      } catch (error) {
+ const handleDelete = async (id) => {
+  if (window.confirm('Bạn có chắc chắn muốn xóa thể loại này?')) {
+    try {
+      await deleteCategory(id);
+      fetchCategories(); // refresh lại danh sách
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        // Lỗi từ BE do thể loại đang được dùng bởi sách
+        alert(error.response.data.error); // Hoặc dùng toast nếu bạn dùng thư viện nào đó
+      } else {
         console.error('Delete failed:', error);
+        alert('Đã xảy ra lỗi khi xóa thể loại.');
       }
     }
-  };
+  }
+};
+
 
   useEffect(() => {
     fetchCategories();

@@ -53,13 +53,25 @@ exports.updateBookshelf = async (req, res) => {
 // @done: Delete bookshelf
 exports.deleteBookshelf = async (req, res) => {
   try {
-    const shelf = await Bookshelf.findByIdAndDelete(req.params.id);
+    const shelfId = req.params.id;
+
+    // Kiểm tra xem có sách nào đang nằm trên kệ không
+    const Book = require('../model/book');
+    const booksInShelf = await Book.find({ bookshelf: shelfId });
+
+    if (booksInShelf.length > 0) {
+      return res.status(400).json({ error: 'Sách vẫn còn trong kệ, không thể xóa.' });
+    }
+
+    const shelf = await Bookshelf.findByIdAndDelete(shelfId);
     if (!shelf) return res.status(404).json({ error: 'Bookshelf not found' });
+
     res.json({ message: 'Bookshelf deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // @done: Lấy thống kê sách theo từng giá sách
 exports.getBookshelfStats = async (req, res) => {
