@@ -18,10 +18,10 @@ const Footer = () => {
               <a href="/home">Trang chủ</a>
             </li>
             <li>
-              <a href="/profile">Tài khoản</a>
+              <a href="/">Tài khoản</a>
             </li>
             <li>
-              <a href="/staff/view-books">Quản lý sách</a>
+              <a href="/">Quản lý sách</a>
             </li>
           </ul>
         </div>

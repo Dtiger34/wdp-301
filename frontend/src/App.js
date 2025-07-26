@@ -7,7 +7,8 @@ import Login from "./components/Login";
 import HomePage from "./components/HomePage";
 import ChangePassword from "./components/ChangePassword";
 import ViewUserProfile from "./pages/user/ViewUserProfile";
-
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 // Admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserListPage from "./pages/admin/UserListPage";
@@ -62,6 +63,8 @@ function App() {
       <Route path="/home" element={user?.role === "staff" ? <StaffDashboard /> : <HomePage />} />
       <Route path="/profile" element={user ? <ViewUserProfile /> : <Navigate to="/login" />} />
       <Route path="/change-password" element={localStorage.getItem("user") ? <ChangePassword /> : <Navigate to="/login" />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
       {/* Admin */}
       <Route path="/admin-dashboard" element={user?.role === "admin" ? <AdminDashboard /> : <Navigate to="/login" />
       }

@@ -81,6 +81,11 @@ function Login() {
             <button type="submit" className="login-button" disabled={loading}>
               {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
+            <p className="forgot-password-link">
+              <a href="/forgot-password">Quên mật khẩu?</a>
+            </p>
+
+
           </form>
         </div>
       </div>

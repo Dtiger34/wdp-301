@@ -2,7 +2,10 @@ const User = require('../model/user');
 const XLSX = require('xlsx');
 const jwtConfig = require('../config/jwtconfig');
 const { sendReminderEmail } = require('../utils/nodemailer');
+const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
 const BorrowRecord = require('../model/borrowHistory');
+const crypto = require('crypto');
 // @done loggin
 exports.login = async (req, res) => {
     const { studentId, password } = req.body;
@@ -250,5 +253,89 @@ exports.deleteUser = async (req, res) => {
     } catch (err) {
         console.error('Delete user error:', err);
         res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+
+exports.forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Tạo token ngẫu nhiên
+        const token = crypto.randomBytes(32).toString('hex');
+
+        // Lưu token và thời gian hết hạn vào user
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 1000 * 60 * 60; // 1 giờ
+        await user.save();
+
+        const resetLink = `http://localhost:3000/reset-password/${token}`;
+
+        // Gửi email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'hangnguyenthithu32@gmail.com',
+                pass: 'oxxf kmxl thad jnpj'
+            }
+        });
+
+        await transporter.sendMail({
+            from: 'Thư viện <hangnguyenthithu32@gmail.com>',
+            to: user.email,
+            subject: 'Yêu cầu đặt lại mật khẩu',
+            html: `
+                <p>Xin chào ${user.name},</p>
+                <p>Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào link dưới đây để đặt lại:</p>
+                <a href="${resetLink}">Đặt lại mật khẩu</a>
+                <p>Link có hiệu lực trong 1 giờ.</p>
+            `
+        });
+
+        res.json({ message: 'Email khôi phục đã được gửi.' });
+    } catch (err) {
+        console.error('❌ Forgot password error:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+exports.resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    try {
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Token không hợp lệ hoặc đã hết hạn' });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await User.updateOne(
+            { _id: user._id },
+            {
+                $set: {
+                    password: hashedPassword,
+                    mustChangePassword: false
+                },
+                $unset: {
+                    resetPasswordToken: "",
+                    resetPasswordExpires: ""
+                }
+            }
+        );
+
+        res.json({ message: 'Đặt lại mật khẩu thành công' });
+    } catch (err) {
+        console.error('❌ Reset password error:', err);
+        res.status(500).json({ message: 'Server error' });
     }
 };
