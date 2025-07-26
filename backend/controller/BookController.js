@@ -94,6 +94,7 @@ exports.updateBook = async (req, res) => {
       description,
       price,
       bookshelf,
+      quantity
     } = req.body;
 
     const categories = req.body.categories || [];
@@ -111,14 +112,82 @@ exports.updateBook = async (req, res) => {
     };
 
     if (req.file) {
-      updatedData.image = `/uploads/${req.file.filename}`; // ✅ nếu có ảnh mới
+      updatedData.image = `/uploads/${req.file.filename}`;
     }
 
+    // Cập nhật Book
     const updatedBook = await Book.findByIdAndUpdate(id, updatedData, { new: true })
       .populate('categories', 'name')
       .populate('bookshelf', 'name code location');
 
-    res.json(updatedBook);
+    if (!updatedBook) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    // Lấy inventory hiện tại
+    const existingInventory = await Inventory.findOne({ book: updatedBook._id });
+    const currentQuantity = existingInventory?.total || 0;
+    const newQuantity = Number(quantity || 0);
+
+    // ❌ Nếu số lượng mới < số bản sao hiện tại → báo lỗi
+    if (newQuantity < currentQuantity) {
+      return res.status(400).json({
+        error: `Số lượng mới (${newQuantity}) không được nhỏ hơn số lượng hiện tại (${currentQuantity})`
+      });
+    }
+
+    // Nếu cần tăng số lượng
+    if (newQuantity > currentQuantity) {
+      const increaseBy = newQuantity - currentQuantity;
+
+      // Cập nhật inventory
+      if (existingInventory) {
+        existingInventory.total += increaseBy;
+        existingInventory.available += increaseBy;
+        await existingInventory.save();
+      } else {
+        await Inventory.create({
+          book: updatedBook._id,
+          total: newQuantity,
+          available: newQuantity,
+          borrowed: 0,
+          damaged: 0,
+          lost: 0,
+        });
+      }
+
+      // Tạo thêm BookCopy
+      const existingBookCopies = await BookCopy.find({ book: updatedBook._id });
+      const existingCount = existingBookCopies.length;
+      const isbnLast4Digits = isbn.slice(-4);
+
+      const newCopies = [];
+      const newCopyIds = [];
+      for (let i = 0; i < increaseBy; i++) {
+        const barcode = `BC-${isbnLast4Digits}-${(existingCount + i + 1).toString().padStart(3, '0')}`;
+        const newCopy = new BookCopy({
+          book: updatedBook._id,
+          barcode,
+          status: "available"
+        });
+        await newCopy.save();
+        newCopies.push(newCopy);
+        newCopyIds.push(newCopy._id);
+      }
+
+      // Gắn các bản copy mới vào book
+      await Book.findByIdAndUpdate(updatedBook._id, {
+        $push: { bookcopies: { $each: newCopyIds } }
+      });
+    }
+
+    // Trả lại book mới nhất
+    const finalBook = await Book.findById(updatedBook._id)
+      .populate('categories', 'name')
+      .populate('bookshelf', 'name code location')
+      .populate('bookcopies');
+
+    res.json(finalBook);
   } catch (err) {
     console.error('Update book failed:', err);
     res.status(500).json({ error: 'Failed to update book' });
