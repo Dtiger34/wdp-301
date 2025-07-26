@@ -20,20 +20,27 @@ const ViewCategoryList = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa thể loại này?')) {
       try {
         await deleteCategory(id);
-        fetchCategories();
+        fetchCategories(); // refresh lại danh sách
       } catch (error) {
-        console.error('Delete failed:', error);
+        if (error.response && error.response.status === 400) {
+          // Lỗi từ BE do thể loại đang được dùng bởi sách
+          alert(error.response.data.error); // Hoặc dùng toast nếu bạn dùng thư viện nào đó
+        } else {
+          console.error('Delete failed:', error);
+          alert('Đã xảy ra lỗi khi xóa thể loại.');
+        }
       }
     }
   };
+
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
   return (
-      <div style={{  backgroundColor: '#f9fafb', minHeight: '100vh' }}>
-         <StaffDashboard >
+    <div style={{ backgroundColor: '#f9fafb', minHeight: '100vh' }}>
+      <StaffDashboard >
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <div style={{
             display: 'flex',
@@ -119,8 +126,8 @@ const ViewCategoryList = () => {
             </table>
           </div>
         </div>
-        </StaffDashboard>
-      </div>
+      </StaffDashboard>
+    </div>
   );
 };
 

@@ -12,6 +12,7 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [success, setSuccess] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -37,9 +38,11 @@ function Login() {
       saveToken(token);
       localStorage.setItem("user", JSON.stringify(user));
       if (mustChangePassword === true) {
-        navigate("/change-password");
+        setSuccess("Đăng nhập thành công. Vui lòng kiểm tra email để đổi mật khẩu trước khi tiếp tục.");
+        return;
       } else {
         navigate("/home");
+        window.location.reload();
       }
     } catch (err) {
       setError(err?.response?.data?.message || "Lỗi đăng nhập.");
@@ -78,6 +81,7 @@ function Login() {
               />
             </div>
             {error && <p className="error-message">{error}</p>}
+            {success && <p className="success-message">{success}</p>}
             <button type="submit" className="login-button" disabled={loading}>
               {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>

@@ -137,7 +137,7 @@ exports.deleteBook = async (req, res) => {
 
     if (activeBorrowRecords.length > 0) {
       return res.status(400).json({
-        message: 'Cannot delete the book because it is currently borrowed or has pending requests.'
+        message: 'Sách đang được mượn hoặc đang trong quá trình chờ đến lấy, vui lòng xóa sau khi người dùng trả sách'
       });
     }
 
@@ -154,6 +154,12 @@ exports.deleteBook = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Hàm kiểm tra định dạng ISBN (ISBN-10 hoặc ISBN-13)
+function isValidISBN(isbn) {
+  const regex = /^(?:\d{9}[\dX]|\d{13})$/;  // ISBN-10 hoặc ISBN-13
+  return regex.test(isbn);
+}
 
 // Hàm kiểm tra định dạng ISBN (ISBN-10 hoặc ISBN-13)
 function isValidISBN(isbn) {

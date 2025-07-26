@@ -6,6 +6,7 @@ import Footer from '../../components/Footer';
 
 const UpdateBookshelf = () => {
   const [form, setForm] = useState({ code: '', name: '', description: '', location: '' });
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -30,10 +31,28 @@ const UpdateBookshelf = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' });
+    }
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!form.code.trim()) newErrors.code = 'Mã kệ sách không được để trống';
+    if (!form.name.trim()) newErrors.name = 'Tên kệ sách không được để trống';
+    if (!form.location.trim()) newErrors.location = 'Vị trí không được để trống';
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
       await updateBookshelf(id, form);
       alert('Cập nhật kệ sách thành công!');
@@ -48,7 +67,6 @@ const UpdateBookshelf = () => {
     <>
       <Header />
 
-      {/* Nút quay lại */}
       <div style={{ position: 'absolute', top: '140px', left: '30px' }}>
         <button
           onClick={() => navigate(-1)}
@@ -65,7 +83,7 @@ const UpdateBookshelf = () => {
         </button>
       </div>
 
-      <div style={{ maxWidth: '600px', margin: '0 auto', padding: '24px', background: '#f9f9f9', border: '1px solid #ddd', borderRadius: '10px' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto', padding: '24px', background: '#f9f9f9', border: '1px solid #ddd', borderRadius: '10px', marginTop: '100px', marginBottom: '100px' }}>
         <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>Cập nhật kệ sách</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {[{ label: 'Mã kệ sách', name: 'code' }, { label: 'Tên kệ sách', name: 'name' }, { label: 'Vị trí', name: 'location' }].map((field) => (
@@ -76,9 +94,11 @@ const UpdateBookshelf = () => {
                 name={field.name}
                 value={form[field.name]}
                 onChange={handleChange}
-                required
                 style={{ padding: '8px', fontSize: '16px', borderRadius: '6px', border: '1px solid #ccc' }}
               />
+              {errors[field.name] && (
+                <span style={{ color: 'red', marginTop: '4px' }}>{errors[field.name]}</span>
+              )}
             </div>
           ))}
 
@@ -90,6 +110,9 @@ const UpdateBookshelf = () => {
               onChange={handleChange}
               style={{ padding: '8px', fontSize: '16px', borderRadius: '6px', border: '1px solid #ccc', minHeight: '100px', resize: 'vertical' }}
             />
+            {errors.description && (
+              <span style={{ color: 'red', marginTop: '4px' }}>{errors.description}</span>
+            )}
           </div>
 
           <button

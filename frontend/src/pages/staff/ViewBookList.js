@@ -32,7 +32,12 @@ const ViewBookList = () => {
         await deleteBook(id);
         fetchBooks();
       } catch (err) {
-        console.error('Delete failed:', err);
+        if (err.response && err.response.status === 400) {
+          alert(err.response.data.message); // Hiển thị thông báo từ server
+        } else {
+          alert('Đã xảy ra lỗi khi xóa sách.');
+          console.error('Delete failed:', err);
+        }
       }
     }
   };
@@ -95,7 +100,14 @@ const ViewBookList = () => {
                   ) : (
                     books.map((book) => (
                       <tr key={book._id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                        <td style={tdStyleTitle}>{book.title}</td>
+                        {/* <td style={tdStyleTitle}>{book.title}</td> */}
+                        <td style={{ ...tdStyleTitle, cursor: 'pointer', color: '#2563eb' }}
+                          onClick={() => navigate(`/staff/book/${book._id}`)}
+                          title="Xem chi tiết sách"
+                        >
+                          {book.title}
+                        </td>
+
                         <td style={tdStyleInfo}>
                           <div>Tác giả: {book.author || '-'}</div>
                           <div>NXB: {book.publisher || '-'}</div>

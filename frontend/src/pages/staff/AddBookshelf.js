@@ -11,15 +11,36 @@ const AddBookshelf = () => {
     description: '',
     location: ''
   });
+
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+
+    // Xóa lỗi khi người dùng đang sửa
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' });
+    }
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!form.code.trim()) newErrors.code = 'Vui lòng nhập mã kệ sách.';
+    if (!form.name.trim()) newErrors.name = 'Vui lòng nhập tên kệ sách.';
+    if (!form.location.trim()) newErrors.location = 'Vui lòng nhập vị trí kệ sách.';
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     try {
       await addBookshelf(form);
       alert('Thêm kệ sách thành công!');
@@ -76,14 +97,18 @@ const AddBookshelf = () => {
                 name={field.name}
                 value={form[field.name]}
                 onChange={handleChange}
-                required
                 style={{
                   padding: '8px',
                   fontSize: '16px',
                   borderRadius: '6px',
-                  border: '1px solid #ccc',
+                  border: errors[field.name] ? '1px solid #ef4444' : '1px solid #ccc',
                 }}
               />
+              {errors[field.name] && (
+                <span style={{ color: '#ef4444', marginTop: '4px', fontSize: '13px' }}>
+                  {errors[field.name]}
+                </span>
+              )}
             </div>
           ))}
 

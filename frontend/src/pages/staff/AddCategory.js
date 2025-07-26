@@ -6,15 +6,35 @@ import Footer from '../../components/Footer';
 
 const AddCategory = () => {
   const [form, setForm] = useState({ name: '', description: '' });
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+
+    // Xóa lỗi khi người dùng bắt đầu nhập lại
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' });
+    }
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!form.name.trim()) {
+      newErrors.name = 'Tên thể loại không được để trống';
+    }
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
       await addCategory(form);
       alert('Thêm thể loại thành công!');
@@ -70,7 +90,6 @@ const AddCategory = () => {
               name="name"
               value={form.name}
               onChange={handleChange}
-              required
               style={{
                 padding: '8px',
                 fontSize: '16px',
@@ -78,6 +97,9 @@ const AddCategory = () => {
                 border: '1px solid #ccc',
               }}
             />
+            {errors.name && (
+              <span style={{ color: 'red', marginTop: '4px' }}>{errors.name}</span>
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -95,6 +117,9 @@ const AddCategory = () => {
                 resize: 'vertical',
               }}
             />
+            {errors.description && (
+              <span style={{ color: 'red', marginTop: '4px' }}>{errors.description}</span>
+            )}
           </div>
 
           <button

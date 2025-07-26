@@ -1,12 +1,13 @@
 const User = require('../model/user');
 const XLSX = require('xlsx');
 const jwtConfig = require('../config/jwtconfig');
-const { sendReminderEmail } = require('../utils/nodemailer');
+const { sendmailbyloginfirst } = require('../utils/nodemailer');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const BorrowRecord = require('../model/borrowHistory');
 const crypto = require('crypto');
-// @done loggin
+const jwt = require('jsonwebtoken'); // nếu bạn chưa import
+
 exports.login = async (req, res) => {
     const { studentId, password } = req.body;
     try {
@@ -14,23 +15,37 @@ exports.login = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-
         const isMatch = await user.comparePassword(password);
         if (!isMatch) return res.status(401).json({ message: 'Incorrect password' });
 
         if (user.isActive === false) {
             return res.status(403).json({ message: 'Tài khoản đã bị vô hiệu hóa' });
         }
-        const token = jwtConfig.generateToken({ id: user._id, role: user.role });
 
+        // ✅ Nếu là lần đầu đăng nhập → Gửi email đổi mật khẩu
         if (user.mustChangePassword) {
+            const token = jwtConfig.generateToken({ id: user._id, role: user.role });
+
+            // Gửi email
+            const link = `http://localhost:3000/change-password`;
+            await sendmailbyloginfirst(user.email, user.name, link);
+
             return res.status(200).json({
                 message: 'Password change required',
                 mustChangePassword: true,
                 token,
-                user: { id: user._id, name: user.name, studentId: user.studentId }
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    studentId: user.studentId,
+                    role: user.role,
+                }
             });
         }
+
+
+        // ✅ Nếu đã đổi mật khẩu trước đó
+        const token = jwtConfig.generateToken({ id: user._id, role: user.role });
 
         res.status(200).json({
             message: 'Login successful',
@@ -41,6 +56,7 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
+
 
 // @done importUsersFromExcel
 exports.importUsersFromExcel = async (req, res) => {

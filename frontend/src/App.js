@@ -78,26 +78,26 @@ function App() {
       <Route path="/history-borrowed-user" element={user ? <HistoryBorrowByUser /> : <Navigate to="/login" />} />
 
       {/* Redirect if not logged in */}
-      <Route path="/staff-dashboard" element={user?.role === "staff" ? <StaffDashboard /> : <Navigate to="/login" />} />
+      <Route path="/staff-dashboard" element={user?.role === "staff" ? <StaffDashboard /> : <Navigate to="/home" />} />
       {/* Staff - Book CRUD */}
-      <Route path="/staff/view-books" element={<ViewBookList />} />
-      <Route path="/staff/add-book" element={<AddBook />} />
-      <Route path="/staff/update-book/:id" element={<UpdateBook />} />
+      <Route path="/staff/view-books" element={user?.role === "staff" ? <ViewBookList /> : <Navigate to="/home" />} />
+      <Route path="/staff/add-book" element={user?.role === "staff" ? <AddBook /> : <Navigate to="/home" />} />
+      <Route path="/staff/update-book/:id" element={user?.role === "staff" ? <UpdateBook /> : <Navigate to="/home" />} />
 
       {/* Staff - Bookshelf CRUD */}
-      <Route path="/staff/bookshelf" element={<BookShelf />} />
-      <Route path="/staff/add-bookshelf" element={<AddBookshelf />} />
-      <Route path="/staff/update-bookshelf/:id" element={<UpdateBookshelf />} />
+      <Route path="/staff/bookshelf" element={user?.role === "staff" ? <BookShelf /> : <Navigate to="/home" />} />
+      <Route path="/staff/add-bookshelf" element={user?.role === "staff" ? <AddBookshelf /> : <Navigate to="/home" />} />
+      <Route path="/staff/update-bookshelf/:id" element={user?.role === "staff" ? <UpdateBookshelf /> : <Navigate to="/home" />} />
 
       {/* Staff - Category CRUD */}
-      <Route path="/staff/ViewCategoryList" element={<ViewCategoryList />} />
-      <Route path="/staff/AddCategory" element={<AddCategory />} />
-      <Route path="/staff/UpdateCategory" element={<UpdateCategory />} />
+      <Route path="/staff/ViewCategoryList" element={user?.role === "staff" ? <ViewCategoryList /> : <Navigate to="/home" />} />
+      <Route path="/staff/AddCategory" element={user?.role === "staff" ? <AddCategory /> : <Navigate to="/home" />} />
+      <Route path="/staff/UpdateCategory" element={user?.role === "staff" ? <UpdateCategory /> : <Navigate to="/home" />} />
 
       {/* Staff - Request */}
-      <Route path="/staff/ViewListRequest" element={<ViewListRequest />} />
-      <Route path="/staff/view-borrowing-books" element={<ViewListBorrowed />} />
-      <Route path="/staff/borrows/borrow-history" element={<HistoryReturnBook />} />
+      <Route path="/staff/ViewListRequest" element={user?.role === "staff" ? <ViewListRequest /> : <Navigate to="/home" />} />
+      <Route path="/staff/view-borrowing-books" element={user?.role === "staff" ? <ViewListBorrowed /> : <Navigate to="/home" />} />
+      <Route path="/staff/borrows/borrow-history" element={user?.role === "staff" ? <HistoryReturnBook /> : <Navigate to="/home" />} />
 
       {/* User - Book Detail */}
       <Route path="/detail-book/:id" element={<ViewBookDetail />} />

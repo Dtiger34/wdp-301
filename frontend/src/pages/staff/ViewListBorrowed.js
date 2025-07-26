@@ -160,8 +160,9 @@ const ViewListBorrowed = () => {
                             <tr>
                                 <th style={thStyle}>Tên người mượn</th>
                                 <th style={thStyle}>Tên sách</th>
+                                <th style={thStyle}>Số lượng</th>
+                                <th style={thStyle}>Hình thức</th>
                                 <th style={thStyle}>Ngày mượn</th>
-                                <th style={thStyle}>Trạng thái mượn</th>
                                 <th style={thStyle}>Hạn trả</th>
                                 <th style={thStyle}>Hành động</th>
                             </tr>
@@ -178,10 +179,11 @@ const ViewListBorrowed = () => {
                                     <tr key={item._id} style={{ borderBottom: "1px solid #e5e7eb" }}>
                                         <td style={tdStyle}>{item.userId?.name}</td>
                                         <td style={tdStyle}>{item.bookId?.title}</td>
-                                        <td style={tdStyle}>{new Date(item.createdRequestAt).toLocaleDateString("vi-VN")}</td>
+                                        <td style={tdStyle}>{item.quantity}</td>
                                         <td style={tdStyle}>
                                             {item.isReadOnSite ? "Đọc tại chỗ" : "Mượn mang về"}
                                         </td>
+                                        <td style={tdStyle}>{new Date(item.createdRequestAt).toLocaleDateString("vi-VN")}</td>
                                         <td style={tdStyle}>{new Date(item.dueDate).toLocaleDateString("vi-VN")}</td>
                                         <td style={tdStyle}>
                                             <button style={{ ...returnBtnStyle, marginRight: "8px" }} onClick={() => handleReturnClick(item)}>

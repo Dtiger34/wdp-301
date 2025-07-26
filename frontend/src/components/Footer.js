@@ -15,13 +15,13 @@ const Footer = () => {
           <h4>Liên kết</h4>
           <ul>
             <li>
-              <a href="/home">Trang chủ</a>
+              <a href="#">Trang chủ</a>
             </li>
             <li>
-              <a href="/">Tài khoản</a>
+              <a href="#">Tài khoản</a>
             </li>
             <li>
-              <a href="/">Quản lý sách</a>
+              <a href="#">Quản lý sách</a>
             </li>
           </ul>
         </div>
@@ -29,7 +29,7 @@ const Footer = () => {
         <div className="footer-section">
           <h4>Liên hệ</h4>
           <p>
-            <FaEnvelope /> bookrealm@example.com
+            <FaEnvelope /> leanhduong@luvina.net
           </p>
           <div className="social-icons">
             <a href="#">

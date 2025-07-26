@@ -47,3 +47,20 @@ exports.sendPickupConfirmationEmail = async (to, name, bookTitle) => {
 
     await transporter.sendMail(mailOptions);
 };
+
+exports.sendmailbyloginfirst = async (to, name, link) => {
+    const mailOptions = {
+        from: 'hangnguyenthithu32@gmail.com',
+        to,
+        subject: 'Yêu cầu đổi mật khẩu',
+        html: `
+            <p>Xin chào <strong>${name}</strong>,</p>
+            <p>Bạn đã đăng nhập lần đầu vào hệ thống thư viện.</p>
+            <p>Vui lòng nhấn vào liên kết bên dưới để đổi mật khẩu:</p>
+          <p><a href="${link}">Nhấn vào đây</a></p>
+            <p>Sau khi truy cập, bạn sẽ được yêu cầu nhập mật khẩu mới.</p>
+        `
+    };
+    await transporter.sendMail(mailOptions);
+    console.log("✅ Email xác nhận đổi mật khẩu gửi đến:", to);
+};
