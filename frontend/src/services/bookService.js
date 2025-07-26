@@ -96,7 +96,7 @@ export const getBooksFilter = async (params = {}) => {
   try {
     const token = getToken();
     const queryString = new URLSearchParams(params).toString();
-const res = await api.get(`/books/filter?${queryString}`, {
+    const res = await api.get(`/books/filter?${queryString}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -129,4 +129,17 @@ export const getReviewsByBookId = async (bookId) => {
     console.error("Error fetching book reviews:", error);
     throw error;
   }
+};
+
+export const checkIfReviewedByUser = async (bookId) => {
+  const token = localStorage.getItem("token");
+
+  const response = await api.get(`/books/check-if-reviewed`, {
+    params: { bookId },
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return response.data;
 };

@@ -61,8 +61,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={user?.role === "staff" ? <StaffDashboard /> : <HomePage />} />
       <Route path="/profile" element={user ? <ViewUserProfile /> : <Navigate to="/login" />} />
-      <Route path="/change-password" element={user ? <ChangePassword /> : <Navigate to="/login" />}
-      />
+      <Route path="/change-password" element={localStorage.getItem("user") ? <ChangePassword /> : <Navigate to="/login" />} />
       {/* Admin */}
       <Route path="/admin-dashboard" element={user?.role === "admin" ? <AdminDashboard /> : <Navigate to="/login" />
       }

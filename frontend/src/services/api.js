@@ -26,7 +26,7 @@ export default api;
 export const loginUser = async (studentId, password) => {
   try {
     const response = await api.post("/auth/login", { studentId, password });
-    return response.data.token;
+    return response.data;
   } catch (error) {
     console.error("Login failed:", error);
     throw error;

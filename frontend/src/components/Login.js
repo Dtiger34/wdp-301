@@ -5,8 +5,9 @@ import { saveToken } from "../utils/auth";
 import "../css/Login.css";
 import Header from "./Header";
 import Footer from "./Footer";
+
 function Login() {
-  const [username, setUsername, isActive] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -14,6 +15,7 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     if (!username) {
       setError("Vui lòng kiểm tra tên đăng nhập của bạn.");
       return;
@@ -22,17 +24,25 @@ function Login() {
       setError("Vui lòng kiểm tra mật khẩu của bạn.");
       return;
     }
-    if (isActive === false) {
-      setError("Tài khoản của bạn đã bị vô hiệu hóa.");
-      return;
-    }
+
     setLoading(true);
     try {
-      const token = await loginUser(username, password);
+      const res = await loginUser(username, password); // ← gọi API đăng nhập
+      const { token, isActive, mustChangePassword, user } = res;
+      if (isActive === false) {
+        setError("Tài khoản của bạn đã bị vô hiệu hóa.");
+        return;
+      }
+
       saveToken(token);
-      navigate("/home");
+      localStorage.setItem("user", JSON.stringify(user));
+      if (mustChangePassword === true) {
+        navigate("/change-password");
+      } else {
+        navigate("/home");
+      }
     } catch (err) {
-      setError(err.response.data.message);
+      setError(err?.response?.data?.message || "Lỗi đăng nhập.");
     } finally {
       setLoading(false);
     }
@@ -40,6 +50,7 @@ function Login() {
 
   return (
     <div className="login-page">
+      <Header />
       <div className="login-content">
         <div className="login-container">
           <h2>Vui lòng nhập thông tin tài khoản</h2>
@@ -68,7 +79,7 @@ function Login() {
             </div>
             {error && <p className="error-message">{error}</p>}
             <button type="submit" className="login-button" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
           </form>
         </div>

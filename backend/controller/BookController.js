@@ -326,6 +326,7 @@ exports.createBorrowRequest = async (req, res) => {
       quantity,
       status: 'pending',
       bookCopies: updatedBookCopies,  // Lưu thông tin các bản sao sách
+      hasReminderEmailSent: false,
     });
 
     await borrowRequest.populate(['userId', 'bookId']);
@@ -979,5 +980,23 @@ exports.getBookCopiesByBookId = async (req, res) => {
     res.status(200).json(bookCopies);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+exports.checkIfReviewedByUser = async (req, res) => {
+  const userId = req.user.id;
+  const { bookId } = req.query;
+
+  if (!mongoose.Types.ObjectId.isValid(bookId)) {
+    return res.status(400).json({ message: "Invalid bookId" });
+  }
+
+  try {
+    const review = await Review.findOne({ userId, bookId });
+
+    return res.status(200).json({ hasReviewed: !!review });
+  } catch (error) {
+    console.error("Error in checkIfReviewedByUser:", error.message);
+    return res.status(500).json({ message: "Error occurred while checking review" });
   }
 };

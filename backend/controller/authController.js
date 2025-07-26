@@ -1,7 +1,8 @@
 const User = require('../model/user');
 const XLSX = require('xlsx');
 const jwtConfig = require('../config/jwtconfig');
-
+const { sendReminderEmail } = require('../utils/nodemailer');
+const BorrowRecord = require('../model/borrowHistory');
 // @done loggin
 exports.login = async (req, res) => {
     const { studentId, password } = req.body;

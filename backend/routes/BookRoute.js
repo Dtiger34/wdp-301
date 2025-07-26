@@ -8,6 +8,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // ------------------- BOOK ROUTES --------------------
 router.get("/", jwtConfig.requireAuth, BookController.getAllBooks);
+router.get("/check-if-reviewed", jwtConfig.requireAuth, BookController.checkIfReviewedByUser);
 router.get("/filter", BookController.getBookFilter);
 router.get("/:id", BookController.getBookById);
 router.post('/', jwtConfig.requireAuth, uploadImage.single('image'), BookController.createBook);
@@ -27,7 +28,7 @@ router.get('/history/user', jwtConfig.requireAuth, BookController.getBorrowHisto
 router.post("/review", jwtConfig.requireAuth, BookController.createReview);
 router.put("/review/:id", jwtConfig.requireAuth, BookController.updateReview);
 router.delete("/review/:id", jwtConfig.requireAuth, BookController.deleteReview);
-router.get("/:id/reviews",jwtConfig.requireAuth, BookController.getReviewsByBookId);
+router.get("/:id/reviews", jwtConfig.requireAuth, BookController.getReviewsByBookId);
 
 
 // ------------------- INVENTORY ROUTES --------------------

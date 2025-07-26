@@ -129,9 +129,10 @@ export const getAllReturnHistory = async (page = 1, limit = 10) => {
     }
 };
 
-export const getBorrowedBooksByUser = async (userId) => {
+export const getBorrowedBooksByUser = async (userId, page = 1, limit = 10, status = "all") => {
     try {
         const response = await api.get(`/borrows/return-history/${userId}`, {
+            params: { page, limit, status },
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
@@ -141,7 +142,7 @@ export const getBorrowedBooksByUser = async (userId) => {
         console.error("Error fetching borrowed books by user:", error.response?.data || error.message);
         throw error;
     }
-}
+};
 
 export const confirmBookPickup = async (borrowId) => {
     try {

@@ -5,9 +5,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectionDB = require("./config/db");
 const { swaggerUi, specs } = require("./config/swagger");
-
 const app = express();
-
 // Swagger Docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/uploads', express.static('uploads'));
@@ -18,11 +16,12 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use(urlencoded({ extended: true }));
 const path = require("path");
+const startReminderScheduler = require("./utils/reminderScheduler");
 
 app.use("/images/book", express.static(path.join(__dirname, "public/images/book")));
 
 // Routes
-app.use("/api/v1/auth", require("./routes/AuthRoute"));
+app.use("/api/v1/auth", require("./routes/authRoute"));
 app.use("/api/v1/books", require("./routes/BookRoute"));
 app.use("/api/v1/bookshelves", require("./routes/bookshelfRoute"));
 app.use("/api/v1/categories", require("./routes/categoryRoute"));
@@ -36,7 +35,9 @@ app.use((req, res, next) => {
 
 // Connect to DB & Start Server
 connectionDB();
-
+// Tự động gửi nhắc nhở mỗi sáng
+console.log("🟢 Calling checkAndSendReminders at startup");
+startReminderScheduler();
 const PORT = process.env.PORT || 9999;
 app.listen(PORT, () => {
   console.log(`✅ Backend is running at http://localhost:${PORT}`);

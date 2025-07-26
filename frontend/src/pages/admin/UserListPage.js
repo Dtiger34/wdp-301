@@ -75,9 +75,21 @@ const ViewAllUser = () => {
     const handleSave = async () => {
         const { name, email, phone, address, isActive } = formData;
 
-        if (!name || !email) {
-            alert('Tên và Email là bắt buộc!');
-            return;
+        // Validate
+        if (!name || name.length > 255) {
+            return alert('Họ tên bắt buộc và không vượt quá 255 ký tự.');
+        }
+
+        if (!email || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+            return alert('Email không hợp lệ.');
+        }
+
+        if (!phone || !/^\d{1,10}$/.test(phone)) {
+            return alert('Số điện thoại chỉ được chứa tối đa 10 chữ số và không có số âm.');
+        }
+
+        if (!address || address.length > 255) {
+            return alert('Địa chỉ bắt buộc và không vượt quá 255 ký tự.');
         }
 
         try {

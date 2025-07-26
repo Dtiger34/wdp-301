@@ -9,6 +9,7 @@ const Category = require("./model/categories");
 const Bookshelf = require("./model/bookshelf");
 const Inventory = require("./model/Inventory");
 const BookCopy = require("./model/bookcopies");
+const BorrowRecord = require("./model/borrowHistory");
 const seedData = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -21,13 +22,14 @@ const seedData = async () => {
     await Category.deleteMany({});
     await Bookshelf.deleteMany({});
     await Inventory.deleteMany({});
+    await BorrowRecord.deleteMany({});
     console.log("Cleared existing data");
 
     // 1. Create Admin User
     // const hashedAdminPassword = await bcrypt.hash('admin123', 10);
     const admin = new User({
       studentId: "ADMIN001",
-      name: "Admin Dương Đẹp Trai",
+      name: "Admin 01",
       password: "admin123",
       email: "admin@library.com",
       role: "admin",
@@ -41,7 +43,7 @@ const seedData = async () => {
 
     const staff = new User({
       studentId: "STAFF001",
-      name: "Staff Dương Đẹp Trai",
+      name: "Staff 01",
       password: "staff123",
       email: "staff@library.com",
       role: "staff",
@@ -58,7 +60,7 @@ const seedData = async () => {
         studentId: "SV001",
         password: "SV001",
         name: "Nguyen Van A",
-        email: "a@student.com",
+        email: "duongleduongle01@gmail.com",
         phone: "0123456001",
         address: "Ha Noi",
       },
