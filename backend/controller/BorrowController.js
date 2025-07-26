@@ -3,7 +3,7 @@ const BorrowRecord = require('../model/borrowHistory');
 const Fine = require('../model/fine');
 const BookCopy = require('../model/bookcopies');
 const User = require('../model/user');
-
+const { sendPickupConfirmationEmail } = require('../utils/nodemailer');
 // @done: duyệt một yêu cầu mượn sách
 exports.acceptBorrowRequest = async (req, res) => {
     try {

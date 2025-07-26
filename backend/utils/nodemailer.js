@@ -32,3 +32,18 @@ exports.sendReminderEmail = async (to, name, bookTitle, dueDate) => {
         console.error("❌ Error sending email:", error.message);
     }
 };
+exports.sendPickupConfirmationEmail = async (to, name, bookTitle) => {
+    const mailOptions = {
+        from: 'hangnguyenthithu32@gmail.com',
+        to,
+        subject: 'Xác nhận nhận sách thành công',
+        html: `
+      <p>Xin chào ${name},</p>
+      <p>Yêu cầu mượn sách của bạn đã được chấp nhận: <strong>${bookTitle}</strong>.</p>
+      <p>Chúc bạn đọc sách vui vẻ và đừng quên trả đúng hạn nhé!</p>
+      <p>Trân trọng,<br/>Thư viện</p>
+    `,
+    };
+
+    await transporter.sendMail(mailOptions);
+};
