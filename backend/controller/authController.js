@@ -85,11 +85,11 @@ exports.importUsersFromExcel = async (req, res) => {
 exports.changePassword = async (req, res) => {
     const { newPassword } = req.body;
     const userId = req.params.id;
-
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     try {
         const user = await User.findByIdAndUpdate(
             userId,
-            { password: newPassword },
+            { password: hashedPassword },
             { new: true }
         );
 

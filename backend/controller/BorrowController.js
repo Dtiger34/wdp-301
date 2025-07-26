@@ -10,32 +10,54 @@ exports.acceptBorrowRequest = async (req, res) => {
         const { borrowId } = req.params;
         const staffId = req.user.id;
 
-        const borrowRecord = await BorrowRecord.findById(borrowId);
+        // console.log(`📥 Nhận yêu cầu duyệt mượn sách với ID: ${borrowId}, bởi staff: ${staffId}`);
 
+        const borrowRecord = await BorrowRecord.findById(borrowId);
         if (!borrowRecord) {
-            throw new Error('Borrow request not found');
+            console.log('❌ Không tìm thấy BorrowRecord với ID:', borrowId);
+            return res.status(404).json({ message: 'Borrow request not found' });
         }
 
         if (borrowRecord.status !== 'pending') {
-            throw new Error('Borrow request is not pending');
+            console.log(`⚠️ BorrowRecord không ở trạng thái 'pending'. Trạng thái hiện tại: ${borrowRecord.status}`);
+            return res.status(400).json({ message: 'Borrow request is not pending' });
         }
 
-        // Cập nhật BorrowRecord với trạng thái đã duyệt
+        // Cập nhật trạng thái
         borrowRecord.status = 'pendingPickup'; // duyệt -> chờ lấy sách
         borrowRecord.borrowDate = new Date();
         borrowRecord.processedBy = staffId;
         await borrowRecord.save();
+        // console.log('✅ Đã cập nhật trạng thái borrowRecord thành "pendingPickup"');
 
-        // Lấy lại BorrowRecord đã được cập nhật
+        // Lấy lại dữ liệu đầy đủ đã populate
         const updatedRecord = await BorrowRecord.findById(borrowId)
-            .populate('userId', 'name studentId')
+            .populate('userId', 'name email studentId')
             .populate('bookId', 'title author isbn');
+
+        console.log('🔍 Dữ liệu sau khi populate:', updatedRecord);
+
+        const { email, name } = updatedRecord.userId;
+        const bookTitle = updatedRecord.bookId?.title || 'cuốn sách bạn mượn';
+
+        if (email && name) {
+            try {
+                console.log(`📨 Chuẩn bị gửi email xác nhận đến: ${email} - Người mượn: ${name}`);
+                await sendPickupConfirmationEmail(email, name, bookTitle);
+                console.log(`📧 Đã gửi email xác nhận đến: ${email}`);
+            } catch (err) {
+                console.error(`❌ Lỗi khi gửi email xác nhận đến ${email}:`, err.message);
+            }
+        } else {
+            console.log('⚠️ Không đủ thông tin để gửi email (email hoặc name bị thiếu)');
+        }
 
         res.status(200).json({
             message: 'Borrow request approved successfully',
             borrowRecord: updatedRecord,
         });
     } catch (error) {
+        console.error('💥 Lỗi khi duyệt mượn sách:', error);
         res.status(500).json({ message: error.message });
     }
 };
