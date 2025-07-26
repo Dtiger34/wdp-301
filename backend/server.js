@@ -18,6 +18,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(urlencoded({ extended: true }));
 const path = require("path");
+const startReminderScheduler = require("./utils/reminderScheduler");
 
 app.use(
   "/images/book",
@@ -32,6 +33,7 @@ app.use("/api/v1/categories", require("./routes/categoryRoute"));
 app.use("/api/v1/inventory", require("./routes/InventoryRoute"));
 app.use("/api/v1/borrows", require("./routes/BorrowRoute"));
 app.use("/api/v1/reports", require("./routes/reportRoute"));
+
 // Fallback route not found
 app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found" });
@@ -39,6 +41,10 @@ app.use((req, res, next) => {
 
 // Connect to DB & Start Server
 connectionDB();
+
+// Tự động gửi nhắc nhở mỗi sáng
+console.log("🟢 Calling checkAndSendReminders at startup");
+startReminderScheduler();
 
 const PORT = process.env.PORT || 9999;
 app.listen(PORT, () => {
