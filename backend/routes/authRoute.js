@@ -13,7 +13,6 @@ router.post('/admin/addaccount', jwtConfig.requireAdmin, authController.createAc
 router.post('/changePassword', jwtConfig.requireAuth, authController.changePassword);
 router.delete('/deleteuser/:id', jwtConfig.requireAdmin, authController.deleteUser);
 router.patch('/admin/updateuser/:id', jwtConfig.requireAdmin, authController.updateUser);
-router.get('/admin/send-reminder-emails', jwtConfig.requireAdmin, authController.checkAndSendReminders);
 
 
 
